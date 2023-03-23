@@ -44,6 +44,11 @@ if (getApps().length === 0) {
 }
 
 const AuthStack = createNativeStackNavigator();
+
+/**
+ * Renders the authentication navigation stack with screens for login, register, and forget password.
+ * @return {JSX.Element} 
+ */
 const Auth = () => {
   return (
     <AuthStack.Navigator
@@ -58,7 +63,16 @@ const Auth = () => {
   );
 };
 
+/**
+ * Creates a navigation stack for the main app.
+ * @return {JSX.Element} The main app navigation stack.
+ */
 const MainStack = createNativeStackNavigator();
+
+/**
+ * Renders the main app navigation stack with screens for the main tabs, 
+ * trip info, trip history, and edit price.
+ */
 const Main = () => {
   return (
     <MainStack.Navigator
@@ -76,6 +90,9 @@ const Main = () => {
   );
 };
 
+/**
+ * Creates a navigation stack for the Add Trip feature.
+ */
 const AddTripStack = createNativeStackNavigator();
 const AddTripMain = () => {
   return (
@@ -156,6 +173,11 @@ const MainTabs = () => {
   );
 };
 
+/**
+ * A function component that renders a NavigationContainer containing 
+ * the app's main components based on the current user's authentication status.
+ * @return {JSX.Element} A NavigationContainer component containing Loading, Auth or Main components based on the user's authentication status.
+ */
 export default () => {
   const auth = useContext(AuthContext);
   const user = auth.user;
