@@ -8,22 +8,22 @@ import { useTheme, themeColor } from "react-native-rapi-ui";
 import TabBarIcon from "../components/utils/TabBarIcon";
 import TabBarText from "../components/utils/TabBarText";
 //Screens
-import Home from "../screens/Home";
-import TripInfo from "../screens/TripInfo";
-import AddTrip from "../screens/AddTrip";
-import PriceEstimatorPopup from "../screens/PriceEstimatorPopup";
-import CarParkAvailability from "../screens/CarParkAvailability";
-import TripHistory from "../screens/TripHistory";
-import EditPrice from "../screens/EditPrice";
-import Settings from "../screens/Settings";
-import Analytics from "../screens/Analytics";
-import Loading from "../screens/utils/Loading";
-import SavedTrips from "../screens/SavedTrips";
-import SavedTripInfo from "../screens/SavedTripInfo";
-// Auth screens
-import Login from "../screens/auth/Login";
-import Register from "../screens/auth/Register";
-import ForgetPassword from "../screens/auth/ForgetPassword";
+import Home from "../views/Home";
+import TripInfo from "../views/TripInfo";
+import AddTrip from "../views/AddTrip";
+import PriceEstimatorPopup from "../views/PriceEstimatorPopup";
+import CarParkAvailability from "../views/CarParkAvailability";
+import TripHistory from "../views/TripHistory";
+import EditPrice from "../views/EditPrice";
+import Settings from "../views/Settings";
+import Analytics from "../views/Analytics";
+import Loading from "../views/utils/Loading";
+import SavedTrips from "../views/SavedTrips";
+import SavedTripInfo from "../views/SavedTripInfo";
+// Auth views
+import Login from "../views/auth/Login";
+import Register from "../views/auth/Register";
+import ForgetPassword from "../views/auth/ForgetPassword";
 import { AuthContext } from "../provider/AuthProvider";
 
 
@@ -46,7 +46,7 @@ if (getApps().length === 0) {
 const AuthStack = createNativeStackNavigator();
 
 /**
- * Renders the authentication navigation stack with screens for login, register, and forget password.
+ * Renders the authentication navigation stack with views for login, register, and forget password.
  * @return {JSX.Element} 
  */
 const Auth = () => {
@@ -70,7 +70,7 @@ const Auth = () => {
 const MainStack = createNativeStackNavigator();
 
 /**
- * Renders the main app navigation stack with screens for the main tabs, 
+ * Renders the main app navigation stack with views for the main tabs, 
  * trip info, trip history, and edit price.
  */
 const Main = () => {
