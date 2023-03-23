@@ -3,6 +3,13 @@ import { FlatList, Pressable, StyleSheet } from "react-native";
 import { Layout, Section, SectionContent, Text, TopNav, useTheme } from "react-native-rapi-ui";
 import { Trip } from "../models/Trip";
 
+/**
+ * Renders a list of saved trips, allowing the user to select and view them.
+ * @param {object} props
+ * @param {object} props.navigation - The navigation object
+ * @returns {JSX.Element} - Screen
+ */
+
 function SavedTrips({ navigation }) {
     const { isDarkmode } = useTheme();
     const renderSavedTrip = ({ item }) => {
@@ -35,7 +42,9 @@ function SavedTrips({ navigation }) {
         </Layout>
     )
 }
-
+/**
+* the style for the 'SavedTrip' component
+*/
 const styles = StyleSheet.create({
     section: {
         elevation: 16,
