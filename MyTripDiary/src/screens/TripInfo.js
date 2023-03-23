@@ -9,6 +9,14 @@ import {
 } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
 
+/**
+ * This is a component that displays the Trip Info screen.
+ *
+ * @param {object} props
+ * @param {object} props.navigation - The navigation object
+ * @return {JSX.Element} - The display screen
+ */
+
 export default function ({ navigation }) {
   const { isDarkmode } = useTheme();
   return (
