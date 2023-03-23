@@ -14,6 +14,10 @@ import {
 } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
 
+/**
+ * Displays the AddTripView window onto the screen of the user
+ * @param {Object} navigation 
+ */
 export default function ({ navigation }) {
     const { isDarkmode, setTheme } = useTheme();
     const [nameOfTrip, setNameOfTrip] = React.useState('');

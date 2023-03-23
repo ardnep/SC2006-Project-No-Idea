@@ -1,33 +1,35 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, TouchableOpacity, Image} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, TouchableOpacity, Image } from 'react-native';
 import personalisation from './personalisation';
 
-
+/**
+ * Displays the Settings app onto the screen 
+ */
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>    
-      <Text style = {styles.title}>Settings</Text>
-      <Image 
-        style ={styles.icon}
-        source={ require('./assets/profile-user.png')}/>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Settings</Text>
+      <Image
+        style={styles.icon}
+        source={require('./assets/profile-user.png')} />
       <TouchableOpacity>
-        <Text style ={styles.optiontextf}>General</Text>
+        <Text style={styles.optiontextf}>General</Text>
       </TouchableOpacity>
       <TouchableOpacity>
-          <Text style ={styles.optiontext}>Account</Text>
+        <Text style={styles.optiontext}>Account</Text>
       </TouchableOpacity>
       <TouchableOpacity>
-          <Text style ={styles.optiontext}>Privacy</Text>
+        <Text style={styles.optiontext}>Privacy</Text>
       </TouchableOpacity>
       <TouchableOpacity>
-          <Text style ={styles.optiontext}>Security</Text>
+        <Text style={styles.optiontext}>Security</Text>
       </TouchableOpacity>
       <TouchableOpacity >
-          <Text style ={styles.optiontext}>Personalisation</Text>
+        <Text style={styles.optiontext}>Personalisation</Text>
       </TouchableOpacity>
       <TouchableOpacity>
-          <Text style ={styles.optiontext}>Help</Text>
+        <Text style={styles.optiontext}>Help</Text>
       </TouchableOpacity>
-      <Text style = {styles.ver}>Ver 1.0</Text>
+      <Text style={styles.ver}>Ver 1.0</Text>
     </SafeAreaView>
   );
 }
@@ -54,7 +56,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
   },
-  optiontextf:{
+  optiontextf: {
     marginTop: 30,
     padding: 10,
     marginBottom: 20,
@@ -71,7 +73,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'grey',
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  ver:{
+  ver: {
     marginTop: 50,
     textAlign: 'center',
   }
