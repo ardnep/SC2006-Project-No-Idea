@@ -2,6 +2,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native";
 import { Button, Layout, Section, SectionContent, SectionImage, Text, TopNav, useTheme } from "react-native-rapi-ui";
 
+/**
+ * Displays information about a saved trip and allows the user to interact with it.
+ * @param {object} props
+ * @param {object} props.route - The route object containing information about the current route.
+ * @param {object} props.navigation - The navigation object
+ * @returns {JSX.Element} - Screen
+ */
+
 function SavedTripInfo({ route, navigation }) {
     const { isDarkmode } = useTheme();
     const { trip } = route.params;
@@ -31,6 +39,10 @@ function SavedTripInfo({ route, navigation }) {
         </Layout>
     )
 }
+
+/**
+ * The styles for the `SavedTripInfo` component.
+ */
 
 const styles = StyleSheet.create({
     buttonSection: {
