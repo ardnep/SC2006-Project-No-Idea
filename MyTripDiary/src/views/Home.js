@@ -62,6 +62,15 @@ export default function ({ navigation }) {
                 }}
               />
               <Button
+                text="Saved Trips"
+                onPress={() => {
+                  navigation.navigate("SavedTrips");
+                }}
+                style={{
+                  marginTop: 10,
+                }}
+              />
+              <Button
                 text="Trip History"
                 onPress={() => {
                   navigation.navigate("TripHistory");

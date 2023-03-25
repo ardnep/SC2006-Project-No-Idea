@@ -1,5 +1,4 @@
 import { StyleSheet, Text, View, SafeAreaView, Button, TouchableOpacity, Image } from 'react-native';
-import personalisation from './personalisation';
 
 /**
  * Displays the Settings app onto the screen 
@@ -10,7 +9,7 @@ export default function App() {
       <Text style={styles.title}>Settings</Text>
       <Image
         style={styles.icon}
-        source={require('./assets/profile-user.png')} />
+        source={require('../../assets/profile-user.png')} />
       <TouchableOpacity>
         <Text style={styles.optiontextf}>General</Text>
       </TouchableOpacity>

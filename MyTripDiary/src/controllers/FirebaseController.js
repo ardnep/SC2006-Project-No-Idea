@@ -1,3 +1,25 @@
+import { initializeApp, getApps } from "firebase/app";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBEObzGMQ5oBnM7QTDPMx5S53YZVWkT2CI",
+    authDomain: "mytripdiary-186a4.firebaseapp.com",
+    databaseURL: "https://mytripdiary-186a4-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "mytripdiary-186a4",
+    storageBucket: "mytripdiary-186a4.appspot.com",
+    messagingSenderId: "1034425680288",
+    appId: "1:1034425680288:web:ad71dd6aa25aaaecfaa4c5",
+    measurementId: "G-QT7Z8H7N8K"
+};
+
+/**
+ * Initialize the firebase app with the necessary configs
+ */
+function initializeFirebaseApp() {
+    if (getApps().length === 0) {
+        initializeApp(firebaseConfig);
+    }
+}
+
 /**
  * Verifies if the loginCredentials are correct
  * @returns {bool} true if verified else false
@@ -67,4 +89,6 @@ function getAllSavedTrips() { }
  * Get all the executed trips from the database
  * @returns {Array} list of all executed trips for this user
  */
-function getAllExecutedTrips() { } 
+function getAllExecutedTrips() { }
+
+export default initializeFirebaseApp;

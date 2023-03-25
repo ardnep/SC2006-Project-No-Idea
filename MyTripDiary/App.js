@@ -1,8 +1,8 @@
 import React from "react";
-import AppNavigator from "./src/navigation/AppNavigator";
 import { AuthProvider } from "./src/provider/AuthProvider";
 import { ThemeProvider } from "react-native-rapi-ui";
 import { LogBox } from "react-native";
+import System from "./src/System";
 
 export default function App() {
   const images = [
@@ -23,7 +23,7 @@ export default function App() {
   return (
     <ThemeProvider images={images}>
       <AuthProvider>
-        <AppNavigator />
+        <System />
       </AuthProvider>
     </ThemeProvider>
   );

@@ -16,7 +16,7 @@ import {
   Layout,
   Text,
   TextInput,
-  Button,A
+  Button,
   useTheme,
   themeColor,
 } from "react-native-rapi-ui";
