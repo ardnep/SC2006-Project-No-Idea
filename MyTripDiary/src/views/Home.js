@@ -11,6 +11,10 @@ import {
   useTheme,
 } from "react-native-rapi-ui";
 
+import { updateData, addData, getDataByCollection, getAllSavedTrips } from "../controllers/DataController";
+import { getCurrentUserId } from "../controllers/FirebaseController";
+import { populateDB } from "../helpers/DatabaseFeeder";
+
 /**
  * Represents a screen component for displaying saved trips and navigating to trip-related screens.
  * @param {object} navigation - The navigation object from React Navigation.
@@ -45,9 +49,11 @@ export default function ({ navigation }) {
               />
               <Button
                 text="Trip 1"
-                onPress={() => {
-                  navigation.navigate("TripInfo");
-                }}
+                onPress={
+                  // () => { updateData("Users", getCurrentUserId(), { name: "Mane Foe" }) }}
+                  // () => { getDataByCollection("Users") }}
+                  // () => { populateDB() }}
+                  () => { getAllSavedTrips() }}
                 style={{
                   marginTop: 10,
                 }}

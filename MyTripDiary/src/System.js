@@ -4,13 +4,14 @@ import Loading from "./views/utils/Loading";
 import Auth from "./navigators/AuthNavigator";
 import Main from "./navigators/MainTabsNavigator";
 
+// import initializeFirebaseApp from "./controllers/FirebaseController";
+// initializeFirebaseApp();
+
 import { AuthContext } from "./provider/AuthProvider";
 
-import initializeFirebaseApp from "./controllers/FirebaseController";
 
 import React, { useContext } from "react";
 
-initializeFirebaseApp()
 
 /**
  * A function component that renders a NavigationContainer containing 

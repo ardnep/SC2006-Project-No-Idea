@@ -3,6 +3,9 @@ import { AuthProvider } from "./src/provider/AuthProvider";
 import { ThemeProvider } from "react-native-rapi-ui";
 import { LogBox } from "react-native";
 import System from "./src/System";
+import initializeFirebaseApp from "./src/controllers/FirebaseController";
+
+initializeFirebaseApp();
 
 export default function App() {
   const images = [
@@ -22,9 +25,9 @@ export default function App() {
 
   return (
     <ThemeProvider images={images}>
-      <AuthProvider>
+      {initializeFirebaseApp() && (<AuthProvider>
         <System />
-      </AuthProvider>
+      </AuthProvider>)}
     </ThemeProvider>
   );
 }

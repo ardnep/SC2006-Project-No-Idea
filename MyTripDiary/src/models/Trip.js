@@ -1,19 +1,22 @@
 /** 
 * A constructor for the trip model
 * @param {string} name - Trip Name, as given by the user
-* @param {string} originName - Name of origin point
-* @param {{x: number, y: number}} originCoor - x,y coordinate for the origin point
+* @param {string} srcName - Name of src point
+* @param {{x: number, y: number}} srcCoor - x,y coordinate for the src point
 * @param {string} destName - Name of destination point
 * @param {{x: number, y: number}} destCoor - x,y coordinate for the destination point 
 */
 
 export class Trip {
-    constructor(name, originName, originCoor, destName, destCoor) {
+    constructor(ID, name, srcName, srcLat, srcLong, destName, destLat, destLong) {
+        this.ID = ID;
         this.name = name;
-        this.originName = originName;
-        this.originCoor = originCoor;
+        this.srcName = srcName;
+        this.srcLat = srcLat;
+        this.srcLong = srcLong;
         this.destName = destName;
-        this.destCoor = destCoor;
+        this.destLat = destLat;
+        this.destLong = destLong;
     }
 };
 

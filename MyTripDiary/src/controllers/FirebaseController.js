@@ -1,4 +1,6 @@
-import { initializeApp, getApps } from "firebase/app";
+import firebase from "firebase/compat/app";
+import 'firebase/compat/auth';
+import "firebase/compat/firestore";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBEObzGMQ5oBnM7QTDPMx5S53YZVWkT2CI",
@@ -14,9 +16,20 @@ const firebaseConfig = {
 /**
  * Initialize the firebase app with the necessary configs
  */
-function initializeFirebaseApp() {
-    if (getApps().length === 0) {
-        initializeApp(firebaseConfig);
+export function initializeFirebaseApp() {
+    if (firebase.apps.length === 0) {
+        app = firebase.initializeApp(firebaseConfig);
+    } else {
+        app = firebase.app();
+    }
+}
+
+export function getCurrentUserId() {
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser) {
+        return currentUser.uid;
+    } else {
+        return null;
     }
 }
 
@@ -90,5 +103,3 @@ function getAllSavedTrips() { }
  * @returns {Array} list of all executed trips for this user
  */
 function getAllExecutedTrips() { }
-
-export default initializeFirebaseApp;

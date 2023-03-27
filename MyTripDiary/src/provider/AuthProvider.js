@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
 
 /**
  * 
@@ -17,7 +18,7 @@ const AuthContext = createContext();
  * @param {AuthProviderProps} props - The props for the AuthProvider component.
  */
 const AuthProvider = (props) => {
-  const auth = getAuth();
+  const auth = firebase.auth();
   // user null = loading
   const [user, setUser] = useState(null);
 
@@ -26,7 +27,7 @@ const AuthProvider = (props) => {
   }, []);
 
   function checkLogin() {
-    onAuthStateChanged(auth, (u) => {
+    firebase.onAuthStateChanged(auth, (u) => {
       if (u) {
         setUser(true);
         // getUserData();
