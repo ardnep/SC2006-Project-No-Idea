@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native";
 import { Button, Layout, Section, SectionContent, SectionImage, Text, TopNav, useTheme } from "react-native-rapi-ui";
+import { deleteSavedTrip } from "../controllers/SavedTripsController";
 
 /**
  * Displays information about a saved trip and allows the user to interact with it.
@@ -16,23 +17,23 @@ function SavedTripInfo({ route, navigation }) {
     return (
         <Layout>
             <TopNav
-                leftContent={<Ionicons name="chevron-back" color={isDarkmode ? 'white' : 'black'} size={20}/>}
+                leftContent={<Ionicons name="chevron-back" color={isDarkmode ? 'white' : 'black'} size={20} />}
                 leftAction={navigation.goBack}
                 middleContent="Trip Info"
             />
             <Section>
                 <SectionContent>
-                    <Text>From: {trip.originName}</Text>
+                    <Text>From: {trip.srcName}</Text>
                     <Text>To: {trip.destName}</Text>
                 </SectionContent>
-                <SectionImage 
-                    source={{uri: 'https://assets.entrepreneur.com/content/3x2/2000/20190124141200-map1.jpeg'}}
+                <SectionImage
+                    source={{ uri: 'https://assets.entrepreneur.com/content/3x2/2000/20190124141200-map1.jpeg' }}
                     height={200}
                 />
                 <SectionContent style={styles.buttonSection}>
-                    <Button text = "Delete" status="danger" style={styles.button}/>
-                    <Button text = "Edit" status="primary" style={styles.button}/>
-                    <Button text = "Start" status="primary" style={styles.button}/>
+                    <Button text="Delete" status="danger" style={styles.button} onPress={() => { deleteSavedTrip(trip); navigation.goBack() }} />
+                    <Button text="Edit" status="primary" style={styles.button} />
+                    <Button text="Start" status="primary" style={styles.button} />
                 </SectionContent>
             </Section>
 
@@ -46,7 +47,7 @@ function SavedTripInfo({ route, navigation }) {
 
 const styles = StyleSheet.create({
     buttonSection: {
-        flexDirection: 'row', 
+        flexDirection: 'row',
         justifyContent: 'center'
     },
     button: {

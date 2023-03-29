@@ -6,7 +6,7 @@
 * @param {integer} duration - Duration of the trip in seconds
 */
 
-export class ExecutedTrip extends Trip {
+export class ExecutedTrip {
     constructor(timeStamp, modeOfTransport, tripPrice, duration) {
         this.timeStamp = timeStamp;
         this.modeOfTransport = modeOfTransport;

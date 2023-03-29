@@ -11,6 +11,7 @@ import { AuthContext } from "./provider/AuthProvider";
 
 
 import React, { useContext } from "react";
+import { fetchAllTrips } from "./controllers/DataController";
 
 
 /**
@@ -25,7 +26,7 @@ export default () => {
         <NavigationContainer>
             {user == null && <Loading />}
             {user == false && <Auth />}
-            {user == true && <Main />}
+            {user == true && <Main /> || fetchAllTrips()}
         </NavigationContainer>
     );
 };

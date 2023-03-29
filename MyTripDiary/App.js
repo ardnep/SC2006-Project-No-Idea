@@ -3,9 +3,6 @@ import { AuthProvider } from "./src/provider/AuthProvider";
 import { ThemeProvider } from "react-native-rapi-ui";
 import { LogBox } from "react-native";
 import System from "./src/System";
-import initializeFirebaseApp from "./src/controllers/FirebaseController";
-
-initializeFirebaseApp();
 
 export default function App() {
   const images = [
@@ -21,11 +18,10 @@ export default function App() {
     LogBox.ignoreLogs([
       "AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage",
     ]);
-  }, []);
-
+  }, [])
   return (
     <ThemeProvider images={images}>
-      {initializeFirebaseApp() && (<AuthProvider>
+      {(<AuthProvider>
         <System />
       </AuthProvider>)}
     </ThemeProvider>

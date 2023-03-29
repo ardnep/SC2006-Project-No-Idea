@@ -1,7 +1,9 @@
+import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { FlatList, Pressable, StyleSheet } from "react-native";
 import { Layout, Section, SectionContent, Text, TopNav, useTheme } from "react-native-rapi-ui";
 import { Trip } from "../models/Trip";
+import { convertToTripClass, getAllSavedTrips } from "../controllers/SavedTripsController";
 
 /**
  * Renders a list of saved trips, allowing the user to select and view them.
@@ -12,32 +14,37 @@ import { Trip } from "../models/Trip";
 
 function SavedTrips({ navigation }) {
     const { isDarkmode } = useTheme();
+
+    const [savedTrips, setSavedTrips] = React.useState([]);
+    const savedTripsArray = [];
+    console.log(getAllSavedTrips().length)
+
     const renderSavedTrip = ({ item }) => {
         const trip = item;
         return (
-            <Pressable onPress={() => {navigation.navigate("SavedTripInfo", {trip})}}>
+            <Pressable onPress={() => { navigation.navigate("SavedTripInfo", { trip }) }}>
                 <Section style={styles.section}>
                     <Text>{trip.name}</Text>
                     <SectionContent>
-                        <Text>{trip.originName} to {trip.destName}</Text>
+                        <Text>{trip.srcName} to {trip.destName}</Text>
                     </SectionContent>
                 </Section>
             </Pressable>
-        )   
+        )
     }
-    
     return (
         <Layout>
             <TopNav
-                leftContent={<Ionicons name="chevron-back" color={isDarkmode ? 'white' : 'black'} size={20}/>}
+                leftContent={<Ionicons name="chevron-back" color={isDarkmode ? 'white' : 'black'} size={20} />}
                 leftAction={navigation.goBack}
                 middleContent="Saved Trips"
                 rightContent={<Text size="md">Add Trip</Text>}
-                rightAction={() => {navigation.navigate()}}
+                rightAction={() => { navigation.navigate() }}
             />
-            <FlatList 
-                data={dummyData}
+            <FlatList
+                data={savedTrips}
                 renderItem={renderSavedTrip}
+
             />
         </Layout>
     )
@@ -52,18 +59,5 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 })
-
-let dummyData = [
-    new Trip('Go to school', 'Sentosa Cove', "location", 'NTU', "location"),
-    new Trip('Go home', 'NTU', "location", 'Sentosa Cove', "location"),
-    new Trip('Go to Orchard', 'Sentosa Cove', "location", 'Orchard', "location"),
-    new Trip('Go back to hall', 'NTU', "location", 'Hall 5', "location"),
-    new Trip('Go back to hall', 'NTU', "location", 'Hall 5', "location"),
-    new Trip('Go back to hall', 'NTU', "location", 'Hall 5', "location"),
-    new Trip('Go back to hall', 'NTU', "location", 'Hall 5', "location"),
-    new Trip('Go back to hall', 'NTU', "location", 'Hall 5', "location"),
-    new Trip('Go back to hall', 'NTU', "location", 'Hall 5', "location"),
-    new Trip('Go back to hall', 'NTU', "location", 'Hall 5', "location")
-];
 
 export default SavedTrips;

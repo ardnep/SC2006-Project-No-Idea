@@ -8,7 +8,7 @@
 */
 
 export class Trip {
-    constructor(ID, name, srcName, srcLat, srcLong, destName, destLat, destLong) {
+    constructor(ID, name, srcName, srcLat, srcLong, destName, destLat, destLong, executedInstances) {
         this.ID = ID;
         this.name = name;
         this.srcName = srcName;
@@ -17,6 +17,7 @@ export class Trip {
         this.destName = destName;
         this.destLat = destLat;
         this.destLong = destLong;
+        this.executedInstances = executedInstances;
     }
 };
 

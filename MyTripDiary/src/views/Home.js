@@ -11,7 +11,8 @@ import {
   useTheme,
 } from "react-native-rapi-ui";
 
-import { updateData, addData, getDataByCollection, getAllSavedTrips } from "../controllers/DataController";
+import { updateData, addData, getDataByCollection, getDataWithinSubCollection, fetchAllTrips } from "../controllers/DataController";
+import { getAllSavedTrips } from "../controllers/SavedTripsController";
 import { getCurrentUserId } from "../controllers/FirebaseController";
 import { populateDB } from "../helpers/DatabaseFeeder";
 
@@ -50,10 +51,10 @@ export default function ({ navigation }) {
               <Button
                 text="Trip 1"
                 onPress={
-                  // () => { updateData("Users", getCurrentUserId(), { name: "Mane Foe" }) }}
-                  // () => { getDataByCollection("Users") }}
-                  // () => { populateDB() }}
-                  () => { getAllSavedTrips() }}
+                  () => {
+                    // console.log(getAllSavedTrips());
+                  }}
+
                 style={{
                   marginTop: 10,
                 }}

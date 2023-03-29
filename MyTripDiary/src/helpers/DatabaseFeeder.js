@@ -1,8 +1,26 @@
-import { addData } from "../controllers/DataController";
+import { addData, updateData } from "../controllers/DataController";
 import { getCurrentUserId } from "../controllers/FirebaseController";
 
 import { Trip } from '../models/Trip';
 import { v4 as uuidv4 } from 'uuid';
+import { ExecutedTrip } from "../models/ExecutedTrip";
+import Transport from "../enums/Transport";
+import { getAllSavedTrips } from "../controllers/SavedTripsController";
+import { getDataByDocument } from "../controllers/DataController";
+import { updateDataMore } from "../controllers/DataController";
+
+
+function randomDate(start, end) {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+
+function randomModeOfTransport() {
+    return Math.floor(Math.random() * (4 - 0 + 1)) + 0;
+}
+
+function randomPrice() { return Math.random() * (50 - 2) + 2; }
+
+function randomDuration() { return Math.random() * (120 - 20) + 20; }
 
 export function populateDB() {
     const locations = [
@@ -29,9 +47,39 @@ export function populateDB() {
         trips.push(trip);
     }
 
+    const executedTrips = [];
     trips.forEach((trip) => {
         addData('SavedTrips', trip.ID, Object.fromEntries(Object.entries(trip)));
+        const executedTrip = new ExecutedTrip(randomDate(new Date(2021, 0, 1), new Date()), randomModeOfTransport(), randomPrice(), randomDuration());
+        updateDataMore("SavedTrips", trip.ID, "ExecutedInstances", '0', Object.fromEntries(Object.entries(executedTrip)));
+        executedTrips.push(executedTrip);
     });
+
+    let counter = 0
+    executedTrips.forEach((executedTrip) => {
+        addData('ExecutedTrips', trips[counter].ID + `_${counter}`, Object.fromEntries(Object.entries(executedTrip)));
+    })
+
+    // counter = 0;
+    // // trips.forEach((trip) => {
+    // //     updateData('SavedTrips', trip.ID, { executedInstances: Object.fromEntries(Object.entries(executedTrips[counter])) });
+    // //     counter++;
+    // // })
+    // getAllSavedTrips()
+    //     .then((savedTripsSnapshot) => {
+    //         savedTripsSnapshot.forEach((doc) => {
+    //             updateData("SavedTrips", doc.id, {
+    //                 executedInstances: getDataByDocument("ExecutedTrips", doc.id + "_0")
+    //                     .then((d) => {
+    //                         d.data();
+    //                     })
+    //             })
+    //             counter++;
+    //         })
+    //     })
+    //     .catch((error) => {
+    //         console.log(error);
+    //     });
 }
 
 

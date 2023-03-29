@@ -1,5 +1,7 @@
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
+import { Trip } from '../models/Trip';
+import parseTripsSnapshot, { parseSavedTripsSnapshot } from './SavedTripsController';
 
 const app = firebase.app()
 
@@ -16,34 +18,33 @@ export function updateData(collection, doc, dataToUpdate) {
 }
 
 export function getDataByCollection(collection) {
-    app.firestore().collection(collection).get()
-        .then((querySnapshot) => {
-            // querySnapshot.forEach((doc) => {
-            //     console.log(doc.id, " => ", doc.data());
-            // });
-            return querySnapshot;
-        })
+    return app.firestore().collection(collection).get()
+}
+
+export function getDataByDocument(collection, doc) {
+    return app.firestore().collection(collection).doc(doc).get()
+}
+
+export function getDataWithinSubCollection(collection, doc, subCollection) {
+    return app.firestore().collection(collection).doc(doc).collection(subCollection).get()
+}
+
+export function addDataWithinSubCollection(collection, doc, subCollection, subDoc, dataToAdd) {
+    app.firestore().collection(collection).doc(doc).collection(subCollection).doc(subDoc).set(dataToAdd)
         .catch((error) => {
             console.log(error);
         })
 }
 
-export function getDataByDocument(collection, doc) {
-    app.firestore().collection(collection).doc(doc).get()
-        .then((doc) => {
-            if (doc.exists) {
-                console.log(doc.id, " => ", doc.data());
-            } else {
-                console.log("No such document!");
-            }
-        })
+export function updateDataWithinSubCollection(collection, doc, subCollection, subDoc, dataToUpdate) {
+    app.firestore().collection(collection).doc(doc).collection(subCollection).doc(subDoc).update(dataToUpdate)
         .catch((error) => {
-            console.error("Error getting document: ", error);
-        });
+            console.log(error);
+        })
 }
 
 export function deleteData(collection, doc) {
-    app.firebase().collection(collection).doc(doc).delete()
+    app.firestore().collection(collection).doc(doc).delete()
         .then(() => {
             console.log("Document deleted successfully");
         })
@@ -52,8 +53,10 @@ export function deleteData(collection, doc) {
         });
 }
 
-export function getAllSavedTrips() {
-    getDataByCollection("SavedTrips").forEach((doc) => {
-        console.log(doc.id, " => ", doc.data());
-    });
+export function fetchAllTrips() {
+    getDataByCollection("SavedTrips")
+        .then((savedTripsSnapshot) => {
+            parseSavedTripsSnapshot(savedTripsSnapshot);
+        })
+    return true;
 }
