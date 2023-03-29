@@ -70,10 +70,15 @@ function getSavedTrip(tripToGet) { }
  * @returns {bool} true if successful else false 
  */
 export function renameSavedTrip(tripToRename, newName) {
+    const index = savedTrips.indexOf(tripToRename);
+    if (index > -1) {
+        savedTrips[index].name = newName;
+    }
     updateData("SavedTrips", tripToRename.ID, { name: newName })
 }
 
 export function editExecutedTripPrice(tripToEditPrice, executionNumber, newPrice) {
+    // TODO: UPDATE MAP AND SAVEDTRIPS ARRAY'S EXECUTEDTRIP CLASS
     updateDataWithinSubCollection("SavedTrips", tripToEditPrice.ID, "ExecutedInstances", executionNumber.toString(), { tripPrice: newPrice });
 }
 

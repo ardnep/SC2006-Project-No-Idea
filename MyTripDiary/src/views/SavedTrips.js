@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { FlatList, Pressable, StyleSheet } from "react-native";
 import { Layout, Section, SectionContent, Text, TopNav, useTheme } from "react-native-rapi-ui";
 import { Trip } from "../models/Trip";
-import { convertToTripClass, getAllSavedTrips } from "../controllers/SavedTripsController";
+import { convertToTripClass, getAllExecutedTrips, getAllSavedTrips } from "../controllers/SavedTripsController";
 
 /**
  * Renders a list of saved trips, allowing the user to select and view them.
@@ -15,9 +15,7 @@ import { convertToTripClass, getAllSavedTrips } from "../controllers/SavedTripsC
 function SavedTrips({ navigation }) {
     const { isDarkmode } = useTheme();
 
-    const [savedTrips, setSavedTrips] = React.useState([]);
-    const savedTripsArray = [];
-    console.log(getAllSavedTrips().length)
+    const savedTripsArray = getAllSavedTrips();
 
     const renderSavedTrip = ({ item }) => {
         const trip = item;
@@ -42,7 +40,7 @@ function SavedTrips({ navigation }) {
                 rightAction={() => { navigation.navigate() }}
             />
             <FlatList
-                data={savedTrips}
+                data={savedTripsArray}
                 renderItem={renderSavedTrip}
 
             />

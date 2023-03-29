@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native";
 import { Button, Layout, Section, SectionContent, SectionImage, Text, TopNav, useTheme } from "react-native-rapi-ui";
-import { deleteSavedTrip } from "../controllers/SavedTripsController";
+import { deleteSavedTrip, renameSavedTrip } from "../controllers/SavedTripsController";
 
 /**
  * Displays information about a saved trip and allows the user to interact with it.
@@ -32,7 +32,7 @@ function SavedTripInfo({ route, navigation }) {
                 />
                 <SectionContent style={styles.buttonSection}>
                     <Button text="Delete" status="danger" style={styles.button} onPress={() => { deleteSavedTrip(trip); navigation.goBack() }} />
-                    <Button text="Edit" status="primary" style={styles.button} />
+                    <Button text="Edit" status="primary" style={styles.button} onPress={() => { renameSavedTrip(trip, 'Newest Name'); navigation.goBack(); }} />
                     <Button text="Start" status="primary" style={styles.button} />
                 </SectionContent>
             </Section>

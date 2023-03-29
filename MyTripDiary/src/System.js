@@ -26,7 +26,11 @@ export default () => {
         <NavigationContainer>
             {user == null && <Loading />}
             {user == false && <Auth />}
-            {user == true && <Main /> || fetchAllTrips()}
+            {user == true && (
+                <>
+                    {fetchAllTrips()}
+                    <Main />
+                </>)}
         </NavigationContainer>
     );
 };
