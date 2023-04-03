@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { FlatList, Pressable, StyleSheet } from "react-native";
 import { Layout, Section, SectionContent, Text, TopNav, useTheme } from "react-native-rapi-ui";
@@ -13,14 +13,17 @@ import { convertToTripClass, getAllExecutedTrips, getAllSavedTrips } from "../co
  */
 
 function SavedTrips({ navigation }) {
+    const [savedTripsArray, setSavedTripsArray] = useState(getAllSavedTrips());
     const { isDarkmode } = useTheme();
 
-    const savedTripsArray = getAllSavedTrips();
+    function updateSavedTrips() {
+        setSavedTripsArray([...getAllSavedTrips()]);
+    }
 
     const renderSavedTrip = ({ item }) => {
         const trip = item;
         return (
-            <Pressable onPress={() => { navigation.navigate("SavedTripInfo", { trip }) }}>
+            <Pressable onPress={() => { navigation.navigate("SavedTripInfo", { trip, updateSavedTrips }) }}>
                 <Section style={styles.section}>
                     <Text>{trip.name}</Text>
                     <SectionContent>
@@ -30,6 +33,7 @@ function SavedTrips({ navigation }) {
             </Pressable>
         )
     }
+    
     return (
         <Layout>
             <TopNav
@@ -37,16 +41,16 @@ function SavedTrips({ navigation }) {
                 leftAction={navigation.goBack}
                 middleContent="Saved Trips"
                 rightContent={<Text size="md">Add Trip</Text>}
-                rightAction={() => { navigation.navigate() }}
+                rightAction={() => { navigation.navigate("AddSavedTrip", {updateSavedTrips}) }}
             />
             <FlatList
                 data={savedTripsArray}
                 renderItem={renderSavedTrip}
-
             />
         </Layout>
     )
 }
+
 /**
 * the style for the 'SavedTrip' component
 */
