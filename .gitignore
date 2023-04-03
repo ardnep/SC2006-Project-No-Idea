@@ -12,3 +12,4 @@ MyTripDiary/web-build/
 # macOS
 .DS_Store
 node_modules
+MyTripDiary/.env
