@@ -22,7 +22,7 @@ function AddSavedTrip({ route, navigation }) {
             return;
         }
         const tripID = getCurrentUserId() + "_" + uuidv4();
-        addSavedTrip(new Trip(tripID, name, ...origin, ...destination, 0));
+        addSavedTrip(new Trip(tripID, name, ...origin, ...destination, []));
         updateSavedTrips();
         navigation.goBack();
     }
