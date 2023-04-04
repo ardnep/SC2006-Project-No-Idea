@@ -1,6 +1,61 @@
-import React from 'react';
-import {   TouchableHighlight, SectionList, StyleSheet, StatusBar, View } from 'react-native';
-import { Layout, Text } from 'react-native-rapi-ui';
+import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import {   TouchableHighlight, SectionList, StyleSheet, StatusBar, View, FlatList } from 'react-native';
+import { Layout, Text, TopNav, useTheme } from 'react-native-rapi-ui';
+import { getExecutedTripsGroupedByDate } from '../controllers/HistoryController';
+
+/** Displays TripHistory screen */
+export default function ({ navigation }) {
+    const { isDarkmode } = useTheme();
+    const [executedTrips, setExecutedTrips] = useState(getExecutedTripsGroupedByDate());
+    console.log(getExecutedTripsGroupedByDate());
+    const renderExecutedTrip = ({ item }) => {
+        const trip = item;
+        return (
+            <Pressable onPress={() => { navigation.navigate("SavedTripInfo", { trip, updateSavedTrips }) }}>
+                <Section style={styles.section}>
+                    <Text>{trip.name}</Text>
+                    <SectionContent>
+                        <Text>{trip.srcName} to {trip.destName}</Text>
+                    </SectionContent>
+                </Section>
+            </Pressable>
+        )
+    }
+
+    return (
+		<Layout>
+            <TopNav
+                leftContent={<Ionicons name="chevron-back" color={isDarkmode ? 'white' : 'black'} size={20} />}
+                leftAction={navigation.goBack}
+                middleContent="Trip History"
+            />
+		</Layout>
+	);
+}
+
+
+/** 
+ * OneTrip component. Displays information for each executed trip, and contains
+ * start time, end time, start point, end point, and price. 
+ */
+// sections={[
+//     {title: '28 Feb 2023', data:["Home to The Hive", "The Hive to Home"]},
+//     {title: '27 Feb 2023', data:["Home to NTU Carpark F", "NTU Carpark F to Home"]},
+// ]}
+const OneTrip = props => {
+    return (
+      <View style={styles.itemContainer}>
+        <View style={styles.timeAndPriceContainer}>
+            <Text>{props.startTime} - {props.endTime}</Text>
+            <Text>${props.price}</Text>
+        </View>
+        <View style={styles.startAndEndPointContainer}>
+            <Text>{props.startPoint} to {props.endPoint}</Text>
+        </View>
+      </View>
+    );
+};
 
 /** Defines styles used in the screen. */
 const styles = StyleSheet.create({
@@ -33,74 +88,3 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
 });
-
-/** 
- * OneTrip component. Displays information for each executed trip, and contains
- * start time, end time, start point, end point, and price. 
- */
-const OneTrip = props => {
-    return (
-      <View style={styles.itemContainer}>
-        <View style={styles.timeAndPriceContainer}>
-            <Text>{props.startTime} - {props.endTime}</Text>
-            <Text>${props.price}</Text>
-        </View>
-        <View style={styles.startAndEndPointContainer}>
-            <Text>{props.startPoint} to {props.endPoint}</Text>
-        </View>
-      </View>
-    );
-};
-// sections={[
-//     {title: '28 Feb 2023', data:["Home to The Hive", "The Hive to Home"]},
-//     {title: '27 Feb 2023', data:["Home to NTU Carpark F", "NTU Carpark F to Home"]},
-// ]}
-
-/** Displays TripHistory screen */
-export default function ({ navigation }) {
-    // Get trip history data from firebase
-    // Dummy data for now
-    let sectionsArray = [];
-    let dataArray = [
-        <OneTrip startTime="4.20pm" endTime="5.20pm" startPoint="Home" endPoint="NTU Carpark F" price="18.80"></OneTrip>, 
-        <OneTrip startTime="8.00pm" endTime="9.02pm" startPoint="NTU Carpark F" endPoint="Home" price="2.40"></OneTrip>
-    ].reverse();
-    let titleDate = "28 Feb 2023";
-    sectionsArray.push({title: titleDate, data: dataArray});
-    
-    dataArray = [
-        <OneTrip startTime="12.20pm" endTime="1.27pm" startPoint="Home" endPoint="The Hive" price="33.00"></OneTrip>, 
-        <OneTrip startTime="9.32pm" endTime="10.24pm" startPoint="The Hive" endPoint="Home" price="1.60"></OneTrip>
-    ].reverse();
-    titleDate = "27 Feb 2023";
-    sectionsArray.push({title: titleDate, data: dataArray});
-
-    dataArray = [
-        <OneTrip startTime="11.25am" endTime="12.27pm" startPoint="Home" endPoint="The Arc" price="2.30"></OneTrip>, 
-        <OneTrip startTime="10.30pm" endTime="11.24pm" startPoint="The Arc" endPoint="Home" price="1.80"></OneTrip>
-    ].reverse();
-    titleDate = "26 Feb 2023";
-    sectionsArray.push({title: titleDate, data: dataArray});
-
-    dataArray = [
-        <OneTrip startTime="12.20pm" endTime="1.27pm" startPoint="Home" endPoint="The Hive" price="1.80"></OneTrip>, 
-        <OneTrip startTime="9.32pm" endTime="10.24pm" startPoint="The Hive" endPoint="Home" price="2.40"></OneTrip>
-    ].reverse();
-    titleDate = "25 Feb 2023";
-    sectionsArray.push({title: titleDate, data: dataArray});
-	
-    let price = 10; 
-    return (
-		<Layout>
-            <SectionList
-                sections={sectionsArray}
-                // TODO Edit below line "{priceKey: price}" section to pass the OneTrip price prop instead of current hardcoded price of $10
-                renderItem={({item}) => <TouchableHighlight onPress={() => navigation.navigate("EditPrice", {priceKey: price})} underlayColor="#baffde" style={styles.item}>{item}</TouchableHighlight>} 
-                renderSectionHeader={({section}) => (
-                    <Text style={styles.sectionHeader}>{section.title}</Text>
-                )}
-                keyExtractor={item => `basicListEntry-${item}`}
-            />
-		</Layout>
-	);
-}
