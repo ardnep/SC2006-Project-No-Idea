@@ -64,7 +64,7 @@ const GooglePlacesInput = ({ placeholder, setLocation }) => {
         <GooglePlacesAutocomplete
             placeholder={placeholder}
             query={{
-                key: MAPS_API_KEY,
+                key: process.env.MAPS_API_KEY,
                 language: 'en',
                 components: 'country:sg'
             }}
