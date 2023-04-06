@@ -44,16 +44,16 @@ export function parseSavedTripsSnapshot(savedTripsSnapshot) {
 export function parseExecutedTripsSnapshot(savedTripID, executedTripsSnapshot) {
     const executedTrips = []
     executedTripsSnapshot.forEach((doc) => {
-        let executedTrip = convertToExecutedTripClass(savedTripID, doc.data());
+        let executedTrip = convertToExecutedTripClass(savedTripID, doc.id, doc.data());
         executedTrips.push(executedTrip);
     });
 
     return executedTrips;
 }
 
-function convertToExecutedTripClass(savedTripID, object) {
+function convertToExecutedTripClass(savedTripID, executionNumber, object) {
     // modeOfTransport = Object.keys(Transport).find(key => Transport[key] === object.modeOfTransport);
-    return new ExecutedTrip(savedTripID, object.timeStamp, object.modeOfTransport, object.tripPrice, object.duration);
+    return new ExecutedTrip(savedTripID, executionNumber, object.timeStamp, object.modeOfTransport, object.tripPrice, object.duration);
 }
 
 function convertToTripClass(object, executedTrips) {
@@ -93,9 +93,10 @@ export function renameSavedTrip(tripToRename, newName) {
     updateData("SavedTrips", tripToRename.ID, { name: newName })
 }
 
-export function editExecutedTripPrice(tripToEditPrice, executionNumber, newPrice) {
-    // TODO: UPDATE MAP AND SAVEDTRIPS ARRAY'S EXECUTEDTRIP CLASS
-    updateDataWithinSubCollection("SavedTrips", tripToEditPrice.ID, "ExecutedInstances", executionNumber.toString(), { tripPrice: newPrice });
+export function editExecutedTripPrice(executedTrip, newPrice) {
+    const tripFound = executedTripsArray.find((trip) => { return executedTrip.tripID === trip.tripID && executedTrip.executionNumber === trip.executionNumber });
+    tripFound.tripPrice = newPrice;
+    updateDataWithinSubCollection("SavedTrips", executedTrip.tripID, "ExecutedInstances", executedTrip.executionNumber.toString(), { tripPrice: newPrice });
 }
 
 /**
