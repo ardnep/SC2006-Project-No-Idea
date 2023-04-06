@@ -4,8 +4,7 @@ import { TopNav } from 'react-native-rapi-ui';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from 'react-native-rapi-ui';
 
-export default function AccountSettings({ route, navigation }) {
-    const { currentUser } = route.params;
+export default function PersonalisationSettings({ navigation }) {
     const { isDarkmode, setTheme } = useTheme();
 
     return (
