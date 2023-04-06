@@ -6,6 +6,7 @@ import TripInfo from "../views/TripInfo";
 import TripHistory from "../views/TripHistory";
 import EditPrice from "../views/EditPrice";
 import Home from "../views/Home";
+import ExecutedTripInfo from "../views/ExecutedTripInfo";
 
 const HomeStack = createNativeStackNavigator();
 
@@ -21,6 +22,7 @@ const HomeNavigator = () => {
             <HomeStack.Screen name="SavedTripInfo" component={SavedTripInfo} />
             <HomeStack.Screen name="TripInfo" component={TripInfo} />
             <HomeStack.Screen name="TripHistory" component={TripHistory} />
+            <HomeStack.Screen name="ExecutedTripInfo" component={ExecutedTripInfo} />
             <HomeStack.Screen name="EditPrice" component={EditPrice} />
         </HomeStack.Navigator>
     )
