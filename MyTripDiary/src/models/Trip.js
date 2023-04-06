@@ -8,7 +8,9 @@
 */
 
 export class Trip {
-    constructor(ID, name, srcName, srcLat, srcLong, destName, destLat, destLong, executedInstances) {
+    constructor(deleted, pinned, ID, name, srcName, srcLat, srcLong, destName, destLat, destLong, executedInstances) {
+        this.deleted = deleted;
+        this.pinned = pinned;
         this.ID = ID;
         this.name = name;
         this.srcName = srcName;

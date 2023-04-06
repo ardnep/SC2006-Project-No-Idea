@@ -1,4 +1,4 @@
-import { addData, updateData } from "../controllers/DataController";
+import { addData, addDataWithinSubCollection, updateData } from "../controllers/DataController";
 import { getCurrentUserId } from "../controllers/FirebaseController";
 
 import { Trip } from '../models/Trip';
@@ -47,11 +47,13 @@ export function populateDB() {
         trips.push(trip);
     }
 
+    console.log(trips[0]);
+
     const executedTrips = [];
     trips.forEach((trip) => {
         addData('SavedTrips', trip.ID, Object.fromEntries(Object.entries(trip)));
         const executedTrip = new ExecutedTrip(randomDate(new Date(2021, 0, 1), new Date()), randomModeOfTransport(), randomPrice(), randomDuration());
-        updateDataMore("SavedTrips", trip.ID, "ExecutedInstances", '0', Object.fromEntries(Object.entries(executedTrip)));
+        addDataWithinSubCollection("SavedTrips", trip.ID, "ExecutedInstances", '0', Object.fromEntries(Object.entries(executedTrip)));
         executedTrips.push(executedTrip);
     });
 

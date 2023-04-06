@@ -12,9 +12,10 @@ import {
 } from "react-native-rapi-ui";
 
 import { updateData, addData, getDataByCollection, getDataWithinSubCollection, fetchAllTrips } from "../controllers/DataController";
-import { getAllSavedTrips } from "../controllers/SavedTripsController";
+import { getAllExecutedTrips, getAllSavedTrips } from "../controllers/SavedTripsController";
 import { getCurrentUserId } from "../controllers/FirebaseController";
 import { populateDB } from "../helpers/DatabaseFeeder";
+import { starTrips } from "../helpers/TripStarrer";
 
 /**
  * Represents a screen component for displaying saved trips and navigating to trip-related screens.
@@ -51,7 +52,8 @@ export default function ({ navigation }) {
               text="Trip 1"
               onPress={
                 () => {
-                  // console.log(getAllSavedTrips());
+                  // starTrips();
+                  // console.log(getAllExecutedTrips());
                 }}
               style={{
                 marginTop: 10,

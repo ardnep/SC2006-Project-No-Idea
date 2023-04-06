@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { FlatList, Pressable, StyleSheet } from "react-native";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
+import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { Layout, Section, SectionContent, Text, TopNav, useTheme } from "react-native-rapi-ui";
-import { getAllSavedTrips } from "../controllers/SavedTripsController";
+import { getAllActiveSavedTrips, starTrip } from "../controllers/SavedTripsController";
 
 /**
  * Renders a list of saved trips, allowing the user to select and view them.
@@ -12,19 +12,31 @@ import { getAllSavedTrips } from "../controllers/SavedTripsController";
  */
 
 function SavedTrips({ navigation }) {
-    const [savedTripsArray, setSavedTripsArray] = useState(getAllSavedTrips());
+    const [savedTripsArray, setSavedTripsArray] = useState(getAllActiveSavedTrips());
     const { isDarkmode } = useTheme();
 
     function updateSavedTrips() {
-        setSavedTripsArray([...getAllSavedTrips()]);
+        setSavedTripsArray([...getAllActiveSavedTrips()]);
     }
 
     const renderSavedTrip = ({ item }) => {
         const trip = item;
+        const togglePin = (trip) => {
+            starTrip(trip);
+            updateSavedTrips();
+        };
         return (
-            <Pressable onPress={() => { navigation.navigate("SavedTripInfo", { trip, updateSavedTrips }) }}>
+            <Pressable onLongPress={() => togglePin(trip)} onPress={() => { navigation.navigate("SavedTripInfo", { trip, updateSavedTrips }) }}>
                 <Section style={styles.section}>
-                    <Text>{trip.name}</Text>
+                    <View style={styles.tripTitle}>
+                        {trip.pinned ? <AntDesign
+                            name={"pushpin"}
+                            color={"orange"}
+                            size={20}
+                            onPress={() => { togglePin(trip); }}
+                        /> : null}
+                        <Text>{trip.name}</Text>
+                    </View>
                     <SectionContent>
                         <Text>{trip.srcName} to {trip.destName}</Text>
                     </SectionContent>
@@ -32,7 +44,7 @@ function SavedTrips({ navigation }) {
             </Pressable>
         )
     }
-    
+
     return (
         <Layout>
             <TopNav
@@ -40,10 +52,10 @@ function SavedTrips({ navigation }) {
                 leftAction={navigation.goBack}
                 middleContent="Saved Trips"
                 rightContent={<Text size="md">Add Trip</Text>}
-                rightAction={() => { navigation.navigate("AddSavedTrip", {updateSavedTrips}) }}
+                rightAction={() => { navigation.navigate("AddSavedTrip", { updateSavedTrips }) }}
             />
             <FlatList
-                data={savedTripsArray}
+                data={savedTripsArray.sort((a, b) => (b.pinned ? 1 : -1))}
                 renderItem={renderSavedTrip}
             />
         </Layout>
@@ -57,8 +69,15 @@ const styles = StyleSheet.create({
     section: {
         elevation: 16,
         margin: 8,
-        alignItems: 'center'
-    }
+        alignItems: 'center',
+        flexDirection: 'column'
+    },
+
+    tripTitle: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
 })
 
 export default SavedTrips;

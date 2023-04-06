@@ -1,6 +1,7 @@
 import firebase from "firebase/compat/app";
 import 'firebase/compat/auth';
 import "firebase/compat/firestore";
+import { v4 as uuidv4 } from 'uuid';
 
 export const firebaseApp = firebase.initializeApp({
     apiKey: "AIzaSyBEObzGMQ5oBnM7QTDPMx5S53YZVWkT2CI",
@@ -22,6 +23,10 @@ export function getCurrentUserId() {
     } else {
         return null;
     }
+}
+
+export function generateTripID() {
+    return getCurrentUserId() + "_" + uuidv4();
 }
 
 /**
