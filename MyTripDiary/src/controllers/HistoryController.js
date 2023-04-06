@@ -9,27 +9,14 @@ export function getAllExecutedTripsList() {
     return [...executedTripsMap.values()].flat();
 }
 
-function getDate(timestamp) {
-    let date = new Date(1970, 0, 1);
-    date.setSeconds(timestamp);
-    return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-}
-
 /**
  * Get sorted list of executed trips
  * @returns {Array} all executed trips sorted
  */
-export function getExecutedTripsGroupedByDate() { 
+export function getExecutedTripsSortedByDate() { 
     let executedTrips = getAllExecutedTripsList();
-    const groupedTrips = executedTrips.reduce((acc, curr) => {
-        const date = getDate(curr.timeStamp.seconds);
-        if (!acc[date]) {
-          acc[date] = [];
-        }
-        acc[date].push(curr);
-        return acc;
-    }, {});
-    return groupedTrips;
+    executedTrips.sort((a, b) => a.timeStamp.seconds - b.timeStamp.seconds);
+    return executedTrips;
 }
 
 /**
