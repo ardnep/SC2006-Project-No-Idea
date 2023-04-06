@@ -47,7 +47,7 @@ function convertToExecutedTripClass(object) {
 }
 
 function convertToTripClass(object, executedTrips) {
-    return new Trip(object.ID, object.name, object.srcName, object.srcLat, object.srcLong, object.destName, object.destLat, object.destLong, executedTrips);
+    return new Trip(object.pinned, object.ID, object.name, object.srcName, object.srcLat, object.srcLong, object.destName, object.destLat, object.destLong, executedTrips);
 }
 
 /**
@@ -55,14 +55,20 @@ function convertToTripClass(object, executedTrips) {
  * @param {import('../models/Trip').Trip} tripToStar 
  * @returns {bool} true if successful else false
  */
-function starTrip(tripToStar) { }
+export function starTrip(tripToStar) {
+    const tripFound = savedTrips.find((trip) => { return trip.ID === tripToStar.ID });
+    tripFound.pinned = !tripFound.pinned;
+    updateData("SavedTrips", tripFound.ID, { pinned: tripFound.pinned });
+}
 
 /**
  * Get a trip entity class from its ID
  * @param {string} tripToGet 
  * @returns {import('../models/Trip').Trip} trip 
  */
-function getSavedTrip(tripToGet) { }
+export function getSavedTripByID(savedTripID) {
+    return savedTrips.find((trip) => { return trip.ID === savedTripID });
+}
 
 /**
  * Rename a trip

@@ -6,8 +6,7 @@ import React, { useState } from "react";
 import { addSavedTrip } from "../controllers/SavedTripsController";
 import { Trip } from "../models/Trip";
 import { MAPS_API_KEY } from "@env";
-import { v4 as uuidv4 } from 'uuid';
-import { getCurrentUserId } from "../controllers/FirebaseController";
+import { generateTripID } from "../controllers/FirebaseController";
 
 function AddSavedTrip({ route, navigation }) {
     const [name, setName] = React.useState('');
@@ -21,12 +20,11 @@ function AddSavedTrip({ route, navigation }) {
             Alert.alert('Error', 'Please fill in the fields');
             return;
         }
-        const tripID = getCurrentUserId() + "_" + uuidv4();
-        addSavedTrip(new Trip(tripID, name, ...origin, ...destination, 0));
+        addSavedTrip(new Trip(generateTripID(), name, ...origin, ...destination, 0));
         updateSavedTrips();
         navigation.goBack();
     }
-    
+
     return (
         <Layout>
             <TopNav
@@ -41,19 +39,19 @@ function AddSavedTrip({ route, navigation }) {
                 onChangeText={(val) => setName(val)}
             />
             <Text style={styles.text}>Origin Location</Text>
-            <GooglePlacesInput 
-                placeholder='Enter Origin Location' 
+            <GooglePlacesInput
+                placeholder='Enter Origin Location'
                 setLocation={setOrigin}
             />
             <Text style={styles.text}>Destination Location</Text>
-            <GooglePlacesInput 
-                placeholder='Enter Destination Location' 
+            <GooglePlacesInput
+                placeholder='Enter Destination Location'
                 setLocation={setDestination}
             />
             <Section>
-                <Button 
-                    text="Add to Saved Trips" 
-                    status="primary" 
+                <Button
+                    text="Add to Saved Trips"
+                    status="primary"
                     onPress={() => SaveTrip(origin, destination)}
                 />
             </Section>
