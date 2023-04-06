@@ -8,8 +8,13 @@ import { getSavedTripByID } from '../controllers/SavedTripsController';
 /** Displays TripHistory screen */
 export default function ({ navigation }) {
     const { isDarkmode } = useTheme();
-    const [executedTrips, setExecutedTrips] = useState(getExecutedTripsSortedByDate());
-    let groupedTrips = groupExecutedTripsByDate(executedTrips);
+    let executedTrips = getExecutedTripsSortedByDate();
+    const [groupedTrips, setGroupedTrips] = useState(groupExecutedTripsByDate(executedTrips));
+
+    function updateGroupedTrips() {
+        executedTrips = [...getExecutedTripsSortedByDate()];
+        setGroupedTrips(groupExecutedTripsByDate(executedTrips));
+    }
 
     const renderSectionHeader = ({ section }) => {
         return (
@@ -25,7 +30,7 @@ export default function ({ navigation }) {
         const endTime = getTime(timestamp + item.duration*60);
         const trip = getSavedTripByID(item.tripID);
         return (
-            <Pressable onPress={() => { navigation.navigate() }} style={styles.itemContainer}>
+            <Pressable onPress={() => { navigation.navigate("ExecutedTripInfo", {item, trip, updateGroupedTrips}) }} style={styles.itemContainer}>
                 <Section style={styles.timeAndPriceContainer}>
                     <Text>{startTime} - {endTime}</Text>
                     <Text>${item.tripPrice.toFixed(2)}</Text>
@@ -80,7 +85,7 @@ function getDate(timestamp) {
     return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
 }
 
-function getTime(timestamp) {
+export function getTime(timestamp) {
     const date = getDateObject(timestamp);
     let minutes = date.getMinutes();
     if (minutes < 10)
@@ -88,34 +93,8 @@ function getTime(timestamp) {
     return date.getHours() + ":" + minutes;
 }
 
-/** 
- * OneTrip component. Displays information for each executed trip, and contains
- * start time, end time, start point, end point, and price. 
- */
-// sections={[
-//     {title: '28 Feb 2023', data:["Home to The Hive", "The Hive to Home"]},
-//     {title: '27 Feb 2023', data:["Home to NTU Carpark F", "NTU Carpark F to Home"]},
-// ]}
-const OneTrip = props => {
-    return (
-        <View style={styles.itemContainer}>
-            <View style={styles.timeAndPriceContainer}>
-                <Text>{props.startTime} - {props.endTime}</Text>
-                <Text>${props.price}</Text>
-            </View>
-            <View style={styles.startAndEndPointContainer}>
-                <Text>{props.startPoint} to {props.endPoint}</Text>
-            </View>
-        </View>
-    );
-};
-
 /** Defines styles used in the screen. */
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        marginTop: StatusBar.currentHeight || 0,
-    },
     sectionHeaderContainer: {
         paddingLeft: 16,
         paddingVertical: 4,
@@ -131,8 +110,8 @@ const styles = StyleSheet.create({
     },
     timeAndPriceContainer: {
         flex: 1,
-        justifyContent: 'space-between',
         flexDirection: 'row',
+        justifyContent: 'flex-end'
     },
     startAndEndPointContainer: {
         flex: 1,
