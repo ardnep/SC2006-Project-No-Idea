@@ -20,7 +20,7 @@ function AddSavedTrip({ route, navigation }) {
             Alert.alert('Error', 'Please fill in the fields');
             return;
         }
-        addSavedTrip(new Trip(generateTripID(), name, ...origin, ...destination, 0));
+        addSavedTrip(new Trip(generateTripID(), name, ...origin, ...destination, []));
         updateSavedTrips();
         navigation.goBack();
     }

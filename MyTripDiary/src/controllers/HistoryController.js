@@ -1,14 +1,23 @@
+import { getAllExecutedTrips } from "./SavedTripsController";
+
 /**
  * Get all the executed trips
  * @returns {Array} all executed trips for this user 
  */
-function getAllExecutedTrips() { }
+export function getAllExecutedTripsList() { 
+    const executedTripsMap = getAllExecutedTrips();
+    return [...executedTripsMap.values()].flat();
+}
 
 /**
  * Get sorted list of executed trips
  * @returns {Array} all executed trips sorted
  */
-function getSortedList() { }
+export function getExecutedTripsSortedByDate() { 
+    let executedTrips = getAllExecutedTripsList();
+    executedTrips.sort((a, b) => a.timeStamp.seconds - b.timeStamp.seconds);
+    return executedTrips;
+}
 
 /**
  * Get filtered list of executed trips based on filters
