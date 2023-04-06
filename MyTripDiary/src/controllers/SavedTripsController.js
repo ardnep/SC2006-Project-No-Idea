@@ -1,6 +1,6 @@
 import { ExecutedTrip } from '../models/ExecutedTrip';
 import { Trip } from '../models/Trip';
-import { addData, getDataWithinSubCollection, updateData, updateDataWithinSubCollection } from './DataController'
+import { addData, addDataWithinSubCollection, getDataWithinSubCollection, updateData, updateDataWithinSubCollection } from './DataController'
 
 let savedTrips = [];
 const executedTripsArray = [];
@@ -120,4 +120,16 @@ export function addSavedTrip(tripToAdd) {
     let tripInDB = { ...tripToAdd };
     delete tripInDB.executedInstances;
     addData('SavedTrips', tripInDB.ID, Object.fromEntries(Object.entries(tripInDB)));
+}
+
+export function addExecutedTrip(executedTripToAdd) {
+    let tripInDB = { ...executedTripToAdd };
+    delete tripInDB.tripID;
+    delete tripInDB.executionNumber;
+    addDataWithinSubCollection("SavedTrips", tripToExecute.tripID, "ExecutedInstances", Object.fromEntries(Object.entries(tripInDB)));
+
+    executedTripsArray.push(executedTripToAdd);
+
+    const trip = getSavedTripByID(executedTripToAdd.tripID);
+    trip.executedInstances.push(executedTripToAdd);
 }
