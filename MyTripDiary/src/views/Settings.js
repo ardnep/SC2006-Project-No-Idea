@@ -15,7 +15,7 @@ export default function Settings({ navigation }) {
       <TouchableOpacity onPress={() => { navigation.navigate("AccountSettings", { currentUser }) }}>
         <Text style={styles.optiontext}>Account</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => { navigation.navigate("PersonalizationSettings", { currentUser }) }}>
+      <TouchableOpacity onPress={() => { navigation.navigate("PersonalizationSettings") }}>
         <Text style={styles.optiontext}>Personalisation</Text>
       </TouchableOpacity>
       <TouchableOpacity>
