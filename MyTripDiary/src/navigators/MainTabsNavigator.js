@@ -59,7 +59,7 @@ const MainTabs = () => {
                     ),
                 }}
             />
-            <Tabs.Screen
+            {/* <Tabs.Screen
                 name="AddTripNavigator"
                 component={AddTripNavigator}
                 options={{
@@ -70,7 +70,7 @@ const MainTabs = () => {
                         <TabBarIcon focused={focused} icon={"add"} />
                     ),
                 }}
-            />
+            /> */}
             <Tabs.Screen
                 name="AnalyticsNavigator"
                 component={AnalyticsNavigator}
