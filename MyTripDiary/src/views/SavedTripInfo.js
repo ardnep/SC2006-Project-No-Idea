@@ -100,7 +100,7 @@ const confirmDelete = (trip, navigation, updateSavedTrips) => {
     );
 }
 
-const getIntitialRegion = (origin, destination) => {
+export const getIntitialRegion = (origin, destination) => {
     let minLat = Math.min(origin.latitude, destination.latitude);
     let maxLat = Math.max(origin.latitude, destination.latitude);
     let minLng = Math.min(origin.longitude, destination.longitude);
