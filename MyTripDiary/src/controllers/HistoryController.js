@@ -4,9 +4,9 @@ import { getAllExecutedTrips } from "./SavedTripsController";
  * Get sorted list of executed trips
  * @returns {Array} all executed trips sorted
  */
-export function getExecutedTripsSortedByDate() { 
+export function getExecutedTripsSortedByDate() {
     let executedTrips = getAllExecutedTrips();
-    executedTrips.sort((a, b) => a.timeStamp.seconds - b.timeStamp.seconds);
+    executedTrips.sort((a, b) => b.timeStamp.seconds - a.timeStamp.seconds);
     return executedTrips;
 }
 

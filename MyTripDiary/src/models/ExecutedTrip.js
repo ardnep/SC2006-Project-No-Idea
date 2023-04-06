@@ -7,13 +7,14 @@
 */
 
 export class ExecutedTrip {
-    constructor(tripID, executionNumber, timeStamp, modeOfTransport, tripPrice, duration) {
+    constructor(tripID, executionNumber, timeStamp, modeOfTransport, tripPrice, duration, distance) {
         this.tripID = tripID;
         this.executionNumber = executionNumber;
         this.timeStamp = timeStamp;
         this.modeOfTransport = modeOfTransport;
         this.tripPrice = tripPrice;
         this.duration = duration;
+        this.distance = distance;
     }
 };
 

@@ -9,6 +9,7 @@ import { RenderHTML } from 'react-native-render-html';
 import { FontAwesome5 } from "@expo/vector-icons";
 import { getAllTransports, getDefaultTransport } from "../controllers/RouteManager";
 import { duration } from "moment";
+import { executeTrip } from "../controllers/TripExecutor";
 
 /**
  * Displays information about a saved trip and allows the user to interact with it.
@@ -124,7 +125,7 @@ function SavedTripInfo({ route, navigation }) {
                 <SectionContent style={styles.buttonSection}>
                     <Button text="Delete" status="danger" style={styles.button} onPress={() => { confirmDelete(trip, navigation, updateSavedTrips) }} />
                     <Button text="Edit" status="primary" style={styles.button} onPress={() => { setEditModalVisible(true) }} />
-                    <Button text="Start" status="primary" style={styles.button} />
+                    <Button text="Start" status="primary" style={styles.button} onPress={() => { executeTrip(trip, new Date(), transport.name, executionInfo[2], executionInfo[0], executionInfo[1]) }} />
                 </SectionContent>
                 <SectionContent style={styles.buttonSection}>
                     {/* <Button text={<FontAwesome5 name={"car"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("DRIVING") }} />

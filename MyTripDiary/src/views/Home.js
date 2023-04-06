@@ -42,7 +42,7 @@ export default function ({ navigation }) {
             <Text fontWeight="bold" style={{ textAlign: "center" }}>
               Saved Trips
             </Text>
-            <Button
+            {/* <Button
               style={{ marginTop: 10 }}
               text="Google Maps"
               status="info"
@@ -67,7 +67,7 @@ export default function ({ navigation }) {
               style={{
                 marginTop: 10,
               }}
-            />
+            /> */}
             <Button
               text="Saved Trips"
               onPress={() => {

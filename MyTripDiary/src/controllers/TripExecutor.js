@@ -6,7 +6,7 @@ import { addExecutedTrip } from './SavedTripsController';
  * @param {import('../models/Trip').Trip} tripToExecute 
  * @returns {bool} true if successful else false
  */
-export function executeTrip(tripToExecute, timeStamp, modeOfTransport, tripPrice, duration) {
-    const executedTrip = new ExecutedTrip(tripToExecute.ID, tripToExecute.executedInstances.length, timeStamp, modeOfTransport, tripPrice, duration);
+export function executeTrip(tripToExecute, timeStamp, modeOfTransport, tripPrice, duration, distance) {
+    const executedTrip = new ExecutedTrip(tripToExecute.ID, tripToExecute.executedInstances.length.toString(), timeStamp, modeOfTransport, tripPrice, duration, distance);
     addExecutedTrip(executedTrip);
 }

@@ -4,6 +4,7 @@ import { SectionList, StyleSheet, StatusBar, View, Pressable } from 'react-nativ
 import { Layout, Section, SectionContent, Text, TopNav, useTheme } from 'react-native-rapi-ui';
 import { getExecutedTripsSortedByDate } from '../controllers/HistoryController';
 import { getSavedTripByID } from '../controllers/SavedTripsController';
+import moment from 'moment-timezone';
 
 /** Displays TripHistory screen */
 export default function ({ navigation }) {
@@ -27,10 +28,10 @@ export default function ({ navigation }) {
     const renderTrip = ({ item }) => {
         const timestamp = item.timeStamp.seconds;
         const startTime = getTime(timestamp);
-        const endTime = getTime(timestamp + item.duration*60);
+        const endTime = getTime(timestamp + item.duration * 60);
         const trip = getSavedTripByID(item.tripID);
         return (
-            <Pressable onPress={() => { navigation.navigate("ExecutedTripInfo", {item, trip, updateGroupedTrips}) }} style={styles.itemContainer}>
+            <Pressable onPress={() => { navigation.navigate("ExecutedTripInfo", { item, trip, updateGroupedTrips }) }} style={styles.itemContainer}>
                 <Section style={styles.timeAndPriceContainer}>
                     <Text>{startTime} - {endTime}</Text>
                     <Text>${item.tripPrice.toFixed(2)}</Text>
@@ -74,23 +75,12 @@ function groupExecutedTripsByDate(executedTrips) {
     return sections;
 }
 
-function getDateObject(timestamp) {
-    let date = new Date(1970, 0, 1);
-    date.setSeconds(timestamp);
-    return date;
-}
-
 function getDate(timestamp) {
-    const date = getDateObject(timestamp);
-    return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+    return moment.unix(timestamp).tz("Asia/Singapore").format("DD/MM/YYYY");
 }
 
 export function getTime(timestamp) {
-    const date = getDateObject(timestamp);
-    let minutes = date.getMinutes();
-    if (minutes < 10)
-        minutes = "0" + minutes;
-    return date.getHours() + ":" + minutes;
+    return moment.unix(timestamp).tz("Asia/Singapore").format("hh:mm");
 }
 
 /** Defines styles used in the screen. */
@@ -106,7 +96,7 @@ const styles = StyleSheet.create({
     },
     itemContainer: {
         elevation: 16,
-        margin: 8  
+        margin: 8
     },
     timeAndPriceContainer: {
         flex: 1,

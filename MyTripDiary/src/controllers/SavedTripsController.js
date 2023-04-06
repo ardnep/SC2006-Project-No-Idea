@@ -52,8 +52,7 @@ export function parseExecutedTripsSnapshot(savedTripID, executedTripsSnapshot) {
 }
 
 function convertToExecutedTripClass(savedTripID, executionNumber, object) {
-    // modeOfTransport = Object.keys(Transport).find(key => Transport[key] === object.modeOfTransport);
-    return new ExecutedTrip(savedTripID, executionNumber, object.timeStamp, object.modeOfTransport, object.tripPrice, object.duration);
+    return new ExecutedTrip(savedTripID, executionNumber, object.timeStamp, object.modeOfTransport, object.tripPrice, object.duration, object.distance);
 }
 
 function convertToTripClass(object, executedTrips) {
@@ -126,7 +125,9 @@ export function addExecutedTrip(executedTripToAdd) {
     let tripInDB = { ...executedTripToAdd };
     delete tripInDB.tripID;
     delete tripInDB.executionNumber;
-    addDataWithinSubCollection("SavedTrips", tripToExecute.tripID, "ExecutedInstances", Object.fromEntries(Object.entries(tripInDB)));
+    addDataWithinSubCollection("SavedTrips", executedTripToAdd.tripID, "ExecutedInstances", executedTripToAdd.executionNumber, Object.fromEntries(Object.entries(tripInDB)));
+
+    executedTripToAdd.timeStamp = { seconds: Math.round(executedTripToAdd.timeStamp.getTime() / 1000) };
 
     executedTripsArray.push(executedTripToAdd);
 
