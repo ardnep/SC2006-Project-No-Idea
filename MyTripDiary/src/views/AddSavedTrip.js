@@ -5,7 +5,6 @@ import { Alert, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { addSavedTrip } from "../controllers/SavedTripsController";
 import { Trip } from "../models/Trip";
-import { MAPS_API_KEY } from "@env";
 import { v4 as uuidv4 } from 'uuid';
 import { getCurrentUserId } from "../controllers/FirebaseController";
 
@@ -66,7 +65,7 @@ const GooglePlacesInput = ({ placeholder, setLocation }) => {
         <GooglePlacesAutocomplete
             placeholder={placeholder}
             query={{
-                key: MAPS_API_KEY,
+                key: process.env.MAPS_API_KEY,
                 language: 'en',
                 components: 'country:sg'
             }}
