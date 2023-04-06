@@ -3,9 +3,10 @@ import { StyleSheet, Text, SafeAreaView, TouchableOpacity, Image } from 'react-n
 import { TopNav } from 'react-native-rapi-ui';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from 'react-native-rapi-ui';
+import { firebaseAuth } from '../controllers/FirebaseController';
 
 export default function AccountSettings({ route, navigation }) {
-    const { currentUser } = route.params;
+    const currentUser = firebaseAuth.currentUser;
     const { isDarkmode } = useTheme();
 
     const [email, setEmail] = React.useState(currentUser.email);
@@ -25,7 +26,7 @@ export default function AccountSettings({ route, navigation }) {
             <Text style={styles.text}>Email: {email}</Text>
             <Text style={styles.text}>Display Name: {displayName || 'N/A'}</Text>
             <Text style={styles.text}>Phone Number: {phoneNumber || 'N/A'}</Text>
-            <TouchableOpacity style={styles.option} onPress={() => { }}>
+            <TouchableOpacity style={styles.option} onPress={() => { firebaseAuth.signOut() }}>
                 <Text style={styles.optionText}>Logout</Text>
             </TouchableOpacity>
             <Text style={styles.version}>Version 1.0</Text>
