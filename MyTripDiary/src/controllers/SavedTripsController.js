@@ -1,20 +1,30 @@
 import { ExecutedTrip } from '../models/ExecutedTrip';
 import { Trip } from '../models/Trip';
-import { addData, deleteData, getDataWithinSubCollection, updateData, updateDataWithinSubCollection } from './DataController'
+import { addData, getDataWithinSubCollection, updateData, updateDataWithinSubCollection } from './DataController'
 
 let savedTrips = [];
-const executedTripsMap = new Map();
+const executedTripsArray = [];
 
 /**
  * Get all the saved trips for this user
  * @returns {Array} array of all saved trips for this user
  */
+export function getAllActiveSavedTrips() {
+    const activeSavedTrips = []
+    savedTrips.forEach((savedTrip) => {
+        if (!savedTrip.deleted) {
+            activeSavedTrips.push(savedTrip);
+        }
+    })
+    return activeSavedTrips;
+}
+
 export function getAllSavedTrips() {
     return savedTrips;
 }
 
 export function getAllExecutedTrips() {
-    return executedTripsMap;
+    return executedTripsArray;
 }
 
 export function parseSavedTripsSnapshot(savedTripsSnapshot) {
@@ -22,32 +32,32 @@ export function parseSavedTripsSnapshot(savedTripsSnapshot) {
     savedTripsSnapshot.forEach((doc) => {
         getDataWithinSubCollection("SavedTrips", doc.id, "ExecutedInstances")
             .then((executedTripsSnapshot) => {
-                let executedTrips = parseExecutedTripsSnapshot(executedTripsSnapshot);
+                let executedTrips = parseExecutedTripsSnapshot(doc.id, executedTripsSnapshot);
                 let trip = convertToTripClass(doc.data(), executedTrips);
                 savedTrips.push(trip);
-                executedTripsMap.set(trip.ID, executedTrips);
+                executedTrips.forEach((executedTrip) => { executedTripsArray.push(executedTrip) });
             }
             );
     });
 }
 
-export function parseExecutedTripsSnapshot(executedTripsSnapshot) {
+export function parseExecutedTripsSnapshot(savedTripID, executedTripsSnapshot) {
     const executedTrips = []
     executedTripsSnapshot.forEach((doc) => {
-        let executedTrip = convertToExecutedTripClass(doc.data());
+        let executedTrip = convertToExecutedTripClass(savedTripID, doc.data());
         executedTrips.push(executedTrip);
     });
 
     return executedTrips;
 }
 
-function convertToExecutedTripClass(object) {
+function convertToExecutedTripClass(savedTripID, object) {
     // modeOfTransport = Object.keys(Transport).find(key => Transport[key] === object.modeOfTransport);
-    return new ExecutedTrip(object.timeStamp, object.modeOfTransport, object.tripPrice, object.duration);
+    return new ExecutedTrip(savedTripID, object.timeStamp, object.modeOfTransport, object.tripPrice, object.duration);
 }
 
 function convertToTripClass(object, executedTrips) {
-    return new Trip(object.pinned, object.ID, object.name, object.srcName, object.srcLat, object.srcLong, object.destName, object.destLat, object.destLong, executedTrips);
+    return new Trip(object.deleted, object.pinned, object.ID, object.name, object.srcName, object.srcLat, object.srcLong, object.destName, object.destLat, object.destLong, executedTrips);
 }
 
 /**
@@ -94,11 +104,9 @@ export function editExecutedTripPrice(tripToEditPrice, executionNumber, newPrice
  * @returns {bool} true if successful else false  
  */
 export function deleteSavedTrip(tripToDelete) {
-    const index = savedTrips.indexOf(tripToDelete);
-    if (index > -1) {
-        savedTrips.splice(index, 1);
-    }
-    deleteData("SavedTrips", tripToDelete.ID);
+    const tripFound = savedTrips.find((trip) => { return trip.ID === tripToDelete.ID });
+    tripFound.deleted = true;
+    updateData("SavedTrips", tripFound.ID, { deleted: true });
 }
 
 /**

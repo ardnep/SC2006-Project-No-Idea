@@ -12,7 +12,7 @@ import {
 } from "react-native-rapi-ui";
 
 import { updateData, addData, getDataByCollection, getDataWithinSubCollection, fetchAllTrips } from "../controllers/DataController";
-import { getAllSavedTrips } from "../controllers/SavedTripsController";
+import { getAllExecutedTrips, getAllSavedTrips } from "../controllers/SavedTripsController";
 import { getCurrentUserId } from "../controllers/FirebaseController";
 import { populateDB } from "../helpers/DatabaseFeeder";
 import { starTrips } from "../helpers/TripStarrer";
@@ -53,6 +53,7 @@ export default function ({ navigation }) {
               onPress={
                 () => {
                   // starTrips();
+                  // console.log(getAllExecutedTrips());
                 }}
               style={{
                 marginTop: 10,
