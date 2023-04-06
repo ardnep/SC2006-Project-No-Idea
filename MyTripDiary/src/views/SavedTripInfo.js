@@ -38,16 +38,6 @@ function SavedTripInfo({ route, navigation }) {
                 middleContent={name}
             />
             <Section>
-            <Modal visible={modalVisible} animationType="slide">
-                <Text>Enter new name:</Text>
-                    <TextInput
-                        value={name}
-                        onChangeText={handleNameChange}
-                        style={{ borderWidth: 1, borderColor: 'gray', padding: 10 }}
-                    />
-                <Button text="Confirm" onPress={handleSubmit} />
-                <Button text="Cancel" onPress={() => setModalVisible(false)} />
-            </Modal>
                 <SectionContent>
                     <Text>From: {trip.srcName}</Text>
                     <Text>To: {trip.destName}</Text>
@@ -71,8 +61,21 @@ function SavedTripInfo({ route, navigation }) {
                     <Button text="Edit" status="primary" style={styles.button} onPress={() => { setModalVisible(true) }} />
                     <Button text="Start" status="primary" style={styles.button} />
                 </SectionContent>
-            </Section>
-
+                <Modal visible={modalVisible} animationType="slide">
+                    <Section style = {styles.editTripNameContainer}>
+                        <Text style={styles.text}>Enter new name:</Text>
+                        <TextInput
+                            value={name}
+                            onChangeText={handleNameChange}
+                            style={{ borderWidth: 1, borderColor: 'gray', padding: 10 }}
+                        />
+                        <SectionContent style={styles.buttonSection}>
+                            <Button text="Confirm" onPress={handleSubmit} style={styles.button}/>
+                            <Button text="Cancel" onPress={() => setModalVisible(false)} style={styles.button}/>
+                        </SectionContent>
+                    </Section>
+                </Modal>
+            </Section>       
         </Layout >
     )
 }
@@ -123,6 +126,14 @@ const styles = StyleSheet.create({
     },
     button: {
         marginHorizontal: 4
+    },
+    editTripNameContainer: {
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center',
+    },
+    text: {
+        marginBottom: 10
     }
 })
 
