@@ -1,28 +1,21 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, SafeAreaView, Button, TouchableOpacity, Image } from 'react-native';
+import { firebaseAuth } from '../controllers/FirebaseController';
 
 /**
  * Displays the Settings app onto the screen 
  */
-export default function App() {
+export default function Settings({ navigation }) {
+  const currentUser = firebaseAuth.currentUser;
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Settings</Text>
       <Image
         style={styles.icon}
-        source={require('../../assets/profile-user.png')} />
-      <TouchableOpacity>
-        <Text style={styles.optiontextf}>General</Text>
-      </TouchableOpacity>
-      <TouchableOpacity>
+        source={currentUser.photoURL ? currentUser.photoURL : '../../assets/profile-user.png'} />
+      <TouchableOpacity onPress={() => { navigation.navigate("AccountSettings", { currentUser }) }}>
         <Text style={styles.optiontext}>Account</Text>
       </TouchableOpacity>
-      <TouchableOpacity>
-        <Text style={styles.optiontext}>Privacy</Text>
-      </TouchableOpacity>
-      <TouchableOpacity>
-        <Text style={styles.optiontext}>Security</Text>
-      </TouchableOpacity>
-      <TouchableOpacity >
+      <TouchableOpacity onPress={() => { navigation.navigate("PersonalizationSettings", { currentUser }) }}>
         <Text style={styles.optiontext}>Personalisation</Text>
       </TouchableOpacity>
       <TouchableOpacity>
