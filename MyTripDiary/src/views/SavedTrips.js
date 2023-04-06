@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { Layout, Section, SectionContent, Text, TopNav, useTheme } from "react-native-rapi-ui";
-import { getAllSavedTrips, starTrip } from "../controllers/SavedTripsController";
+import { getAllActiveSavedTrips, starTrip } from "../controllers/SavedTripsController";
 
 /**
  * Renders a list of saved trips, allowing the user to select and view them.
@@ -12,11 +12,11 @@ import { getAllSavedTrips, starTrip } from "../controllers/SavedTripsController"
  */
 
 function SavedTrips({ navigation }) {
-    const [savedTripsArray, setSavedTripsArray] = useState(getAllSavedTrips());
+    const [savedTripsArray, setSavedTripsArray] = useState(getAllActiveSavedTrips());
     const { isDarkmode } = useTheme();
 
     function updateSavedTrips() {
-        setSavedTripsArray([...getAllSavedTrips()]);
+        setSavedTripsArray([...getAllActiveSavedTrips()]);
     }
 
     const renderSavedTrip = ({ item }) => {
