@@ -1,9 +1,6 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/firestore';
-import { Trip } from '../models/Trip';
-import parseTripsSnapshot, { parseSavedTripsSnapshot } from './SavedTripsController';
+import { firebaseApp } from './FirebaseController';
 
-const app = firebase.app()
+const app = firebaseApp;
 
 export function addData(collection, doc, dataToAdd) {
     app.firestore().collection(collection).doc(doc).set(dataToAdd).catch((error) => {
@@ -51,12 +48,4 @@ export function deleteData(collection, doc) {
         .catch((error) => {
             console.error("Error deleting document: ", error);
         });
-}
-
-export function fetchAllTrips() {
-    getDataByCollection("SavedTrips")
-        .then((savedTripsSnapshot) => {
-            parseSavedTripsSnapshot(savedTripsSnapshot);
-        })
-    return true;
 }

@@ -29,12 +29,12 @@ function SavedTrips({ navigation }) {
             <Pressable onLongPress={() => togglePin(trip)} onPress={() => { navigation.navigate("SavedTripInfo", { trip, updateSavedTrips }) }}>
                 <Section style={styles.section}>
                     <View style={styles.tripTitle}>
-                        {trip.pinned ? <AntDesign
+                        {trip.pinned ? <><AntDesign
                             name={"pushpin"}
                             color={"orange"}
                             size={20}
                             onPress={() => { togglePin(trip); }}
-                        /> : null}
+                        /><Text>{" "}</Text></> : null}
                         <Text>{trip.name}</Text>
                     </View>
                     <SectionContent>

@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Alert, Modal, StyleSheet, ScrollView, View, FlatList } from "react-native";
+import { Alert, Modal, StyleSheet, ScrollView, View, FlatList, useWindowDimensions } from "react-native";
 import { Button, Layout, Section, SectionContent, Text, TextInput, TopNav, useTheme } from "react-native-rapi-ui";
 import { deleteSavedTrip, renameSavedTrip } from "../controllers/SavedTripsController";
 import MapViewDirections from 'react-native-maps-directions';
@@ -22,6 +22,7 @@ import { executeTrip } from "../controllers/TripExecutor";
 function SavedTripInfo({ route, navigation }) {
     const { isDarkmode } = useTheme();
     const { trip, updateSavedTrips } = route.params;
+    const {width} = useWindowDimensions();
     const [inst, setInst] = useState("");
     const [name, setName] = useState(trip.name);
     const [gmap, setGmap] = useState({});
@@ -31,6 +32,7 @@ function SavedTripInfo({ route, navigation }) {
     const [instructionModalVisible, setInstructionModalVisible] = useState(false);
     const origin = { latitude: trip.srcLat, longitude: trip.srcLong };
     const destination = { latitude: trip.destLat, longitude: trip.destLong };
+    const instructionTextColor = isDarkmode ? "#FFFFFF" : "#000000";
     const handleNameChange = (value) => {
         setName(value);
     };
@@ -75,15 +77,16 @@ function SavedTripInfo({ route, navigation }) {
                     </Section>
                 </Modal>
                 <Modal visible={instructionModalVisible} animationType="slide">
-                    <Section style={styles.instructions}>
+                    <Section style={styles.instructionsContainer}>
                         <ScrollView>
                             <View>
-                                <RenderHTML source={{ html: inst }} />
+                                <RenderHTML source={{ html: inst }} contentWidth={width}
+                                    tagsStyles={{p: {color:instructionTextColor}, div:{color:instructionTextColor}}}/>
                             </View>
                         </ScrollView>
                     </Section>
                     <SectionContent style={styles.buttonSection}>
-                        <Button text="Close" onPress={() => setInstructionModalVisible(false)} />
+                        <Button text="Close" onPress={() => setInstructionModalVisible(false)} style={styles.button}/>
                     </SectionContent>
                 </Modal>
                 <SectionContent>
@@ -110,14 +113,14 @@ function SavedTripInfo({ route, navigation }) {
                         apikey={process.env.MAPS_API_KEY}
                         strokeWidth={5}
                         resetOnChange={true}
-                        strokeColor={transport.name === 'Taxi' ? "#4491ED" : "#6495ED"}
+                        strokeColor={"#6495ED"}
                         onReady={result => {
                             transport.getPrice(result).then(executionPrice => {
                                 setExecutionInfo([result.duration, result.distance, executionPrice]);
                             });
                             let instructions = []
-                            result.legs[0].steps.forEach(x => instructions.push(x.html_instructions));
-                            setInst(instructions.join("<br>"));
+                            result.legs[0].steps.forEach(x => instructions.push("<p>" + x.html_instructions + "</p>"));
+                            setInst(instructions.join(""));
                             setGmap(result);
                         }}
                     />
@@ -202,7 +205,7 @@ const styles = StyleSheet.create({
     text: {
         marginBottom: 10
     },
-    instructions: {
+    instructionsContainer: {
         flex: 1,
         justifyContent: 'left',
         alignItems: 'left',
