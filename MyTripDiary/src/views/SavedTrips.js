@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { FlatList, View, Text, TouchableOpacity } from "react-native";
+
 import { Layout, Section, SectionContent, TopNav, useTheme } from "react-native-rapi-ui";
+
 import { getAllActiveSavedTrips, starTrip } from "../controllers/SavedTripsController";
 
 import { themeColor } from "react-native-rapi-ui";
@@ -41,8 +43,10 @@ function SavedTrips({ navigation }) {
         return (
             // <HoldItem items={MenuItems}>
             <TouchableOpacity onLongPress={() => {
+
                 togglePin(trip);
                 // setActionMenu(true);
+
             }} onPress={() => { navigation.navigate("SavedTripInfo", { trip, updateSavedTrips }) }}>
                 <Section style={styles.section}>
                     <View style={styles.titleContainer}>
