@@ -9,10 +9,8 @@ import Main from "./navigators/MainTabsNavigator";
 
 import { AuthContext } from "./provider/AuthProvider";
 
-
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { fetchAllTrips } from "./controllers/SavedTripsController";
-
 
 /**
  * A function component that renders a NavigationContainer containing 
@@ -22,18 +20,28 @@ import { fetchAllTrips } from "./controllers/SavedTripsController";
 export default () => {
     const auth = useContext(AuthContext);
     const user = auth.user;
+    const [tripsLoaded, setTripsLoaded] = useState(0);
 
     useEffect(() => {
-        fetchAllTrips();
-    }, []);
+        // Use useEffect to fetch trips after component mounts
+        const fetchTrips = async () => {
+            setTripsLoaded(1)
+            await fetchAllTrips();
+            setTripsLoaded(2);
+        };
+    
+        if (user == true && !tripsLoaded) {
+          fetchTrips();
+        }
+      }, [user, tripsLoaded]);
 
     return (
         <NavigationContainer>
-            {user == null && <Loading />}
+            {tripsLoaded == 1 && <Loading />}
             {user == false && <Auth />}
-            {user == true && (
+            {user == true && tripsLoaded == 2 && (
                 <>
-                    <Main />
+                <Main/>
                 </>)}
         </NavigationContainer>
     );

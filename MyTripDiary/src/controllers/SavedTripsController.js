@@ -27,29 +27,24 @@ export function getAllExecutedTrips() {
     return executedTripsArray;
 }
 
-export function fetchAllTrips() {
+export async function fetchAllTrips() {
     savedTrips = [];
-    getDataByCollection("SavedTrips").then((savedTripsSnapshot) => {
-        savedTripsSnapshot.forEach((doc) => {
-            getDataWithinSubCollection("SavedTrips", doc.id, "ExecutedInstances")
-                .then((executedTripsSnapshot) => {
-                    let executedTrips = parseExecutedTripsSnapshot(doc.id, executedTripsSnapshot);
-                    let trip = convertToTripClass(doc.data(), executedTrips);
-                    savedTrips.push(trip);
-                    executedTrips.forEach((executedTrip) => { executedTripsArray.push(executedTrip) });
-                }
-                );
-        });
-    });
+    savedTripsSnapshot = await getDataByCollection("SavedTrips");
+    for (const doc of savedTripsSnapshot.docs){
+        let executedTripsSnapshot = await getDataWithinSubCollection("SavedTrips", doc.id, "ExecutedInstances");
+        let executedTrips = parseExecutedTripsSnapshot(doc.id, executedTripsSnapshot);
+        let trip = convertToTripClass(doc.data(), executedTrips);
+        savedTrips.push(trip);
+        executedTrips.forEach((executedTrip) => { executedTripsArray.push(executedTrip) });
+    }
 }
 
 export function parseExecutedTripsSnapshot(savedTripID, executedTripsSnapshot) {
     const executedTrips = []
-    executedTripsSnapshot.forEach((doc) => {
+    for (const doc of executedTripsSnapshot.docs){
         let executedTrip = convertToExecutedTripClass(savedTripID, doc.id, doc.data());
         executedTrips.push(executedTrip);
-    });
-
+    }
     return executedTrips;
 }
 
