@@ -1,6 +1,6 @@
 import { ExecutedTrip } from '../models/ExecutedTrip';
 import { Trip } from '../models/Trip';
-import { addData, addDataWithinSubCollection, getDataWithinSubCollection, updateData, updateDataWithinSubCollection } from './DataController'
+import { addData, getDataByCollection, addDataWithinSubCollection, getDataWithinSubCollection, updateData, updateDataWithinSubCollection } from './DataController'
 
 let savedTrips = [];
 const executedTripsArray = [];
@@ -27,17 +27,19 @@ export function getAllExecutedTrips() {
     return executedTripsArray;
 }
 
-export function parseSavedTripsSnapshot(savedTripsSnapshot) {
+export function fetchAllTrips() {
     savedTrips = [];
-    savedTripsSnapshot.forEach((doc) => {
-        getDataWithinSubCollection("SavedTrips", doc.id, "ExecutedInstances")
-            .then((executedTripsSnapshot) => {
-                let executedTrips = parseExecutedTripsSnapshot(doc.id, executedTripsSnapshot);
-                let trip = convertToTripClass(doc.data(), executedTrips);
-                savedTrips.push(trip);
-                executedTrips.forEach((executedTrip) => { executedTripsArray.push(executedTrip) });
-            }
-            );
+    getDataByCollection("SavedTrips").then((savedTripsSnapshot) => {
+        savedTripsSnapshot.forEach((doc) => {
+            getDataWithinSubCollection("SavedTrips", doc.id, "ExecutedInstances")
+                .then((executedTripsSnapshot) => {
+                    let executedTrips = parseExecutedTripsSnapshot(doc.id, executedTripsSnapshot);
+                    let trip = convertToTripClass(doc.data(), executedTrips);
+                    savedTrips.push(trip);
+                    executedTrips.forEach((executedTrip) => { executedTripsArray.push(executedTrip) });
+                }
+                );
+        });
     });
 }
 

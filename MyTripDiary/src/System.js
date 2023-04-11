@@ -11,7 +11,7 @@ import { AuthContext } from "./provider/AuthProvider";
 
 
 import React, { useContext } from "react";
-import { fetchAllTrips } from "./controllers/DataController";
+import { fetchAllTrips } from "./controllers/SavedTripsController";
 
 
 /**
