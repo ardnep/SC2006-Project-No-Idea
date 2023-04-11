@@ -10,6 +10,7 @@ import AddTripNavigator from "./AddTripNavigator";
 import SettingsNavigator from "./SettingsNavigator";
 import AnalyticsNavigator from "./AnalyticsNavigator";
 import HomeNavigator from "./HomeNavigator";
+import TripHistoryNavigator from "./TripHistoryNavigator";
 
 /**
  * Creates a navigation stack for the main app.
@@ -80,6 +81,18 @@ const MainTabs = () => {
                     ),
                     tabBarIcon: ({ focused }) => (
                         <TabBarIcon focused={focused} icon={"ios-bar-chart"} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="TripHistoryNavigator"
+                component={TripHistoryNavigator}
+                options={{
+                    tabBarLabel: ({ focused }) => (
+                        <TabBarText focused={focused} title="History" />
+                    ),
+                    tabBarIcon: ({ focused }) => (
+                        <TabBarIcon focused={focused} icon={"md-newspaper"} />
                     ),
                 }}
             />

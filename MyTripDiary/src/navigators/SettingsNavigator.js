@@ -1,7 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Settings from "../views/Settings";
 import AccountSettings from "../views/AccountSettings";
-import PersonalizationSettings from "../views/PersonalizationSettings";
 
 const SettingsStack = createNativeStackNavigator();
 
@@ -16,7 +15,6 @@ const SettingsNavigator = () => {
             }}>
             <SettingsStack.Screen name="Settings" component={Settings} />
             <SettingsStack.Screen name="AccountSettings" component={AccountSettings} />
-            <SettingsStack.Screen name="PersonalizationSettings" component={PersonalizationSettings} />
         </SettingsStack.Navigator>
     )
 };

@@ -9,7 +9,6 @@ import Main from "./navigators/MainTabsNavigator";
 
 import { AuthContext } from "./provider/AuthProvider";
 
-
 import React, { useContext, useEffect, useState } from "react";
 import { fetchAllTrips } from "./controllers/SavedTripsController";
 
