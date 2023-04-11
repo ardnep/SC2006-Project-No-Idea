@@ -12,6 +12,11 @@ const styles = StyleSheet.create({
         paddingBottom: 10
     },
 
+    sectionHeader: {
+        fontSize: 20,
+        fontWeight: 'bold'
+    },
+
     actionMenu: {
         width: '100%',
         height: '100%',

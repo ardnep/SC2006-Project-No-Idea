@@ -10,7 +10,7 @@ import Main from "./navigators/MainTabsNavigator";
 import { AuthContext } from "./provider/AuthProvider";
 
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { fetchAllTrips } from "./controllers/SavedTripsController";
 
 
@@ -22,13 +22,17 @@ import { fetchAllTrips } from "./controllers/SavedTripsController";
 export default () => {
     const auth = useContext(AuthContext);
     const user = auth.user;
+
+    useEffect(() => {
+        fetchAllTrips();
+    }, []);
+
     return (
         <NavigationContainer>
             {user == null && <Loading />}
             {user == false && <Auth />}
             {user == true && (
                 <>
-                    {fetchAllTrips()}
                     <Main />
                 </>)}
         </NavigationContainer>

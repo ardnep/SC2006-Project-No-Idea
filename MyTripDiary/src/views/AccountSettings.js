@@ -1,76 +1,103 @@
 import React from 'react';
-import { StyleSheet, Text, SafeAreaView, TouchableOpacity, Image } from 'react-native';
-import { TopNav } from 'react-native-rapi-ui';
+import { StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import { TopNav, Layout, Text, TextInput, Button, Section, SectionContent } from 'react-native-rapi-ui';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from 'react-native-rapi-ui';
-import { firebaseAuth } from '../controllers/FirebaseController';
+import { getUserDisplayName, getUserEmail, getUserPhoneNumber, updateUserDisplayName, updateUserEmail, userSignOut } from '../controllers/FirebaseController';
 
 export default function AccountSettings({ route, navigation }) {
-    const currentUser = firebaseAuth.currentUser;
     const { isDarkmode } = useTheme();
 
-    const [email, setEmail] = React.useState(currentUser.email);
-    const [displayName, setDisplayName] = React.useState(currentUser.displayName);
-    const [phoneNumber, setPhoneNumber] = React.useState(currentUser.phoneNumber);
+    const { updateDisplayName } = route.params;
+
+    const [editDisplayName, setEditDisplayName] = React.useState(false);
+    const [editEmail, setEditEmail] = React.useState(false);
+
+    const [email, setEmail] = React.useState(getUserEmail());
+    const [displayName, setDisplayName] = React.useState(getUserDisplayName());
+    const [phoneNumber, setPhoneNumber] = React.useState(getUserPhoneNumber());
+
+    const confirmDisplayNameChange = () => {
+        updateUserDisplayName(displayName);
+        updateDisplayName();
+        setEditDisplayName(false);
+    }
+
+    const confirmEmailChange = () => {
+        updateUserEmail(email);
+        setEditEmail(false);
+    }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <Layout>
+            <Modal visible={editDisplayName}>
+                <Section style={styles.editDisplayNameContainer}>
+                    <Text style={styles.text}>Enter New Display Name:</Text>
+                    <TextInput
+                        value={displayName}
+                        onChangeText={(val) => { setDisplayName(val) }}
+                        keyboardType="numeric"
+                        style={{ borderWidth: 1, borderColor: 'gray', padding: 10 }}
+                    />
+                    <SectionContent style={styles.buttonSection}>
+                        <Button text="Confirm" onPress={confirmDisplayNameChange} style={styles.button} />
+                        <Button text="Cancel" onPress={() => setEditDisplayName(false)} style={styles.button} />
+                    </SectionContent>
+                </Section>
+            </Modal>
+            <Modal visible={editEmail}>
+                <Section style={styles.editDisplayNameContainer}>
+                    <Text style={styles.text}>Enter New Email</Text>
+                    <TextInput
+                        value={email}
+                        onChangeText={(val) => { setEmail(val) }}
+                        keyboardType="email"
+                        style={{ borderWidth: 1, borderColor: 'gray', padding: 10 }}
+                    />
+                    <SectionContent style={styles.buttonSection}>
+                        <Button text="Confirm" onPress={confirmEmailChange} style={styles.button} />
+                        <Button text="Cancel" onPress={() => setEditEmail(false)} style={styles.button} />
+                    </SectionContent>
+                </Section>
+            </Modal>
             <TopNav
                 leftContent={<Ionicons name="chevron-back" color={isDarkmode ? 'white' : 'black'} size={20} />}
                 leftAction={navigation.goBack}
                 middleContent="Account"
             />
-            <Image
-                style={styles.icon}
-                source={currentUser.photoURL ? { uri: currentUser.photoURL } : require('../../assets/profile-user.png')} />
-            <Text style={styles.text}>Email: {email}</Text>
-            <Text style={styles.text}>Display Name: {displayName || 'N/A'}</Text>
-            <Text style={styles.text}>Phone Number: {phoneNumber || 'N/A'}</Text>
-            <TouchableOpacity style={styles.option} onPress={() => { firebaseAuth.signOut() }}>
+            <TouchableOpacity onPress={() => { setEditDisplayName(true); }}>
+                <Text style={styles.optionText}>Change Display Name</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { setEditEmail(true); }}>
+                <Text style={styles.optionText}>Change Email</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { userSignOut() }}>
                 <Text style={styles.optionText}>Logout</Text>
             </TouchableOpacity>
-            <Text style={styles.version}>Version 1.0</Text>
-        </SafeAreaView>
+        </Layout>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    optionText: {
+        padding: 10,
+        marginBottom: 20,
+        fontSize: 20,
+        fontWeight: 'light'
+    },
+    buttonSection: {
+        flexDirection: 'row',
+        justifyContent: 'center'
+    },
+    button: {
+        marginHorizontal: 4
+    },
+    editDisplayNameContainer: {
         flex: 1,
-        backgroundColor: '#fff',
+        justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: 40,
-    },
-    title: {
-        fontSize: 30,
-        fontWeight: 'bold',
-        marginBottom: 30,
-    },
-    icon: {
-        width: 150,
-        height: 150,
-        borderRadius: 75,
-        marginBottom: 30,
     },
     text: {
-        fontSize: 18,
-        marginBottom: 10,
-    },
-    option: {
-        alignSelf: 'stretch',
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: 'gray',
-        paddingVertical: 20,
-        paddingLeft: 20,
-        paddingRight: 10,
-    },
-    optionText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    version: {
-        position: 'absolute',
-        bottom: 20,
-        fontSize: 12,
-    },
+        marginBottom: 10
+    }
 });

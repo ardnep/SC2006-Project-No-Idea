@@ -29,6 +29,31 @@ export function generateTripID() {
     return getCurrentUserId() + "_" + uuidv4();
 }
 
+export function updateUserDisplayName(newDisplayName) {
+    const currentUser = firebaseAuth.currentUser;
+    currentUser.updateProfile({ displayName: newDisplayName });
+}
+
+export function getUserDisplayName() {
+    return firebaseAuth.currentUser.displayName;
+}
+
+export function getUserEmail() {
+    return firebaseAuth.currentUser.email;
+}
+
+export function updateUserEmail(newEmail) {
+    firebaseAuth.currentUser.updateEmail(newEmail);
+}
+
+export function getUserPhoneNumber() {
+    return firebaseAuth.currentUser.phoneNumber;
+}
+
+export function userSignOut() {
+    firebaseAuth.signOut();
+}
+
 /**
  * Verifies if the loginCredentials are correct
  * @returns {bool} true if verified else false

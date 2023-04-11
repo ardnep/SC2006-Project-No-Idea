@@ -1,10 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { SectionList, StyleSheet, StatusBar, View, Pressable } from 'react-native';
-import { Layout, Section, SectionContent, Text, TopNav, useTheme } from 'react-native-rapi-ui';
+import { SectionList, StyleSheet, StatusBar, View, Text, Pressable, TouchableOpacity } from 'react-native';
+import { Layout, Section, SectionContent, TopNav, useTheme } from 'react-native-rapi-ui';
 import { getExecutedTripsSortedByDate } from '../controllers/HistoryController';
 import { getSavedTripByID } from '../controllers/SavedTripsController';
 import moment from 'moment-timezone';
+
+import styles from '../styles/main';
 
 /** Displays TripHistory screen */
 export default function ({ navigation }) {
@@ -20,7 +22,7 @@ export default function ({ navigation }) {
     const renderSectionHeader = ({ section }) => {
         return (
             <Section style={styles.sectionHeaderContainer}>
-                <Text size='xl' fontWeight="medium">{section.title}</Text>
+                <Text style={styles.sectionHeader}>{section.title}</Text>
             </Section>
         );
     };
@@ -31,23 +33,30 @@ export default function ({ navigation }) {
         const endTime = getTime(timestamp + item.duration * 60);
         const trip = getSavedTripByID(item.tripID);
         return (
-            <Pressable onPress={() => { navigation.navigate("ExecutedTripInfo", { item, trip, updateGroupedTrips }) }} style={styles.itemContainer}>
-                <Section style={styles.timeAndPriceContainer}>
-                    <Text>{startTime} - {endTime}</Text>
-                    <Text>${item.tripPrice.toFixed(2)}</Text>
+            <TouchableOpacity onPress={() => { navigation.navigate("ExecutedTripInfo", { item, trip, updateGroupedTrips }) }} style={styles.itemContainer}>
+                <Section style={styles.section}>
+                    <View style={styles.titleContainer}>
+                        <View style={styles.titleContainerMiddleContent}>
+                            <Text style={styles.tripTitle}>{trip.name}</Text>
+                        </View>
+                    </View>
+                    <SectionContent>
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <Text>{trip.srcName} to {trip.destName}</Text>
+                            <Text>{startTime} - {endTime}</Text>
+                            <Text>${item.tripPrice.toFixed(2)}</Text>
+                        </View>
+                    </SectionContent>
                 </Section>
-                <Section style={styles.startAndEndPointContainer}>
-                    <Text>{trip.srcName} to {trip.destName}</Text>
-                </Section>
-            </Pressable>
+            </TouchableOpacity>
         )
     }
 
     return (
         <Layout>
             <TopNav
-                leftContent={<Ionicons name="chevron-back" color={isDarkmode ? 'white' : 'black'} size={20} />}
-                leftAction={navigation.goBack}
+                // leftContent={<Ionicons name="chevron-back" color={isDarkmode ? 'white' : 'black'} size={20} />}
+                // leftAction={navigation.goBack}
                 middleContent="Trip History"
             />
             <SectionList
@@ -82,30 +91,3 @@ function getDate(timestamp) {
 export function getTime(timestamp) {
     return moment.unix(timestamp).tz("Asia/Singapore").format("hh:mm");
 }
-
-/** Defines styles used in the screen. */
-const styles = StyleSheet.create({
-    sectionHeaderContainer: {
-        paddingLeft: 16,
-        paddingVertical: 4,
-    },
-    item: {
-        padding: 16,
-        marginVertical: 8,
-        marginHorizontal: 16,
-    },
-    itemContainer: {
-        elevation: 16,
-        margin: 8
-    },
-    timeAndPriceContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'flex-end'
-    },
-    startAndEndPointContainer: {
-        flex: 1,
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-    },
-});
