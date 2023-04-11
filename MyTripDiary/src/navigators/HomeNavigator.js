@@ -16,7 +16,7 @@ const HomeNavigator = () => {
             screenOptions={{
                 headerShown: false
             }}>
-            <HomeStack.Screen name="Home" component={Home} />
+            {/* <HomeStack.Screen name="Home" component={Home} /> */}
             <HomeStack.Screen name="SavedTrips" component={SavedTrips} />
             <HomeStack.Screen name="AddSavedTrip" component={AddSavedTrip} />
             <HomeStack.Screen name="SavedTripInfo" component={SavedTripInfo} />
