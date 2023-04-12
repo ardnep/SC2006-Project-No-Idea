@@ -44,7 +44,7 @@ export default function ({ navigation }) {
                         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                             <Text>{trip.srcName} to {trip.destName}</Text>
                             <Text>{startTime} - {endTime}</Text>
-                            <Text>${item.tripPrice.estimatedPrice.toFixed(2)}</Text>
+                            <Text>${item.tripPrice.tripPrice.toFixed(2)}</Text>
                         </View>
                     </SectionContent>
                 </Section>

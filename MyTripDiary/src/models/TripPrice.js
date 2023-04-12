@@ -6,7 +6,7 @@
 
 export class TripPrice {
     constructor(estimatedPrice, userInputPrice) {
-        this.estimatedPrice = estimatedPrice;
+        this.tripPrice = estimatedPrice;
         this.userInputPrice = userInputPrice;
     }
 };
