@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { SectionList, StyleSheet, StatusBar, View, Text, Pressable, TouchableOpacity } from 'react-native';
-import { Layout, Section, SectionContent, TopNav, useTheme } from 'react-native-rapi-ui';
+import { SectionList, StyleSheet, StatusBar, View, Pressable, TouchableOpacity } from 'react-native';
+import { Layout, Section, SectionContent, TopNav, Text, useTheme } from 'react-native-rapi-ui';
 import { getExecutedTripsSortedByDate } from '../controllers/HistoryController';
 import { getSavedTripByID } from '../controllers/SavedTripsController';
 import moment from 'moment-timezone';
@@ -22,7 +22,7 @@ export default function ({ navigation }) {
     const renderSectionHeader = ({ section }) => {
         return (
             <Section style={styles.sectionHeaderContainer}>
-                <Text style={styles.sectionHeader}>{section.title}</Text>
+                <Text fontWeight='bold' style={styles.sectionHeader}>{section.title}</Text>
             </Section>
         );
     };
@@ -37,14 +37,14 @@ export default function ({ navigation }) {
                 <Section style={styles.section}>
                     <View style={styles.titleContainer}>
                         <View style={styles.titleContainerMiddleContent}>
-                            <Text style={styles.tripTitle}>{trip.name}</Text>
+                            <Text fontWeight='bold'>{trip.name}</Text>
                         </View>
                     </View>
                     <SectionContent>
                         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                             <Text>{trip.srcName} to {trip.destName}</Text>
                             <Text>{startTime} - {endTime}</Text>
-                            <Text>${item.tripPrice.toFixed(2)}</Text>
+                            <Text>${item.tripPrice.estimatedPrice.toFixed(2)}</Text>
                         </View>
                     </SectionContent>
                 </Section>

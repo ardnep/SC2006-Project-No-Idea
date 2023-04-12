@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { FlatList, View, Text, TouchableOpacity, TouchableNativeFeedback } from "react-native";
 
-import { Layout, Section, SectionContent, TopNav, useTheme } from "react-native-rapi-ui";
+import { Layout, Section, SectionContent, Text, TopNav, useTheme } from "react-native-rapi-ui";
 
 import { getAllActiveSavedTrips, starTrip } from "../controllers/SavedTripsController";
 
@@ -69,7 +69,7 @@ function SavedTrips({ navigation }) {
                 <Section style={styles.section}>
                     <View style={styles.titleContainer}>
                         <View style={styles.titleContainerMiddleContent}>
-                            <Text style={styles.tripTitle}>{trip.name}</Text>
+                            <Text fontWeight="bold">{trip.name}</Text>
                         </View>
                         <View style={styles.titleContainerRightContent}>
                             {trip.pinned ? <AntDesign

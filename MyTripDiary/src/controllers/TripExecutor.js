@@ -1,4 +1,5 @@
 import { ExecutedTrip } from '../models/ExecutedTrip';
+import { TripPrice } from '../models/TripPrice';
 import { addExecutedTrip } from './SavedTripsController';
 
 /**
@@ -7,6 +8,6 @@ import { addExecutedTrip } from './SavedTripsController';
  * @returns {bool} true if successful else false
  */
 export function executeTrip(tripToExecute, timeStamp, modeOfTransport, tripPrice, duration, distance) {
-    const executedTrip = new ExecutedTrip(tripToExecute.ID, tripToExecute.executedInstances.length.toString(), timeStamp, modeOfTransport, tripPrice, duration, distance);
+    const executedTrip = new ExecutedTrip(tripToExecute.ID, tripToExecute.executedInstances.length.toString(), timeStamp, modeOfTransport, new TripPrice(tripPrice, 0), duration, distance);
     addExecutedTrip(executedTrip);
 }

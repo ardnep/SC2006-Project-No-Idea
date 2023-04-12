@@ -1,6 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Layout, Text } from 'react-native-rapi-ui';
+import { Button, Layout, Text } from 'react-native-rapi-ui';
+import { starTrips } from '../helpers/TripStarrer';
 
 export default function ({ navigation }) {
     return (
@@ -13,6 +14,7 @@ export default function ({ navigation }) {
                 }}
             >
                 <Text>This is the Analytics tab</Text>
+                <Button text='Test Button'></Button>
             </View>
         </Layout>
     );

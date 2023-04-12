@@ -23,7 +23,7 @@ import { executeTrip } from "../controllers/TripExecutor";
 function SavedTripInfo({ route, navigation }) {
     const { isDarkmode } = useTheme();
     const { trip, updateSavedTrips } = route.params;
-    const {width} = useWindowDimensions();
+    const { width } = useWindowDimensions();
     const [inst, setInst] = useState("");
     const [name, setName] = useState(trip.name);
     const [gmap, setGmap] = useState({});
