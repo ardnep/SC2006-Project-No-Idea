@@ -1,5 +1,6 @@
 import { ExecutedTrip } from '../models/ExecutedTrip';
 import { Trip } from '../models/Trip';
+import { TripPrice } from '../models/TripPrice';
 import { addData, getDataByCollection, addDataWithinSubCollection, getDataWithinSubCollection, updateData, updateDataWithinSubCollection } from './DataController'
 
 let savedTrips = [];
@@ -30,7 +31,7 @@ export function getAllExecutedTrips() {
 export async function fetchAllTrips() {
     savedTrips = [];
     savedTripsSnapshot = await getDataByCollection("SavedTrips");
-    for (const doc of savedTripsSnapshot.docs){
+    for (const doc of savedTripsSnapshot.docs) {
         let executedTripsSnapshot = await getDataWithinSubCollection("SavedTrips", doc.id, "ExecutedInstances");
         let executedTrips = parseExecutedTripsSnapshot(doc.id, executedTripsSnapshot);
         let trip = convertToTripClass(doc.data(), executedTrips);
@@ -41,7 +42,7 @@ export async function fetchAllTrips() {
 
 export function parseExecutedTripsSnapshot(savedTripID, executedTripsSnapshot) {
     const executedTrips = []
-    for (const doc of executedTripsSnapshot.docs){
+    for (const doc of executedTripsSnapshot.docs) {
         let executedTrip = convertToExecutedTripClass(savedTripID, doc.id, doc.data());
         executedTrips.push(executedTrip);
     }
@@ -49,7 +50,7 @@ export function parseExecutedTripsSnapshot(savedTripID, executedTripsSnapshot) {
 }
 
 function convertToExecutedTripClass(savedTripID, executionNumber, object) {
-    return new ExecutedTrip(savedTripID, executionNumber, object.timeStamp, object.modeOfTransport, object.tripPrice, object.duration, object.distance);
+    return new ExecutedTrip(savedTripID, executionNumber, object.timeStamp, object.modeOfTransport, new TripPrice(object.tripPrice, object.userInputPrice), object.duration, object.distance);
 }
 
 function convertToTripClass(object, executedTrips) {
@@ -91,8 +92,8 @@ export function renameSavedTrip(tripToRename, newName) {
 
 export function editExecutedTripPrice(executedTrip, newPrice) {
     const tripFound = executedTripsArray.find((trip) => { return executedTrip.tripID === trip.tripID && executedTrip.executionNumber === trip.executionNumber });
-    tripFound.tripPrice = newPrice;
-    updateDataWithinSubCollection("SavedTrips", executedTrip.tripID, "ExecutedInstances", executedTrip.executionNumber.toString(), { tripPrice: newPrice });
+    tripFound.tripPrice.userInputPrice = newPrice;
+    updateDataWithinSubCollection("SavedTrips", executedTrip.tripID, "ExecutedInstances", executedTrip.executionNumber.toString(), { userInputPrice: newPrice });
 }
 
 /**
@@ -122,7 +123,8 @@ export function addExecutedTrip(executedTripToAdd) {
     let tripInDB = { ...executedTripToAdd };
     delete tripInDB.tripID;
     delete tripInDB.executionNumber;
-    addDataWithinSubCollection("SavedTrips", executedTripToAdd.tripID, "ExecutedInstances", executedTripToAdd.executionNumber, Object.fromEntries(Object.entries(tripInDB)));
+    delete tripInDB.tripPrice;
+    addDataWithinSubCollection("SavedTrips", executedTripToAdd.tripID, "ExecutedInstances", executedTripToAdd.executionNumber, Object.fromEntries(Object.entries(Object.assign(tripInDB, executedTripToAdd.tripPrice))));
 
     executedTripToAdd.timeStamp = { seconds: Math.round(executedTripToAdd.timeStamp.getTime() / 1000) };
 
