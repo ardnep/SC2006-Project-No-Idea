@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
-import { FlatList, View, Text, TouchableOpacity, TouchableNativeFeedback } from "react-native";
+import { FlatList, View, TouchableOpacity, TouchableNativeFeedback } from "react-native";
 
 import { Layout, Section, SectionContent, Text, TopNav, useTheme } from "react-native-rapi-ui";
 
