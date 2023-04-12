@@ -5,7 +5,7 @@ export function starTrips() {
     getDataByCollection("SavedTrips").then((savedTripSnapshot) => {
         savedTripSnapshot.forEach((savedTrip) => {
             getDataWithinSubCollection("SavedTrips", savedTrip.id, "ExecutedInstances").then((hello) => {
-                updateDataWithinSubCollection("SavedTrips", savedTrip.id, "ExecutedInstances", "0", { distance: 0 });
+                updateDataWithinSubCollection("SavedTrips", savedTrip.id, "ExecutedInstances", "0", { userInputPrice: 2 });
             }).catch((error) => console.log(error));
         });
     })
