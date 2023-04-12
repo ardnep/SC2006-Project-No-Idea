@@ -14,7 +14,6 @@ const styles = StyleSheet.create({
 
     sectionHeader: {
         fontSize: 20,
-        fontWeight: 'bold'
     },
 
     actionMenu: {
