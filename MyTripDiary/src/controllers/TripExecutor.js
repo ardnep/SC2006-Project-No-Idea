@@ -8,6 +8,6 @@ import { addExecutedTrip } from './SavedTripsController';
  * @returns {bool} true if successful else false
  */
 export function executeTrip(tripToExecute, timeStamp, modeOfTransport, tripPrice, duration, distance) {
-    const executedTrip = new ExecutedTrip(tripToExecute.ID, tripToExecute.executedInstances.length.toString(), timeStamp, modeOfTransport, new TripPrice(tripPrice, 0), duration, distance);
+    const executedTrip = new ExecutedTrip(tripToExecute.ID, tripToExecute.executedInstances.length.toString(), timeStamp, modeOfTransport, new TripPrice(tripPrice, -1), duration, distance);
     addExecutedTrip(executedTrip);
 }

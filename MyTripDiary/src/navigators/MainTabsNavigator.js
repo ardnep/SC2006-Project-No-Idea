@@ -6,7 +6,7 @@ import TabBarText from "../components/utils/TabBarText";
 
 import { useTheme, themeColor } from "react-native-rapi-ui";
 
-import AddTripNavigator from "./AddTripNavigator";
+// import AddTripNavigator from "./AddTripNavigator";
 import SettingsNavigator from "./SettingsNavigator";
 import AnalyticsNavigator from "./AnalyticsNavigator";
 import HomeNavigator from "./HomeNavigator";

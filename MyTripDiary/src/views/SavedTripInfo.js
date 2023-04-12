@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Alert, Modal, StyleSheet, ScrollView, View, FlatList, useWindowDimensions, SafeAreaView } from "react-native";
-import { Button, Layout, Section, SectionContent, Text, TextInput, TopNav, useTheme } from "react-native-rapi-ui";
+import { Button, Layout, Section, SectionContent, Text, TextInput, TopNav, themeColor, useTheme } from "react-native-rapi-ui";
 import { deleteSavedTrip, renameSavedTrip } from "../controllers/SavedTripsController";
 import MapViewDirections from 'react-native-maps-directions';
 import MapView, { Marker } from 'react-native-maps';
@@ -27,6 +27,7 @@ function SavedTripInfo({ route, navigation }) {
     const [inst, setInst] = useState("");
     const [name, setName] = useState(trip.name);
     const [gmap, setGmap] = useState({});
+    const [markers, setMarkers] = useState([]);
     const [executionInfo, setExecutionInfo] = useState([]);
     const [transport, setTransportType] = useState(getDefaultTransport());
     const [editModalVisible, setEditModalVisible] = useState(false);
@@ -132,17 +133,25 @@ function SavedTripInfo({ route, navigation }) {
                     {executionInfo.length > 0 ? <View>
 
                         <Text>{Math.round(executionInfo[0])}mins ({executionInfo[1].toFixed(2)}km)</Text>
-                        <Text>{executionInfo[2] ? `S$${executionInfo[2]}` : "Free"}</Text>
+                        <Text>{executionInfo[2] == 0 ? "Free" : (executionInfo[2] == -1 ? "Unable to Estimate" : `S$${executionInfo[2]}`)}</Text>
                     </View> : null}
                 </SectionContent>
                 <MapView
                     initialRegion={getIntitialRegion(origin, destination)}
-                    style={{ minHeight: 400 }}
+                    style={{ height:'50%' }}
                     customMapStyle={isDarkmode ? darkMapStyle : []}
                     userInterfaceStyle={isDarkmode ? 'dark' : 'light'}
                 >
-                    <Marker coordinate={origin} pinColor="#89CFF0" />
+                    <Marker coordinate={origin} pinColor={themeColor.primary} description={transport.type === "TRANSIT" ? inst[0] : null} title={transport.type === "TRANSIT" ? "Step 1" : null}/>
                     <Marker coordinate={destination} />
+                    {
+                        markers.map((item, index) => {
+                            console.log(index);
+                            return (
+                                <Marker coordinate={{latitude:item.lat,longitude:item.lng}} pinColor={themeColor.warning500} description={inst[index+1]} title={`Step ${index+2}`} key={index}/>
+                            );
+                        })
+                    }
                     <MapViewDirections
                         origin={origin}
                         destination={destination}
@@ -157,28 +166,41 @@ function SavedTripInfo({ route, navigation }) {
                             });
                             let instructions = []
                             result.legs[0].steps.forEach(x => x.html_instructions.replace(/<wbr\/>/g,'').split('<br>').forEach(x => {if(x!=='') { instructions.push(x)}}));
+                            let routeSteps = result.legs[0].steps;
+                            let markerCoords = []
+                            for(var i = 1; i < routeSteps.length; i++){
+                                if((routeSteps[i].travel_mode != routeSteps[i-1].travel_mode) || routeSteps[i].travel_mode == "TRANSIT") {
+                                    markerCoords.push(routeSteps[i].start_location);
+                                }
+                            }
+                            setMarkers(markerCoords);
                             setInst(instructions);
                             setGmap(result);
                         }}
                     />
                 </MapView>
-                <SectionContent style={styles.buttonSection}>
+                {/* <SectionContent style={styles.buttonSection}>
                     <Button text="Delete" status="danger" style={styles.button} onPress={() => { confirmDelete(trip, navigation, updateSavedTrips) }} />
                     <Button text="Edit" status="primary" style={styles.button} onPress={() => { setEditModalVisible(true) }} />
                     <Button text="Start" status="primary" style={styles.button} onPress={() => { executeTrip(trip, new Date(), transport.name, executionInfo[2], executionInfo[0], executionInfo[1]) }} />
-                </SectionContent>
-                <SectionContent style={styles.buttonSection}>
+                </SectionContent> */}
+                <SectionContent style={{ flexDirection: 'column', justifyContent: 'center' }}>
                     {/* <Button text={<FontAwesome5 name={"car"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("DRIVING") }} />
                     <Button text={<FontAwesome5 name={"taxi"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("DRIVING") }} />
                     <Button text={<FontAwesome5 name={"bus-alt"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("TRANSIT") }} />
                     <Button text={<FontAwesome5 name={"bicycle"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("BICYCLING") }} />
                     <Button text={<FontAwesome5 name={"walking"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("WALKING") }} /> */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                    <Button text={<FontAwesome5 name={"play"} size={16} />}status="success" style={styles.button} onPress={() => { executeTrip(trip, new Date(), transport.name, executionInfo[2], executionInfo[0], executionInfo[1]) }} />
+                    <Button text={<FontAwesome5 name={"info-circle"} size={16} />} status="info" style={styles.button} onPress={() => { setInstructionModalVisible(true) }}/>
+                    </View>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
                     <FlatList
                         data={getAllTransports()}
                         renderItem={renderTransport}
                         numColumns={getAllTransports().length}
                     />
-                    <Button text={<FontAwesome5 name={"info-circle"} size={16} />} status="info" style={styles.button} onPress={() => { setInstructionModalVisible(true) }} />
+                    </View>
                 </SectionContent>
             </Section>
         </Layout >

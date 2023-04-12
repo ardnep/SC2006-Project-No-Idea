@@ -7,7 +7,7 @@ import { Walking } from "../models/Walking";
 
 const car:Car = new Car("Car","DRIVING","car");
 const taxi:Taxi = new Taxi("Taxi","DRIVING","taxi");
-const publicTransport:PublicTransport = new PublicTransport("Public Transport","TRANSIT","bus-alt");
+const publicTransport:PublicTransport = new PublicTransport("Transit","TRANSIT","bus-alt");
 const cycling:Cycling = new Cycling("Cycling","BICYCLING","bicycle");
 const walking:Walking = new Walking("Walking","WALKING","walking");
 

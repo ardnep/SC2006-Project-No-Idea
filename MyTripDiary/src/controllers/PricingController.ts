@@ -2,8 +2,10 @@
 import axios from "axios";
 import moment from "moment";
 
+export const rejectionValue = -1;
+
 export function callOneMapAPI(gMapsResponse){
-    return new Promise<number>(async (resolve, reject) => {
+    return new Promise<number>((resolve, reject) => {
         // Promise executor function
         // You can perform asynchronous operations here
         let datetime = moment().format('YYYY-MM-DD HH:m:s').split(' ')
@@ -11,8 +13,11 @@ export function callOneMapAPI(gMapsResponse){
         let time = datetime[1].replaceAll(":","%3A")
         let apiURL = `https://developers.onemap.sg/privateapi/routingsvc/route?start=${gMapsResponse.legs[0].start_location["lat"]}%2C${gMapsResponse.legs[0].start_location["lng"]}&end=${gMapsResponse.legs[0].end_location["lat"]}%2C${gMapsResponse.legs[0].end_location["lng"]}&routeType=pt&mode=TRANSIT&token=${process.env.ONE_MAP_TOKEN}&date=${date}&time=${time}&numItineraries=1`
         console.log(apiURL)
-        await axios.get(apiURL).then((result) => {
+        axios.get(apiURL).then((result) => {
             resolve(result.data.plan.itineraries[0].fare);
+        }).catch((err) => {
+            console.log(err);
+            resolve(rejectionValue);
         });
     });
 
@@ -56,20 +61,26 @@ export function callTollGuruAPI(gMapsResponse){
                 }
             }
             resolve(maxTollPrice);
-        })*/
+        }).catch((err) => {
+            console.log(err);
+            resolve(rejectionValue);
+        });*/
     });
 }
 
 export function callTaxiFareAPI(gMapsResponse) : Promise<number> {
     console.log("HERE");
-    return new Promise<number>(async (resolve, reject) => {
+    return new Promise<number>((resolve, reject) => {
         // Promise executor function
         // You can perform asynchronous operations here
         let apiURL = `https://www.taxifarefinder.com/calculatefare.php?city=Singapore&distance=${gMapsResponse.distance * 1000}&duration=${gMapsResponse.duration * 60}`
         console.log(apiURL)
-        await axios.get(apiURL).then((result) => {
+        axios.get(apiURL).then((result) => {
             resolve(result.data.data.medium.fareValue);
-        });
+        }).catch((err) => {
+            console.log(err);
+            resolve(rejectionValue);
+        });;
     });
 }
 

@@ -1,6 +1,7 @@
 import { ExecutedTrip } from '../models/ExecutedTrip';
 import { Trip } from '../models/Trip';
 import { TripPrice } from '../models/TripPrice';
+import { firebaseApp } from './FirebaseController';
 import { addData, getDataByCollection, addDataWithinSubCollection, getDataWithinSubCollection, updateData, updateDataWithinSubCollection } from './DataController'
 
 let savedTrips = [];
@@ -36,7 +37,9 @@ export async function fetchAllTrips() {
         let executedTrips = parseExecutedTripsSnapshot(doc.id, executedTripsSnapshot);
         let trip = convertToTripClass(doc.data(), executedTrips);
         savedTrips.push(trip);
-        executedTrips.forEach((executedTrip) => { executedTripsArray.push(executedTrip) });
+        executedTrips.forEach((executedTrip) => { 
+            executedTripsArray.push(executedTrip) 
+        });
     }
 }
 
@@ -50,7 +53,7 @@ export function parseExecutedTripsSnapshot(savedTripID, executedTripsSnapshot) {
 }
 
 function convertToExecutedTripClass(savedTripID, executionNumber, object) {
-    return new ExecutedTrip(savedTripID, executionNumber, object.timeStamp, object.modeOfTransport, new TripPrice(object.tripPrice, object.userInputPrice), object.duration, object.distance);
+    return new ExecutedTrip(savedTripID, executionNumber, object.timeStamp, object.modeOfTransport, new TripPrice(object.estimatedPrice, object.userInputPrice), object.duration, object.distance);
 }
 
 function convertToTripClass(object, executedTrips) {
@@ -126,7 +129,7 @@ export function addExecutedTrip(executedTripToAdd) {
     delete tripInDB.tripPrice;
     addDataWithinSubCollection("SavedTrips", executedTripToAdd.tripID, "ExecutedInstances", executedTripToAdd.executionNumber, Object.fromEntries(Object.entries(Object.assign(tripInDB, executedTripToAdd.tripPrice))));
 
-    executedTripToAdd.timeStamp = { seconds: Math.round(executedTripToAdd.timeStamp.getTime() / 1000) };
+    executedTripToAdd.timeStamp = { nanoseconds: executedTripToAdd.timeStamp.getTime() * 10e6, seconds: Math.round(executedTripToAdd.timeStamp.getTime() / 1000) };
 
     executedTripsArray.push(executedTripToAdd);
 
