@@ -22,7 +22,7 @@ import { executeTrip } from "../controllers/TripExecutor";
 function SavedTripInfo({ route, navigation }) {
     const { isDarkmode } = useTheme();
     const { trip, updateSavedTrips } = route.params;
-    const {width} = useWindowDimensions();
+    const { width } = useWindowDimensions();
     const [inst, setInst] = useState("");
     const [name, setName] = useState(trip.name);
     const [gmap, setGmap] = useState({});
@@ -81,12 +81,12 @@ function SavedTripInfo({ route, navigation }) {
                         <ScrollView>
                             <View>
                                 <RenderHTML source={{ html: inst }} contentWidth={width}
-                                    tagsStyles={{p: {color:instructionTextColor}, div:{color:instructionTextColor}}}/>
+                                    tagsStyles={{ p: { color: instructionTextColor }, div: { color: instructionTextColor } }} />
                             </View>
                         </ScrollView>
                     </Section>
                     <SectionContent style={styles.buttonSection}>
-                        <Button text="Close" onPress={() => setInstructionModalVisible(false)} style={styles.button}/>
+                        <Button text="Close" onPress={() => setInstructionModalVisible(false)} style={styles.button} />
                     </SectionContent>
                 </Modal>
                 <SectionContent>
