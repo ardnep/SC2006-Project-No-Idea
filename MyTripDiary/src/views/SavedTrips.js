@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
-import { FlatList, View, Text, TouchableOpacity } from "react-native";
+import { FlatList, View, Text, TouchableOpacity, TouchableNativeFeedback } from "react-native";
 
 import { Layout, Section, SectionContent, TopNav, useTheme } from "react-native-rapi-ui";
 
@@ -17,6 +17,8 @@ import styles from "../styles/main";
  * @returns {JSX.Element} - Screen
  */
 
+
+
 function SavedTrips({ navigation }) {
     const [savedTripsArray, setSavedTripsArray] = useState(getAllActiveSavedTrips());
     const [actionMenu, setActionMenu] = useState(false);
@@ -25,6 +27,21 @@ function SavedTrips({ navigation }) {
     function updateSavedTrips() {
         setSavedTripsArray([...getAllActiveSavedTrips()]);
     }
+
+    const TouchableComponent = (props) => {
+        // Check if the current OS is Android
+        if (Platform.OS === 'android') {
+          return (
+            <TouchableNativeFeedback {...props}>
+            </TouchableNativeFeedback>
+          );
+        } else {
+          return (
+            <TouchableOpacity {...props}>
+            </TouchableOpacity>
+          );
+        }
+    };
 
     const MenuItems = [
         { text: 'Actions', icon: 'home', isTitle: true, onPress: () => { } },
@@ -41,8 +58,9 @@ function SavedTrips({ navigation }) {
         };
 
         return (
+            
             // <HoldItem items={MenuItems}>
-            <TouchableOpacity onLongPress={() => {
+            <TouchableComponent onLongPress={() => {
 
                 togglePin(trip);
                 // setActionMenu(true);
@@ -67,7 +85,7 @@ function SavedTrips({ navigation }) {
                         <Text>{trip.srcName} to {trip.destName}</Text>
                     </SectionContent>
                 </Section>
-            </TouchableOpacity>
+            </TouchableComponent>
         )
     }
 

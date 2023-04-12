@@ -1,10 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Alert, Modal, StyleSheet, ScrollView, View, FlatList, useWindowDimensions } from "react-native";
+import { Alert, Modal, StyleSheet, ScrollView, View, FlatList, useWindowDimensions, SafeAreaView } from "react-native";
 import { Button, Layout, Section, SectionContent, Text, TextInput, TopNav, useTheme } from "react-native-rapi-ui";
 import { deleteSavedTrip, renameSavedTrip } from "../controllers/SavedTripsController";
 import MapViewDirections from 'react-native-maps-directions';
 import MapView, { Marker } from 'react-native-maps';
-import { useState } from "react";
+import darkMapStyle from '../styles/darkMap.json'
+import { Fragment, useState } from "react";
 import { RenderHTML } from 'react-native-render-html';
 import { FontAwesome5 } from "@expo/vector-icons";
 import { getAllTransports, getDefaultTransport } from "../controllers/RouteManager";
@@ -54,6 +55,36 @@ function SavedTripInfo({ route, navigation }) {
             }} />
         )
     }
+    const renderInstruction = ({ item }) => {
+        let textMap = []
+        console.info(item)
+        item.split('</b>').forEach(line => {
+            let parts = line.split('<b>');
+            if(parts[0].includes('</div>')) {
+                let partText = parts[0].split('">')[1].replace("</div>","");
+                if(!parts[0].includes('(')){
+                    partText = " (" + partText + ")";
+                }
+                textMap.push({"text": partText, "bold": false, "italics": false})
+            } else {
+                textMap.push({"text":parts[0], "bold": false, "italics": false});
+            }
+            if(parts.length > 1 && parts[1] !== ''){
+                textMap.push({"text":parts[1], "bold": true, "italics": false});
+            }
+        });
+        return (
+            <View style={{flexWrap:'wrap', flexDirection:'row'}}>
+            {
+                textMap.map((part, index) => {
+                    return (
+                        <Text style={{marginVertical:10, color:instructionTextColor, fontStyle:part.italics ? 'italic' : 'normal'}} fontWeight={part.bold ? "bold" : "normal"} key={index}>{part.text}</Text>
+                    );
+                })
+            }
+            </View>
+        )
+    }
     return (
         <Layout>
             <TopNav
@@ -77,17 +108,21 @@ function SavedTripInfo({ route, navigation }) {
                     </Section>
                 </Modal>
                 <Modal visible={instructionModalVisible} animationType="slide">
-                    <Section style={styles.instructionsContainer}>
-                        <ScrollView>
-                            <View>
-                                <RenderHTML source={{ html: inst }} contentWidth={width}
-                                    tagsStyles={{p: {color:instructionTextColor}, div:{color:instructionTextColor}}}/>
-                            </View>
-                        </ScrollView>
+                    <Section style={styles.editTripNameContainer}>
+                        <SafeAreaView style={{ flex: 1 }}>
+                        <View style={{ flex: 1, height: '70%', width: '92%' }}>
+                            <FlatList
+                                data={inst}
+                                renderItem={renderInstruction}
+                                numColumns={1}
+                                keyExtractor={(item, index) => index.toString()}
+                            />
+                        </View>
+                        <SectionContent style={styles.buttonSection}>
+                            <Button text="Close" onPress={() => setInstructionModalVisible(false)} style={styles.button}/>
+                        </SectionContent>
+                        </SafeAreaView>
                     </Section>
-                    <SectionContent style={styles.buttonSection}>
-                        <Button text="Close" onPress={() => setInstructionModalVisible(false)} style={styles.button}/>
-                    </SectionContent>
                 </Modal>
                 <SectionContent>
                     <View>
@@ -103,6 +138,8 @@ function SavedTripInfo({ route, navigation }) {
                 <MapView
                     initialRegion={getIntitialRegion(origin, destination)}
                     style={{ minHeight: 400 }}
+                    customMapStyle={isDarkmode ? darkMapStyle : []}
+                    userInterfaceStyle={isDarkmode ? 'dark' : 'light'}
                 >
                     <Marker coordinate={origin} pinColor="#89CFF0" />
                     <Marker coordinate={destination} />
@@ -119,8 +156,8 @@ function SavedTripInfo({ route, navigation }) {
                                 setExecutionInfo([result.duration, result.distance, executionPrice]);
                             });
                             let instructions = []
-                            result.legs[0].steps.forEach(x => instructions.push("<p>" + x.html_instructions + "</p>"));
-                            setInst(instructions.join(""));
+                            result.legs[0].steps.forEach(x => x.html_instructions.replace(/<wbr\/>/g,'').split('<br>').forEach(x => {if(x!=='') { instructions.push(x)}}));
+                            setInst(instructions);
                             setGmap(result);
                         }}
                     />
@@ -204,6 +241,9 @@ const styles = StyleSheet.create({
     },
     text: {
         marginBottom: 10
+    },
+    textContainer: {
+        flexWrap: "wrap"
     },
     instructionsContainer: {
         flex: 1,
