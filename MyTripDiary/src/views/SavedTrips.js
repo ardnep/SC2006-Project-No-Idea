@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AntDesign, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { Alert, FlatList, Modal, View, TouchableOpacity, TouchableNativeFeedback, StyleSheet } from "react-native";
 
@@ -9,6 +9,7 @@ import { getAllActiveSavedTrips, starTrip } from "../controllers/SavedTripsContr
 import { themeColor } from "react-native-rapi-ui";
 import { deleteSavedTrip, renameSavedTrip } from "../controllers/SavedTripsController";
 import styles from "../styles/main";
+import eventBus from './eventBus';
 
 /**
  * Renders a list of saved trips, allowing the user to select and view them.
@@ -77,13 +78,14 @@ function SavedTrips({ navigation }) {
             `Name Changed Successfully`,
             `${previousName} changed to ${tripName}!`
         );
+        eventBus.emit('updateExecutedTrips', null);
         closePopup();
     };
 
     function updateSavedTrips() {
         setSavedTripsArray([...getAllActiveSavedTrips()]);
     }
-
+    
     const TouchableComponent = (props) => {
         // Check if the current OS is Android
         if (Platform.OS === 'android') {
