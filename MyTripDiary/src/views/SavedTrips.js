@@ -70,11 +70,12 @@ function SavedTrips({ navigation }) {
     };
 
     const handleTripNameChange = () => {
-        renameSavedTrip(popupState.selectedTrip, name);
+        const previousName = popupState.selectedTrip.name;
+        renameSavedTrip(popupState.selectedTrip, tripName);
         updateSavedTrips();
         Alert.alert(
             `Name Changed Successfully`,
-            `${popupState.selectedTrip.name} changed to ${name}!`
+            `${previousName} changed to ${tripName}!`
         );
         closePopup();
     };
@@ -103,9 +104,7 @@ function SavedTrips({ navigation }) {
 
         return (
             <TouchableComponent onLongPress={() => {
-
-                //togglePin(trip);
-                setName(trip.name)
+                setTripName(trip.name)
                 setPopupState({ selectedTrip: trip, visible: true });
 
             }} onPress={() => { navigation.navigate("SavedTripInfo", { trip, updateSavedTrips }) }}>
