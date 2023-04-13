@@ -61,28 +61,28 @@ function SavedTripInfo({ route, navigation }) {
         console.info(item)
         item.split('</b>').forEach(line => {
             let parts = line.split('<b>');
-            if(parts[0].includes('</div>')) {
-                let partText = parts[0].split('">')[1].replace("</div>","");
-                if(!parts[0].includes('(')){
+            if (parts[0].includes('</div>')) {
+                let partText = parts[0].split('">')[1].replace("</div>", "");
+                if (!parts[0].includes('(')) {
                     partText = " (" + partText + ")";
                 }
-                textMap.push({"text": partText, "bold": false, "italics": false})
+                textMap.push({ "text": partText, "bold": false, "italics": false })
             } else {
-                textMap.push({"text":parts[0], "bold": false, "italics": false});
+                textMap.push({ "text": parts[0], "bold": false, "italics": false });
             }
-            if(parts.length > 1 && parts[1] !== ''){
-                textMap.push({"text":parts[1], "bold": true, "italics": false});
+            if (parts.length > 1 && parts[1] !== '') {
+                textMap.push({ "text": parts[1], "bold": true, "italics": false });
             }
         });
         return (
-            <View style={{flexWrap:'wrap', flexDirection:'row'}}>
-            {
-                textMap.map((part, index) => {
-                    return (
-                        <Text style={{marginVertical:10, color:instructionTextColor, fontStyle:part.italics ? 'italic' : 'normal'}} fontWeight={part.bold ? "bold" : "normal"} key={index}>{part.text}</Text>
-                    );
-                })
-            }
+            <View style={{ flexWrap: 'wrap', flexDirection: 'row' }}>
+                {
+                    textMap.map((part, index) => {
+                        return (
+                            <Text style={{ marginVertical: 10, color: instructionTextColor, fontStyle: part.italics ? 'italic' : 'normal' }} fontWeight={part.bold ? "bold" : "normal"} key={index}>{part.text}</Text>
+                        );
+                    })
+                }
             </View>
         )
     }
@@ -111,17 +111,17 @@ function SavedTripInfo({ route, navigation }) {
                 <Modal visible={instructionModalVisible} animationType="slide">
                     <Section style={styles.editTripNameContainer}>
                         <SafeAreaView style={{ flex: 1 }}>
-                        <View style={{ flex: 1, height: '70%', width: '92%' }}>
-                            <FlatList
-                                data={inst}
-                                renderItem={renderInstruction}
-                                numColumns={1}
-                                keyExtractor={(item, index) => index.toString()}
-                            />
-                        </View>
-                        <SectionContent style={styles.buttonSection}>
-                            <Button text="Close" onPress={() => setInstructionModalVisible(false)} style={styles.button}/>
-                        </SectionContent>
+                            <View style={{ flex: 1, height: '70%', width: '92%' }}>
+                                <FlatList
+                                    data={inst}
+                                    renderItem={renderInstruction}
+                                    numColumns={1}
+                                    keyExtractor={(item, index) => index.toString()}
+                                />
+                            </View>
+                            <SectionContent style={styles.buttonSection}>
+                                <Button text="Close" onPress={() => setInstructionModalVisible(false)} style={styles.button} />
+                            </SectionContent>
                         </SafeAreaView>
                     </Section>
                 </Modal>
@@ -138,17 +138,17 @@ function SavedTripInfo({ route, navigation }) {
                 </SectionContent>
                 <MapView
                     initialRegion={getIntitialRegion(origin, destination)}
-                    style={{ height:'50%' }}
+                    style={{ height: '50%' }}
                     customMapStyle={isDarkmode ? darkMapStyle : []}
                     userInterfaceStyle={isDarkmode ? 'dark' : 'light'}
                 >
-                    <Marker coordinate={origin} pinColor={themeColor.primary} description={transport.type === "TRANSIT" ? inst[0] : null} title={transport.type === "TRANSIT" ? "Step 1" : null}/>
+                    <Marker coordinate={origin} pinColor={themeColor.primary} description={transport.type === "TRANSIT" ? inst[0] : null} title={transport.type === "TRANSIT" ? "Step 1" : null} />
                     <Marker coordinate={destination} />
                     {
                         markers.map((item, index) => {
                             console.log(index);
                             return (
-                                <Marker coordinate={{latitude:item.lat,longitude:item.lng}} pinColor={themeColor.warning500} description={inst[index+1]} title={`Step ${index+2}`} key={index}/>
+                                <Marker coordinate={{ latitude: item.lat, longitude: item.lng }} pinColor={themeColor.warning500} description={inst[index + 1]} title={`Step ${index + 2}`} key={index} />
                             );
                         })
                     }
@@ -165,11 +165,11 @@ function SavedTripInfo({ route, navigation }) {
                                 setExecutionInfo([result.duration, result.distance, executionPrice]);
                             });
                             let instructions = []
-                            result.legs[0].steps.forEach(x => x.html_instructions.replace(/<wbr\/>/g,'').split('<br>').forEach(x => {if(x!=='') { instructions.push(x)}}));
+                            result.legs[0].steps.forEach(x => x.html_instructions.replace(/<wbr\/>/g, '').split('<br>').forEach(x => { if (x !== '') { instructions.push(x) } }));
                             let routeSteps = result.legs[0].steps;
                             let markerCoords = []
-                            for(var i = 1; i < routeSteps.length; i++){
-                                if((routeSteps[i].travel_mode != routeSteps[i-1].travel_mode) || routeSteps[i].travel_mode == "TRANSIT") {
+                            for (var i = 1; i < routeSteps.length; i++) {
+                                if ((routeSteps[i].travel_mode != routeSteps[i - 1].travel_mode) || routeSteps[i].travel_mode == "TRANSIT") {
                                     markerCoords.push(routeSteps[i].start_location);
                                 }
                             }
@@ -191,15 +191,21 @@ function SavedTripInfo({ route, navigation }) {
                     <Button text={<FontAwesome5 name={"bicycle"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("BICYCLING") }} />
                     <Button text={<FontAwesome5 name={"walking"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("WALKING") }} /> */}
                     <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                    <Button text={<FontAwesome5 name={"play"} size={16} />}status="success" style={styles.button} onPress={() => { executeTrip(trip, new Date(), transport.name, executionInfo[2], executionInfo[0], executionInfo[1]) }} />
-                    <Button text={<FontAwesome5 name={"info-circle"} size={16} />} status="info" style={styles.button} onPress={() => { setInstructionModalVisible(true) }}/>
+                        <Button text={<FontAwesome5 name={"play"} size={16} />} status="success" style={styles.button} onPress={() => {
+                            executeTrip(trip, new Date(), transport.name, executionInfo[2], executionInfo[0], executionInfo[1]);
+                            Alert.alert(
+                                `Executed Successfully`,
+                                `${trip.name} has been executed!`
+                            );
+                        }} />
+                        <Button text={<FontAwesome5 name={"info-circle"} size={16} />} status="info" style={styles.button} onPress={() => { setInstructionModalVisible(true) }} />
                     </View>
                     <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
-                    <FlatList
-                        data={getAllTransports()}
-                        renderItem={renderTransport}
-                        numColumns={getAllTransports().length}
-                    />
+                        <FlatList
+                            data={getAllTransports()}
+                            renderItem={renderTransport}
+                            numColumns={getAllTransports().length}
+                        />
                     </View>
                 </SectionContent>
             </Section>
