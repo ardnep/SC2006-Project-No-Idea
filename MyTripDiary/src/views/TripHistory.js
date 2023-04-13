@@ -27,7 +27,7 @@ export default function ({ navigation }) {
     };
 
     const handlePriceChange = () => {
-        if (price == null) {
+        if (price == null || isNaN(price) || (!isNaN(price) && Number(price) < 0)) {
             Alert.alert(
                 `Invalid Input`,
                 `Please input the new price!`

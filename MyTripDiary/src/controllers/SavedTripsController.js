@@ -1,7 +1,7 @@
 import { ExecutedTrip } from '../models/ExecutedTrip';
 import { Trip } from '../models/Trip';
 import { TripPrice } from '../models/TripPrice';
-import { firebaseApp } from './FirebaseController';
+import { firebaseAuth, getCurrentUserId } from './FirebaseController';
 import { addData, getDataByCollection, addDataWithinSubCollection, getDataWithinSubCollection, updateData, updateDataWithinSubCollection } from './DataController'
 
 let savedTrips = [];
@@ -30,16 +30,23 @@ export function getAllExecutedTrips() {
 }
 
 export async function fetchAllTrips() {
-    savedTrips = [];
-    savedTripsSnapshot = await getDataByCollection("SavedTrips");
-    for (const doc of savedTripsSnapshot.docs) {
-        let executedTripsSnapshot = await getDataWithinSubCollection("SavedTrips", doc.id, "ExecutedInstances");
-        let executedTrips = parseExecutedTripsSnapshot(doc.id, executedTripsSnapshot);
-        let trip = convertToTripClass(doc.data(), executedTrips);
-        savedTrips.push(trip);
-        executedTrips.forEach((executedTrip) => { 
-            executedTripsArray.push(executedTrip) 
-        });
+    try {
+        savedTrips = [];
+        savedTripsSnapshot = await getDataByCollection("SavedTrips");
+        for (const doc of savedTripsSnapshot.docs) {
+            let executedTripsSnapshot = await getDataWithinSubCollection("SavedTrips", doc.id, "ExecutedInstances");
+            let executedTrips = parseExecutedTripsSnapshot(doc.id, executedTripsSnapshot);
+            let trip = convertToTripClass(doc.data(), executedTrips);
+            if(trip.ID.split('_')[0] === getCurrentUserId()){
+                savedTrips.push(trip);
+                executedTrips.forEach((executedTrip) => { 
+                    executedTripsArray.push(executedTrip) 
+                });
+            }
+        }
+    }
+    catch(err){
+        console.log(err);
     }
 }
 
