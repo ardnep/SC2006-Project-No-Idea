@@ -86,6 +86,15 @@ function SavedTripInfo({ route, navigation }) {
             </View>
         )
     }
+
+    const errorOut = (errorMessage) => {
+        navigation.goBack();
+        Alert.alert(
+            'Use Another App',
+            errorMessage
+        )
+    }
+    process.env.MAPS_API_KEY === undefined ? errorOut("Missing API Key") : null;
     return (
         <Layout>
             <TopNav
@@ -176,6 +185,9 @@ function SavedTripInfo({ route, navigation }) {
                             setMarkers(markerCoords);
                             setInst(instructions);
                             setGmap(result);
+                        }}
+                        onError={(errorMessage) => {
+                            errorOut(errorMessage);
                         }}
                     />
                 </MapView>
