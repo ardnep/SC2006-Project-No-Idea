@@ -1,7 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
 import { Button, Layout, Text } from 'react-native-rapi-ui';
-import { starTrips } from '../helpers/TripStarrer';
 
 export default function ({ navigation }) {
     return (

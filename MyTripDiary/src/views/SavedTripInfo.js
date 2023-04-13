@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Alert, Modal, StyleSheet, ScrollView, View, FlatList, useWindowDimensions, SafeAreaView } from "react-native";
-import { Button, Layout, Section, SectionContent, Text, TextInput, TopNav, useTheme } from "react-native-rapi-ui";
+import { Button, Layout, Section, SectionContent, Text, TextInput, TopNav, themeColor, useTheme } from "react-native-rapi-ui";
 import { deleteSavedTrip, renameSavedTrip } from "../controllers/SavedTripsController";
 import MapViewDirections from 'react-native-maps-directions';
 import MapView, { Marker } from 'react-native-maps';
@@ -27,6 +27,7 @@ function SavedTripInfo({ route, navigation }) {
     const [inst, setInst] = useState("");
     const [name, setName] = useState(trip.name);
     const [gmap, setGmap] = useState({});
+    const [markers, setMarkers] = useState([]);
     const [executionInfo, setExecutionInfo] = useState([]);
     const [transport, setTransportType] = useState(getDefaultTransport());
     const [editModalVisible, setEditModalVisible] = useState(false);
@@ -60,28 +61,28 @@ function SavedTripInfo({ route, navigation }) {
         console.info(item)
         item.split('</b>').forEach(line => {
             let parts = line.split('<b>');
-            if(parts[0].includes('</div>')) {
-                let partText = parts[0].split('">')[1].replace("</div>","");
-                if(!parts[0].includes('(')){
+            if (parts[0].includes('</div>')) {
+                let partText = parts[0].split('">')[1].replace("</div>", "");
+                if (!parts[0].includes('(')) {
                     partText = " (" + partText + ")";
                 }
-                textMap.push({"text": partText, "bold": false, "italics": false})
+                textMap.push({ "text": partText, "bold": false, "italics": false })
             } else {
-                textMap.push({"text":parts[0], "bold": false, "italics": false});
+                textMap.push({ "text": parts[0], "bold": false, "italics": false });
             }
-            if(parts.length > 1 && parts[1] !== ''){
-                textMap.push({"text":parts[1], "bold": true, "italics": false});
+            if (parts.length > 1 && parts[1] !== '') {
+                textMap.push({ "text": parts[1], "bold": true, "italics": false });
             }
         });
         return (
-            <View style={{flexWrap:'wrap', flexDirection:'row'}}>
-            {
-                textMap.map((part, index) => {
-                    return (
-                        <Text style={{marginVertical:10, color:instructionTextColor, fontStyle:part.italics ? 'italic' : 'normal'}} fontWeight={part.bold ? "bold" : "normal"} key={index}>{part.text}</Text>
-                    );
-                })
-            }
+            <View style={{ flexWrap: 'wrap', flexDirection: 'row' }}>
+                {
+                    textMap.map((part, index) => {
+                        return (
+                            <Text style={{ marginVertical: 10, color: instructionTextColor, fontStyle: part.italics ? 'italic' : 'normal' }} fontWeight={part.bold ? "bold" : "normal"} key={index}>{part.text}</Text>
+                        );
+                    })
+                }
             </View>
         )
     }
@@ -110,17 +111,17 @@ function SavedTripInfo({ route, navigation }) {
                 <Modal visible={instructionModalVisible} animationType="slide">
                     <Section style={styles.editTripNameContainer}>
                         <SafeAreaView style={{ flex: 1 }}>
-                        <View style={{ flex: 1, height: '70%', width: '92%' }}>
-                            <FlatList
-                                data={inst}
-                                renderItem={renderInstruction}
-                                numColumns={1}
-                                keyExtractor={(item, index) => index.toString()}
-                            />
-                        </View>
-                        <SectionContent style={styles.buttonSection}>
-                            <Button text="Close" onPress={() => setInstructionModalVisible(false)} style={styles.button}/>
-                        </SectionContent>
+                            <View style={{ flex: 1, height: '70%', width: '92%' }}>
+                                <FlatList
+                                    data={inst}
+                                    renderItem={renderInstruction}
+                                    numColumns={1}
+                                    keyExtractor={(item, index) => index.toString()}
+                                />
+                            </View>
+                            <SectionContent style={styles.buttonSection}>
+                                <Button text="Close" onPress={() => setInstructionModalVisible(false)} style={styles.button} />
+                            </SectionContent>
                         </SafeAreaView>
                     </Section>
                 </Modal>
@@ -132,17 +133,25 @@ function SavedTripInfo({ route, navigation }) {
                     {executionInfo.length > 0 ? <View>
 
                         <Text>{Math.round(executionInfo[0])}mins ({executionInfo[1].toFixed(2)}km)</Text>
-                        <Text>{executionInfo[2] ? `S$${executionInfo[2]}` : "Free"}</Text>
+                        <Text>{executionInfo[2] == 0 ? "Free" : (executionInfo[2] == -1 ? "Unable to Estimate" : `S$${executionInfo[2]}`)}</Text>
                     </View> : null}
                 </SectionContent>
                 <MapView
                     initialRegion={getIntitialRegion(origin, destination)}
-                    style={{ minHeight: 400 }}
+                    style={{ height: '50%' }}
                     customMapStyle={isDarkmode ? darkMapStyle : []}
                     userInterfaceStyle={isDarkmode ? 'dark' : 'light'}
                 >
-                    <Marker coordinate={origin} pinColor="#89CFF0" />
+                    <Marker coordinate={origin} pinColor={themeColor.primary} description={transport.type === "TRANSIT" ? inst[0] : null} title={transport.type === "TRANSIT" ? "Step 1" : null} />
                     <Marker coordinate={destination} />
+                    {
+                        markers.map((item, index) => {
+                            console.log(index);
+                            return (
+                                <Marker coordinate={{ latitude: item.lat, longitude: item.lng }} pinColor={themeColor.warning500} description={inst[index + 1]} title={`Step ${index + 2}`} key={index} />
+                            );
+                        })
+                    }
                     <MapViewDirections
                         origin={origin}
                         destination={destination}
@@ -156,29 +165,48 @@ function SavedTripInfo({ route, navigation }) {
                                 setExecutionInfo([result.duration, result.distance, executionPrice]);
                             });
                             let instructions = []
-                            result.legs[0].steps.forEach(x => x.html_instructions.replace(/<wbr\/>/g,'').split('<br>').forEach(x => {if(x!=='') { instructions.push(x)}}));
+                            result.legs[0].steps.forEach(x => x.html_instructions.replace(/<wbr\/>/g, '').split('<br>').forEach(x => { if (x !== '') { instructions.push(x) } }));
+                            let routeSteps = result.legs[0].steps;
+                            let markerCoords = []
+                            for (var i = 1; i < routeSteps.length; i++) {
+                                if ((routeSteps[i].travel_mode != routeSteps[i - 1].travel_mode) || routeSteps[i].travel_mode == "TRANSIT") {
+                                    markerCoords.push(routeSteps[i].start_location);
+                                }
+                            }
+                            setMarkers(markerCoords);
                             setInst(instructions);
                             setGmap(result);
                         }}
                     />
                 </MapView>
-                <SectionContent style={styles.buttonSection}>
+                {/* <SectionContent style={styles.buttonSection}>
                     <Button text="Delete" status="danger" style={styles.button} onPress={() => { confirmDelete(trip, navigation, updateSavedTrips) }} />
                     <Button text="Edit" status="primary" style={styles.button} onPress={() => { setEditModalVisible(true) }} />
                     <Button text="Start" status="primary" style={styles.button} onPress={() => { executeTrip(trip, new Date(), transport.name, executionInfo[2], executionInfo[0], executionInfo[1]) }} />
-                </SectionContent>
-                <SectionContent style={styles.buttonSection}>
+                </SectionContent> */}
+                <SectionContent style={{ flexDirection: 'column', justifyContent: 'center' }}>
                     {/* <Button text={<FontAwesome5 name={"car"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("DRIVING") }} />
                     <Button text={<FontAwesome5 name={"taxi"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("DRIVING") }} />
                     <Button text={<FontAwesome5 name={"bus-alt"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("TRANSIT") }} />
                     <Button text={<FontAwesome5 name={"bicycle"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("BICYCLING") }} />
                     <Button text={<FontAwesome5 name={"walking"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("WALKING") }} /> */}
-                    <FlatList
-                        data={getAllTransports()}
-                        renderItem={renderTransport}
-                        numColumns={getAllTransports().length}
-                    />
-                    <Button text={<FontAwesome5 name={"info-circle"} size={16} />} status="info" style={styles.button} onPress={() => { setInstructionModalVisible(true) }} />
+                    <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                        <Button text={<FontAwesome5 name={"play"} size={16} />} status="success" style={styles.button} onPress={() => {
+                            executeTrip(trip, new Date(), transport.name, executionInfo[2], executionInfo[0], executionInfo[1]);
+                            Alert.alert(
+                                `Executed Successfully`,
+                                `${trip.name} has been executed!`
+                            );
+                        }} />
+                        <Button text={<FontAwesome5 name={"info-circle"} size={16} />} status="info" style={styles.button} onPress={() => { setInstructionModalVisible(true) }} />
+                    </View>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+                        <FlatList
+                            data={getAllTransports()}
+                            renderItem={renderTransport}
+                            numColumns={getAllTransports().length}
+                        />
+                    </View>
                 </SectionContent>
             </Section>
         </Layout >

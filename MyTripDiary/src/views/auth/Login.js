@@ -169,7 +169,7 @@ export default function ({ navigation }) {
                 }}
               >
                 <Text size="md" fontWeight="bold">
-                  Forget password
+                  Forgot password?
                 </Text>
               </TouchableOpacity>
             </View>
@@ -193,7 +193,7 @@ export default function ({ navigation }) {
                     marginLeft: 5,
                   }}
                 >
-                  {isDarkmode ? "☀️ light theme" : "🌑 dark theme"}
+                  {/* {isDarkmode ? "☀️ light theme" : "🌑 Dark theme"} */}
                 </Text>
               </TouchableOpacity>
             </View>

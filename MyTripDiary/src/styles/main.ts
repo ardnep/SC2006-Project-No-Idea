@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     },
 
     sectionHeader: {
-        fontSize: 20,
+        fontSize: 18.5,
     },
 
     actionMenu: {
