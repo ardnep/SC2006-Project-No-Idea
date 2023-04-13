@@ -133,6 +133,7 @@ export function addExecutedTrip(executedTripToAdd) {
 
     executedTripToAdd.timeStamp = { nanoseconds: executedTripToAdd.timeStamp.getTime() * 10e6, seconds: Math.round(executedTripToAdd.timeStamp.getTime() / 1000) };
 
+    console.log("pushed");
     executedTripsArray.push(executedTripToAdd);
 
     const trip = getSavedTripByID(executedTripToAdd.tripID);

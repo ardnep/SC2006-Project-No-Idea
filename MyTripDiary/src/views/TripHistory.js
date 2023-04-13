@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AntDesign, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { SectionList, StyleSheet, Modal, View, Pressable, TouchableOpacity, Alert } from 'react-native';
 import { Button, Layout, Section, SectionContent, TopNav, Text, TextInput, useTheme } from 'react-native-rapi-ui';
@@ -9,6 +9,7 @@ import { themeColor } from "react-native-rapi-ui";
 import moment from 'moment-timezone';
 import { editExecutedTripPrice } from "../controllers/SavedTripsController";
 import styles from '../styles/main';
+import eventBus from './eventBus';
 
 /** Displays TripHistory screen */
 export default function ({ navigation }) {
@@ -17,6 +18,24 @@ export default function ({ navigation }) {
     const [price, setPrice] = useState(null);
     const [groupedTrips, setGroupedTrips] = useState(groupExecutedTripsByDate(executedTrips));
     const [popupState, setPopupState] = useState({ selectedExecutedTrip: null, visible: false });
+
+    /*const [eventOccurred, setEventOccurred] = useState(false);
+    const [key, setKey] = useState(0); // Add a key state*/
+  
+    useEffect(() => {
+      // Subscribe to the event and update component state when it occurs
+      const handleEvent = () => {
+        //setEventOccurred(true);
+        setGroupedTrips(groupExecutedTripsByDate([...getExecutedTripsSortedByDate()]));
+        //setKey(prevKey => prevKey + 1); // Update the key to trigger re-render
+      };
+      eventBus.subscribe('updateExecutedTrips', handleEvent);
+  
+      // Cleanup the subscription on unmount
+      return () => {
+        eventBus.unsubscribe('updateExecutedTrips', handleEvent);
+      };
+    }, []);
 
     const closePopup = () => {
         setPopupState({ selectedExecutedTrip: null, visible: false });
@@ -80,7 +99,7 @@ export default function ({ navigation }) {
             <TouchableComponent onLongPress={() => {
                 setPopupState({ selectedExecutedTrip: item, visible: true });
             }}
-                onPress={() => { navigation.navigate("ExecutedTripInfo", { item, trip, updateGroupedTrips }) }} style={styles.itemContainer}>
+                onPress={() => { navigation.navigate("ExecutedTripInfo", { item, trip }) }} style={styles.itemContainer}>
                 <Section style={styles.section}>
                     <View style={styles.titleContainer}>
                         <View style={styles.titleContainerMiddleContent}>

@@ -1,17 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
 import { Alert, Modal, StyleSheet, ScrollView, View, FlatList, useWindowDimensions, SafeAreaView } from "react-native";
 import { Button, Layout, Section, SectionContent, Text, TextInput, TopNav, themeColor, useTheme } from "react-native-rapi-ui";
-import { deleteSavedTrip, renameSavedTrip } from "../controllers/SavedTripsController";
 import MapViewDirections from 'react-native-maps-directions';
 import MapView, { Marker } from 'react-native-maps';
 import darkMapStyle from '../styles/darkMap.json'
-import { Fragment, useState } from "react";
-import { RenderHTML } from 'react-native-render-html';
 import { FontAwesome5 } from "@expo/vector-icons";
 import { getAllTransports, getDefaultTransport } from "../controllers/RouteManager";
-import { duration } from "moment";
 import { executeTrip } from "../controllers/TripExecutor";
-
+import eventBus from "./eventBus";
 /**
  * Displays information about a saved trip and allows the user to interact with it.
  * @param {object} props
@@ -22,27 +19,16 @@ import { executeTrip } from "../controllers/TripExecutor";
 
 function SavedTripInfo({ route, navigation }) {
     const { isDarkmode } = useTheme();
-    const { trip, updateSavedTrips } = route.params;
-    const { width } = useWindowDimensions();
+    const { trip } = route.params;
     const [inst, setInst] = useState("");
-    const [name, setName] = useState(trip.name);
     const [gmap, setGmap] = useState({});
     const [markers, setMarkers] = useState([]);
     const [executionInfo, setExecutionInfo] = useState([]);
     const [transport, setTransportType] = useState(getDefaultTransport());
-    const [editModalVisible, setEditModalVisible] = useState(false);
     const [instructionModalVisible, setInstructionModalVisible] = useState(false);
     const origin = { latitude: trip.srcLat, longitude: trip.srcLong };
     const destination = { latitude: trip.destLat, longitude: trip.destLong };
-    const instructionTextColor = isDarkmode ? "#FFFFFF" : "#000000";
-    const handleNameChange = (value) => {
-        setName(value);
-    };
-    const handleSubmit = () => {
-        renameSavedTrip(trip, name);
-        setEditModalVisible(false);
-        updateSavedTrips();
-    };
+
     const renderTransport = ({ item }) => {
         const transportItem = item;
         return (
@@ -79,7 +65,7 @@ function SavedTripInfo({ route, navigation }) {
                 {
                     textMap.map((part, index) => {
                         return (
-                            <Text style={{ marginVertical: 10, color: instructionTextColor, fontStyle: part.italics ? 'italic' : 'normal' }} fontWeight={part.bold ? "bold" : "normal"} key={index}>{part.text}</Text>
+                            <Text style={{ marginVertical: 10, fontStyle: part.italics ? 'italic' : 'normal' }} fontWeight={part.bold ? "bold" : "normal"} key={index}>{part.text}</Text>
                         );
                     })
                 }
@@ -100,23 +86,9 @@ function SavedTripInfo({ route, navigation }) {
             <TopNav
                 leftContent={<Ionicons name="chevron-back" color={isDarkmode ? 'white' : 'black'} size={20} />}
                 leftAction={navigation.goBack}
-                middleContent={name}
+                middleContent={trip.name}
             />
             <Section>
-                <Modal visible={editModalVisible} animationType="slide">
-                    <Section style={styles.editTripNameContainer}>
-                        <Text style={styles.text}>Enter new name:</Text>
-                        <TextInput
-                            value={name}
-                            onChangeText={handleNameChange}
-                            style={{ borderWidth: 1, borderColor: 'gray', padding: 10 }}
-                        />
-                        <SectionContent style={styles.buttonSection}>
-                            <Button text="Confirm" onPress={handleSubmit} style={styles.button} />
-                            <Button text="Cancel" onPress={() => setEditModalVisible(false)} style={styles.button} />
-                        </SectionContent>
-                    </Section>
-                </Modal>
                 <Modal visible={instructionModalVisible} animationType="slide">
                     <Section style={styles.editTripNameContainer}>
                         <SafeAreaView style={{ flex: 1 }}>
@@ -191,17 +163,7 @@ function SavedTripInfo({ route, navigation }) {
                         }}
                     />
                 </MapView>
-                {/* <SectionContent style={styles.buttonSection}>
-                    <Button text="Delete" status="danger" style={styles.button} onPress={() => { confirmDelete(trip, navigation, updateSavedTrips) }} />
-                    <Button text="Edit" status="primary" style={styles.button} onPress={() => { setEditModalVisible(true) }} />
-                    <Button text="Start" status="primary" style={styles.button} onPress={() => { executeTrip(trip, new Date(), transport.name, executionInfo[2], executionInfo[0], executionInfo[1]) }} />
-                </SectionContent> */}
                 <SectionContent style={{ flexDirection: 'column', justifyContent: 'center' }}>
-                    {/* <Button text={<FontAwesome5 name={"car"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("DRIVING") }} />
-                    <Button text={<FontAwesome5 name={"taxi"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("DRIVING") }} />
-                    <Button text={<FontAwesome5 name={"bus-alt"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("TRANSIT") }} />
-                    <Button text={<FontAwesome5 name={"bicycle"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("BICYCLING") }} />
-                    <Button text={<FontAwesome5 name={"walking"} size={16}/>} status="primary" style={styles.button} onPress={() => { changeTransport("WALKING") }} /> */}
                     <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                         <Button text={<FontAwesome5 name={"play"} size={16} />} status="success" style={styles.button} onPress={() => {
                             executeTrip(trip, new Date(), transport.name, executionInfo[2], executionInfo[0], executionInfo[1]);
@@ -209,6 +171,8 @@ function SavedTripInfo({ route, navigation }) {
                                 `Executed Successfully`,
                                 `${trip.name} has been executed!`
                             );
+                            eventBus.emit('updateExecutedTrips', null);
+                            navigation.goBack();
                         }} />
                         <Button text={<FontAwesome5 name={"info-circle"} size={16} />} status="info" style={styles.button} onPress={() => { setInstructionModalVisible(true) }} />
                     </View>
@@ -223,28 +187,6 @@ function SavedTripInfo({ route, navigation }) {
             </Section>
         </Layout >
     )
-}
-
-
-
-const confirmDelete = (trip, navigation, updateSavedTrips) => {
-    Alert.alert(
-        'Confirm Deletion',
-        'Are you sure you want to delete this saved trip?',
-        [
-            {
-                text: 'Cancel',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel',
-            },
-            {
-                text: 'Delete',
-                onPress: () => { deleteSavedTrip(trip); updateSavedTrips(); navigation.goBack() },
-                style: 'destructive',
-            },
-        ],
-        { cancelable: false }
-    );
 }
 
 export const getIntitialRegion = (origin, destination) => {

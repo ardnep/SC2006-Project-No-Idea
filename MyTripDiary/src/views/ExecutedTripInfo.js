@@ -1,28 +1,17 @@
-import { useState } from "react";
 import { Modal, StyleSheet } from "react-native";
 import { Button, Layout, Section, SectionContent, Text, TextInput, TopNav, useTheme } from "react-native-rapi-ui";
 import { getIntitialRegion } from "./SavedTripInfo";
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import { getTime, getDate, getDisplayPrice } from "./TripHistory";
-import { editExecutedTripPrice } from "../controllers/SavedTripsController";
 import darkMapStyle from '../styles/darkMap.json'
 
 function ExecutedTripInfo({ route, navigation }) {
     const { isDarkmode } = useTheme();
-    const { item, trip, updateGroupedTrips } = route.params;
-    // const [price, setPrice] = useState(item.tripPrice);
-    // const [modalVisible, setModalVisible] = useState(false);
+    const { item, trip } = route.params;
     const origin = { latitude: trip.srcLat, longitude: trip.srcLong };
     const destination = { latitude: trip.destLat, longitude: trip.destLong };
-    // const handlePriceChange = (value) => {
-    //     setPrice(Number(value));
-    // };
-    // const handleSubmit = () => {
-    //     editExecutedTripPrice(item, price);
-    //     setModalVisible(false);
-    //     updateGroupedTrips();
-    // };
+
     return (
         <Layout>
             <TopNav
