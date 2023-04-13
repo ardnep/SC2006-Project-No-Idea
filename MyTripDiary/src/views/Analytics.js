@@ -27,24 +27,32 @@ import { Line, Path, G, Text as SVGText } from "react-native-svg";
 import { LineChart, BarChart } from "react-native-chart-kit";
 import { getAllExecutedTrips } from "../controllers/SavedTripsController";
 
-// Mocked data
-const trips = getAllExecutedTrips();
+const data = getAllExecutedTrips();
+const trips = data.map((trip) => {
+  return {
+    name: getSavedTripByID(trip.tripID).name,
+    distance: trip.distance,
+    time: trip.duration,
+    cost: trip.tripPrice.userInputPrice == -1 ? trip.tripPrice.estimatedPrice : trip.tripPrice.userInputPrice,
+    mode: trip.modeOfTransport
+  };
+});
 
 const optimizedTrips = trips.map((trip) => ({
   ...trip,
-  duration: trip.duration * 0.8,
-  tripPrice: trip.tripPrice * 0.7,
+  time: trip.time * 0.8,
+  cost: trip.cost * 0.7,
 }));
 
-const totalTripPrice = trips.reduce((total, trip) => total + trip.tripPrice, 0);
-const totalDuration = trips.reduce((total, trip) => total + trip.duration, 0);
+const totalCost = trips.reduce((total, trip) => total + trip.cost, 0);
+const totalTime = trips.reduce((total, trip) => total + trip.time, 0);
 
-const optimizedTotalTripPrice = optimizedTrips.reduce(
-  (total, trip) => total + trip.tripPrice,
+const optimizedTotalCost = optimizedTrips.reduce(
+  (total, trip) => total + trip.cost,
   0
 );
-const optimizedTotalDuration = optimizedTrips.reduce(
-  (total, trip) => total + trip.duration,
+const optimizedTotalTime = optimizedTrips.reduce(
+  (total, trip) => total + trip.time,
   0
 );
 
@@ -90,10 +98,10 @@ export default function ({ navigation }) {
   const [selectedTransport, setSelectedTransport] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const transportTripPrice = transportModes.map((modeOfTransport) =>
+  const transportCost = transportModes.map((mode) =>
     trips
-      .filter((trip) => trip.modeOfTransport === modeOfTransport)
-      .reduce((total, trip) => total + trip.tripPrice, 0)
+      .filter((trip) => trip.mode === mode)
+      .reduce((total, trip) => total + trip.cost, 0)
   );
 
   const CombinedBarChart = ({ data, width, height }) => {
@@ -160,7 +168,6 @@ export default function ({ navigation }) {
       strokeWidth: 2,
       propsForDots: {
         r: "4",
-        r: "4",
       },
     };
 
@@ -215,21 +222,21 @@ export default function ({ navigation }) {
   };
 
   const transportFrequency = trips.reduce((frequency, trip) => {
-    const modeOfTransport = trip.modeOfTransport;
-    if (!frequency[modeOfTransport]) {
-      frequency[modeOfTransport] = 0;
+    const mode = trip.mode;
+    if (!frequency[mode]) {
+      frequency[mode] = 0;
     }
-    frequency[modeOfTransport]++;
+    frequency[mode]++;
     return frequency;
   }, {});
 
-  const pieData = Object.entries(transportFrequency).map(([modeOfTransport, value]) => {
-    return { modeOfTransport, value };
+  const pieData = Object.entries(transportFrequency).map(([mode, value]) => {
+    return { mode, value };
   });
 
-  const pieData2 = transportTripPrice.map((tripPrice, index) => ({
-    value: tripPrice,
-    modeOfTransport: transportModes[index],
+  const pieData2 = transportCost.map((cost, index) => ({
+    value: cost,
+    mode: transportModes[index],
     color: transportColors[index],
   }));
 
@@ -237,10 +244,10 @@ export default function ({ navigation }) {
     .filter((trip) => !selectedTransport || trip.mode === selectedTransport)
     .map((trip, index) => (
       <DataTable.Row key={index}>
-        <DataTable.Cell>{trip.id}</DataTable.Cell>
-        <DataTable.Cell>{trip.distance} km</DataTable.Cell>
-        <DataTable.Cell>{trip.duration} min</DataTable.Cell>
-        <DataTable.Cell>${Number(trip.tripPrice).toFixed(2)}</DataTable.Cell>
+        <DataTable.Cell>{trip.name}</DataTable.Cell>
+        <DataTable.Cell>{trip.distance.toFixed(2)} km</DataTable.Cell>
+        <DataTable.Cell>{trip.time.toFixed(1)} min</DataTable.Cell>
+        <DataTable.Cell>${trip.cost.toFixed(2)}</DataTable.Cell>
       </DataTable.Row>
     ));
 
@@ -300,8 +307,8 @@ export default function ({ navigation }) {
                 >
                   Optimization Details:
                   {"\n\n"}- Optimized route sequence
-                  {"\n"}- Reduced overall trip price
-                  {"\n"}- Reduced total trip duration
+                  {"\n"}- Reduced overall trip cost
+                  {"\n"}- Reduced total trip time
                   {"\n"}- Improved fuel efficiency
                   {"\n"}- Reduced CO2 emissions
                 </Text>
@@ -341,10 +348,10 @@ export default function ({ navigation }) {
                       textAlign: "center",
                     }}
                   >
-                    Total Trip Price (Optimized vs. Not Optimized)
+                    Total Trip Cost (Optimized vs. Not Optimized)
                   </Text>
                   <ComparisonBarChart
-                    data={[totalTripPrice, optimizedTotalTripPrice]}
+                    data={[totalCost, optimizedTotalCost]}
                     labels={["Not Optimized", "Optimized"]}
                     width={Dimensions.get("window").width - 60}
                     height={180}
@@ -358,10 +365,10 @@ export default function ({ navigation }) {
                       textAlign: "center",
                     }}
                   >
-                    Total Trip Duration (Optimized vs. Not Optimized)
+                    Total Trip Time (Optimized vs. Not Optimized)
                   </Text>
                   <ComparisonBarChart
-                    data={[totalDuration, optimizedTotalDuration]}
+                    data={[totalTime, optimizedTotalTime]}
                     labels={["Not Optimized", "Optimized"]}
                     width={Dimensions.get("window").width - 60}
                     height={180}
@@ -413,7 +420,7 @@ export default function ({ navigation }) {
                     {
                       target: "data",
                       mutation: (props) => {
-                        setSelectedTransport(props.datum.modeOfTransport);
+                        setSelectedTransport(props.datum.mode);
                       },
                     },
                   ];
@@ -437,10 +444,10 @@ export default function ({ navigation }) {
             </Text>
             <DataTable style={{ marginTop: 10 }}>
               <DataTable.Header>
-                <DataTable.Title>Trip ID</DataTable.Title>
+                <DataTable.Title>Trip Name</DataTable.Title>
                 <DataTable.Title>Distance</DataTable.Title>
-                <DataTable.Title>Duration</DataTable.Title>
-                <DataTable.Title>Trip Price</DataTable.Title>
+                <DataTable.Title>Time</DataTable.Title>
+                <DataTable.Title>Cost</DataTable.Title>
               </DataTable.Header>
               {tripRows}
             </DataTable>
@@ -455,17 +462,17 @@ export default function ({ navigation }) {
             textAlign: "center",
           }}
         >
-          Price per Trip
+          Cost per Trip
         </Text>
         <VictoryChart theme={VictoryTheme.material}>
           <VictoryBar
             data={trips}
-            x="id"
-            y="Price"
+            x="name"
+            y="cost"
             style={{
               data: {
                 fill: ({ datum }) =>
-                  transportColors[transportModes.indexOf(datum.modeOfTransport)],
+                  transportColors[transportModes.indexOf(datum.mode)],
               },
             }}
             barWidth={20}
@@ -489,10 +496,10 @@ export default function ({ navigation }) {
             textAlign: "center",
           }}
         >
-          Duration Taken per Trip{"\n"}
+          Time Taken per Trip{"\n"}
         </Text>
         <CustomLineChart
-          data={trips.map((trip) => ({ x: trip.id, y: trip.duration }))}
+          data={trips.map((trip) => ({ x: trip.id, y: trip.time }))}
           width={Dimensions.get("window").width}
           height={220}
         />
