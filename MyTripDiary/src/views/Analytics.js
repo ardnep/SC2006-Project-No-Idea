@@ -4,7 +4,7 @@
  * @param {object} navigation - The navigation object provided by React Navigation.
  * @returns {JSX.Element} - The JSX element that represents the Analytics tab screen.
  */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ScrollView,
   Text,
@@ -25,78 +25,97 @@ import {
 import { DataTable } from "react-native-paper";
 import { Line, Path, G, Text as SVGText } from "react-native-svg";
 import { LineChart, BarChart } from "react-native-chart-kit";
-import { getAllExecutedTrips } from "../controllers/SavedTripsController";
-
-const data = getAllExecutedTrips();
-const trips = data.map((trip) => {
-  return {
-    name: getSavedTripByID(trip.tripID).name,
-    distance: trip.distance,
-    time: trip.duration,
-    cost: trip.tripPrice.userInputPrice == -1 ? trip.tripPrice.estimatedPrice : trip.tripPrice.userInputPrice,
-    mode: trip.modeOfTransport
-  };
-});
-
-const optimizedTrips = trips.map((trip) => ({
-  ...trip,
-  time: trip.time * 0.8,
-  cost: trip.cost * 0.7,
-}));
-
-const totalCost = trips.reduce((total, trip) => total + trip.cost, 0);
-const totalTime = trips.reduce((total, trip) => total + trip.time, 0);
-
-const optimizedTotalCost = optimizedTrips.reduce(
-  (total, trip) => total + trip.cost,
-  0
-);
-const optimizedTotalTime = optimizedTrips.reduce(
-  (total, trip) => total + trip.time,
-  0
-);
-
-const CustomLineChart = ({ data, width, height }) => {
-  const chartData = {
-    labels: data.map((_, index) => `Trip ${index + 1}`),
-    datasets: [
-      {
-        data: data.map((d) => d.y),
-        color: (opacity = 1) => `rgba(0, 136, 254, ${opacity})`,
-        strokeWidth: 2,
-      },
-    ],
-  };
-
-  const chartConfig = {
-    backgroundGradientFrom: "#f9fafb",
-    backgroundGradientTo: "#f9fafb",
-    decimalPlaces: 0,
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-    strokeWidth: 2,
-    propsForDots: {
-      r: "4",
-    },
-    fillShadowGradient: "rgba(0, 136, 254, 0.3)",
-    fillShadowGradientOpacity: 0.2,
-  };
-
-  return (
-    <LineChart
-      data={chartData}
-      width={width}
-      height={height}
-      chartConfig={chartConfig}
-    />
-  );
-};
+import { getAllExecutedTrips, getSavedTripByID } from "../controllers/SavedTripsController";
+import eventBus from './eventBus';
 
 const transportModes = ["Car", "Taxi", "Transit", "Cycling", "Walking"];
-const transportColors = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#000000"];
+const transportColors = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#D8A0A0"];
+
+function formatData(data) {
+  return data.map((trip) => {
+    return {
+      name: getSavedTripByID(trip.tripID).name,
+      distance: trip.distance,
+      time: trip.duration,
+      cost: trip.tripPrice.userInputPrice == -1 ? trip.tripPrice.estimatedPrice : trip.tripPrice.userInputPrice,
+      mode: trip.modeOfTransport
+    };
+  });
+}
 
 export default function ({ navigation }) {
   const [selectedTransport, setSelectedTransport] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [trips, setTrips] = useState(formatData(getAllExecutedTrips()));
+  /*const [eventOccurred, setEventOccurred] = useState(false);
+  const [key, setKey] = useState(0); // Add a key state*/
+
+  useEffect(() => {
+    // Subscribe to the event and update component state when it occurs
+    const handleEvent = () => {
+      //setEventOccurred(true);
+      setTrips(formatData(getAllExecutedTrips()));
+      //setKey(prevKey => prevKey + 1); // Update the key to trigger re-render
+    };
+    eventBus.subscribe('updateExecutedTrips', handleEvent);
+
+    // Cleanup the subscription on unmount
+    return () => {
+      eventBus.unsubscribe('updateExecutedTrips', handleEvent);
+    };
+  }, []);
+  const optimizedTrips = trips.map((trip) => ({
+    ...trip,
+    time: trip.time * 0.8,
+    cost: trip.cost * 0.7,
+  }));
+  
+  const totalCost = trips.reduce((total, trip) => total + trip.cost, 0);
+  const totalTime = trips.reduce((total, trip) => total + trip.time, 0);
+  
+  const optimizedTotalCost = optimizedTrips.reduce(
+    (total, trip) => total + trip.cost,
+    0
+  );
+  const optimizedTotalTime = optimizedTrips.reduce(
+    (total, trip) => total + trip.time,
+    0
+  );
+  
+  const CustomLineChart = ({ data, width, height }) => {
+    const chartData = {
+      labels: data.map((_, index) => `Trip ${index + 1}`),
+      datasets: [
+        {
+          data: data.map((d) => d.y),
+          color: (opacity = 1) => `rgba(0, 136, 254, ${opacity})`,
+          strokeWidth: 2,
+        },
+      ],
+    };
+  
+    const chartConfig = {
+      backgroundGradientFrom: "#f9fafb",
+      backgroundGradientTo: "#f9fafb",
+      decimalPlaces: 0,
+      color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+      strokeWidth: 2,
+      propsForDots: {
+        r: "4",
+      },
+      fillShadowGradient: "rgba(0, 136, 254, 0.3)",
+      fillShadowGradientOpacity: 0.2,
+    };
+  
+    return (
+      <LineChart
+        data={chartData}
+        width={width}
+        height={height}
+        chartConfig={chartConfig}
+      />
+    );
+  };
 
   const transportCost = transportModes.map((mode) =>
     trips
