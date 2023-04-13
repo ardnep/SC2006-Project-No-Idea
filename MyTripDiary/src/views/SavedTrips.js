@@ -58,10 +58,10 @@ function SavedTrips({ navigation }) {
     const handleStarTrip = () => {
         starTrip(popupState.selectedTrip);
         updateSavedTrips();
-        Alert.alert(
-            `Trip ${popupState.selectedTrip.pinned ? 'Starred' : 'Un-starred'}`,
-            `${popupState.selectedTrip.name} has been ${popupState.selectedTrip.pinned ? 'starred' : 'un-starred'}!`
-        );
+        // Alert.alert(
+        //     `Trip ${popupState.selectedTrip.pinned ? 'Starred' : 'Un-starred'}`,
+        //     `${popupState.selectedTrip.name} has been ${popupState.selectedTrip.pinned ? 'starred' : 'un-starred'}!`
+        // );
         closePopup();
     }
 
@@ -137,7 +137,8 @@ function SavedTrips({ navigation }) {
                 middleContent="Saved Trips"
                 rightContent={<Text size="md"><AntDesign
                     name={"pluscircle"}
-                    size={20} /></Text>}
+                    size={24}
+                    /></Text>}
                 rightAction={() => { navigation.navigate("AddSavedTrip", { updateSavedTrips }) }}
             />
             <FlatList

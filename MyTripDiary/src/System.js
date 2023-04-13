@@ -7,10 +7,11 @@ import Main from "./navigators/MainTabsNavigator";
 // import initializeFirebaseApp from "./controllers/FirebaseController";
 // initializeFirebaseApp();
 
-import { AuthContext } from "./provider/AuthProvider";
+import { AuthContext } from "./controllers/AuthController";
 
 import React, { useContext, useEffect, useState } from "react";
 import { fetchAllTrips } from "./controllers/SavedTripsController";
+import { getCurrentUserId } from "./controllers/FirebaseController";
 
 /**
  * A function component that renders a NavigationContainer containing 
@@ -20,26 +21,13 @@ import { fetchAllTrips } from "./controllers/SavedTripsController";
 export default () => {
     const auth = useContext(AuthContext);
     const user = auth.user;
-    const [tripsLoaded, setTripsLoaded] = useState(0);
-
-    useEffect(() => {
-        // Use useEffect to fetch trips after component mounts
-        const fetchTrips = async () => {
-            setTripsLoaded(1)
-            await fetchAllTrips();
-            setTripsLoaded(2);
-        };
-    
-        if (user == true && !tripsLoaded) {
-          fetchTrips();
-        }
-      }, [user, tripsLoaded]);
+    const loaded = auth.loaded;
 
     return (
         <NavigationContainer>
-            {tripsLoaded == 1 && <Loading />}
+            {loaded == 1 && <Loading />}
             {user == false && <Auth />}
-            {user == true && tripsLoaded == 2 && (
+            {user == true && loaded == 2 && (
                 <>
                 <Main/>
                 </>)}

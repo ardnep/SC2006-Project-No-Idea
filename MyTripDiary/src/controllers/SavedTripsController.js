@@ -1,7 +1,7 @@
 import { ExecutedTrip } from '../models/ExecutedTrip';
 import { Trip } from '../models/Trip';
 import { TripPrice } from '../models/TripPrice';
-import { firebaseApp } from './FirebaseController';
+import { firebaseAuth, getCurrentUserId } from './FirebaseController';
 import { addData, getDataByCollection, addDataWithinSubCollection, getDataWithinSubCollection, updateData, updateDataWithinSubCollection } from './DataController'
 
 let savedTrips = [];
@@ -36,10 +36,12 @@ export async function fetchAllTrips() {
         let executedTripsSnapshot = await getDataWithinSubCollection("SavedTrips", doc.id, "ExecutedInstances");
         let executedTrips = parseExecutedTripsSnapshot(doc.id, executedTripsSnapshot);
         let trip = convertToTripClass(doc.data(), executedTrips);
-        savedTrips.push(trip);
-        executedTrips.forEach((executedTrip) => { 
-            executedTripsArray.push(executedTrip) 
-        });
+        if(trip.ID.split('_')[0] === getCurrentUserId()){
+            savedTrips.push(trip);
+            executedTrips.forEach((executedTrip) => {
+                executedTripsArray.push(executedTrip)
+            });
+        }
     }
 }
 

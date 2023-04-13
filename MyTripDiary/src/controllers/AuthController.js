@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import {firebaseAuth} from "../controllers/FirebaseController";
+import { fetchAllTrips } from "../controllers/SavedTripsController";
 
 /**
  * 
@@ -19,18 +20,24 @@ const AuthContext = createContext();
 const AuthProvider = (props) => {
   // user null = loading
   const [user, setUser] = useState(null);
+  const [loaded, setLoaded] = useState(0);
 
   useEffect(() => {
     checkLogin();
   }, []);
 
   function checkLogin() {
-    firebaseAuth.onAuthStateChanged((u) => {
+    firebaseAuth.onAuthStateChanged(async (u) => {
+      //console.log(u)
       if (u) {
         setUser(true);
+        setLoaded(1);
+        await fetchAllTrips();
+        setLoaded(2);
         // getUserData();
       } else {
         setUser(false);
+        setLoaded(0);
         // setUserData(null);
       }
     });
@@ -39,7 +46,7 @@ const AuthProvider = (props) => {
   return (
     <AuthContext.Provider
       value={{
-        user,
+        user, loaded
       }}
     >
       {props.children}

@@ -44,16 +44,16 @@ function SavedTripInfo({ route, navigation }) {
         updateSavedTrips();
     };
     const renderTransport = ({ item }) => {
-        const newTransport = item;
+        const transportItem = item;
         return (
-            <Button text={<FontAwesome5 name={newTransport.displayIcon} size={16} />} status="primary" style={styles.button} onPress={() => {
-                if (transport.type == newTransport.type) {
-                    newTransport.getPrice(gmap).then(executionPrice => {
+            <Button text={<FontAwesome5 name={transportItem.displayIcon} size={16} />} status="primary" style={styles.button} outline={transport.name === transportItem.name ? true : false} onPress={() => {
+                if (transport.type == transportItem.type) {
+                    transportItem.getPrice(gmap).then(executionPrice => {
                         setExecutionInfo([gmap.duration, gmap.distance, executionPrice]);
                     });
                 }
-                setTransportType(newTransport);
-            }} />
+                setTransportType(transportItem);
+            }}/>
         )
     }
     const renderInstruction = ({ item }) => {

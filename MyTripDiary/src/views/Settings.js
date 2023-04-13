@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { StyleSheet, TouchableOpacity, Image, View } from 'react-native';
-import { firebaseAuth, getUserDisplayName } from '../controllers/FirebaseController';
+import { firebaseAuth, getUserDisplayName, userSignOut } from '../controllers/FirebaseController';
 import { Layout, TopNav, Avatar, Text } from 'react-native-rapi-ui';
 
 import { useTheme } from 'react-native-rapi-ui';
@@ -36,9 +36,9 @@ export default function Settings({ navigation }) {
       <TouchableOpacity onPress={() => { setTheme(isDarkmode ? "light" : "dark") }}>
         <Text style={styles.optionText}>{isDarkmode ? "Switch to Light Mode" : "Switch to Dark Mode"}</Text>
       </TouchableOpacity>
-      <TouchableOpacity>
-        <Text style={styles.optionText}>Help</Text>
-      </TouchableOpacity>
+      <TouchableOpacity onPress={() => { userSignOut() }}>
+                <Text style={styles.optionText}>Logout</Text>
+            </TouchableOpacity>
       <Text style={styles.ver}>Ver 1.0</Text>
     </Layout>
   );
@@ -55,8 +55,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 20,
     fontSize: 20,
-    fontWeight: 'light',
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    fontWeight: 'light'
   },
   ver: {
     marginTop: 50,
