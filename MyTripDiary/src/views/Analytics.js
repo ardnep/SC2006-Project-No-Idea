@@ -518,7 +518,7 @@ export default function ({ navigation }) {
           Time Taken per Trip{"\n"}
         </Text>
         <CustomLineChart
-          data={trips.map((trip) => ({ x: trip.id, y: trip.time }))}
+          data={trips.map((trip) => ({ x: trip.name, y: trip.time }))}
           width={Dimensions.get("window").width}
           height={220}
         />
