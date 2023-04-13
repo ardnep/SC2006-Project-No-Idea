@@ -14,7 +14,7 @@ import styles from '../styles/main';
 export default function ({ navigation }) {
     const { isDarkmode } = useTheme();
     let executedTrips = getExecutedTripsSortedByDate();
-    const [price, setPrice] = useState(-1);
+    const [price, setPrice] = useState(null);
     const [groupedTrips, setGroupedTrips] = useState(groupExecutedTripsByDate(executedTrips));
     const [popupState, setPopupState] = useState({ selectedExecutedTrip: null, visible: false });
 
@@ -78,7 +78,6 @@ export default function ({ navigation }) {
         const trip = getSavedTripByID(item.tripID);
         return (
             <TouchableComponent onLongPress={() => {
-                setPrice(null);
                 setPopupState({ selectedExecutedTrip: item, visible: true });
             }}
                 onPress={() => { navigation.navigate("ExecutedTripInfo", { item, trip, updateGroupedTrips }) }} style={styles.itemContainer}>
