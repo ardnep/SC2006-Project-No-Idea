@@ -4,12 +4,12 @@ import { Alert, FlatList, Modal, View, TouchableOpacity, TouchableNativeFeedback
 
 import { Button, Layout, Section, SectionContent, Text, TextInput, TopNav, useTheme } from "react-native-rapi-ui";
 
-import { getAllActiveSavedTrips, starTrip } from "../controllers/SavedTripsController";
+import { getAllActiveSavedTrips, starTrip } from "../../controllers/SavedTripsController";
 
 import { themeColor } from "react-native-rapi-ui";
-import { deleteSavedTrip, renameSavedTrip } from "../controllers/SavedTripsController";
-import styles from "../styles/main";
-import eventBus from './eventBus';
+import { deleteSavedTrip, renameSavedTrip } from "../../controllers/SavedTripsController";
+import styles from "../../styles/main";
+import eventBus from '../../models/eventBus';
 
 /**
  * Renders a list of saved trips, allowing the user to select and view them.
@@ -26,6 +26,21 @@ function SavedTrips({ navigation }) {
 
     const closePopup = () => {
         setPopupState({ selectedTrip: null, visible: false });
+    }
+
+    useEffect(() => {
+        const handleEvent = () => {
+            setSavedTripsArray(getAllActiveSavedTrips());
+        };
+        eventBus.subscribe('updateSavedTrips', handleEvent);
+
+        return () => {
+            eventBus.unsubscribe('updateSavedTrips', handleEvent);
+        };
+    }, []);
+
+    function updateSavedTrips() {
+        setSavedTripsArray([...getAllActiveSavedTrips()]);
     }
 
     const handleDeleteTrip = () => {
@@ -59,10 +74,6 @@ function SavedTrips({ navigation }) {
     const handleStarTrip = () => {
         starTrip(popupState.selectedTrip);
         updateSavedTrips();
-        // Alert.alert(
-        //     `Trip ${popupState.selectedTrip.pinned ? 'Starred' : 'Un-starred'}`,
-        //     `${popupState.selectedTrip.name} has been ${popupState.selectedTrip.pinned ? 'starred' : 'un-starred'}!`
-        // );
         closePopup();
     }
 
@@ -82,12 +93,7 @@ function SavedTrips({ navigation }) {
         closePopup();
     };
 
-    function updateSavedTrips() {
-        setSavedTripsArray([...getAllActiveSavedTrips()]);
-    }
-    
     const TouchableComponent = (props) => {
-        // Check if the current OS is Android
         if (Platform.OS === 'android') {
             return (
                 <TouchableNativeFeedback {...props}>
@@ -121,7 +127,6 @@ function SavedTrips({ navigation }) {
                                 name={"star"}
                                 color={themeColor.primary}
                                 size={20}
-                                onPress={() => { togglePin(trip); }}
                             /> : null}
                         </View>
                     </View>
@@ -140,8 +145,8 @@ function SavedTrips({ navigation }) {
                 rightContent={<Text size="md"><AntDesign
                     name={"pluscircle"}
                     size={24}
-                    /></Text>}
-                rightAction={() => { navigation.navigate("AddSavedTrip", { updateSavedTrips }) }}
+                /></Text>}
+                rightAction={() => { navigation.navigate("AddSavedTrip") }}
             />
             <FlatList
                 data={savedTripsArray.sort((a, b) => (b.pinned - a.pinned))}
@@ -174,7 +179,6 @@ function SavedTrips({ navigation }) {
                                 justifyContent: 'center'
                             }}>
                                 <Button text={<FontAwesome5 name={"pen"} size={16} />} onPress={handleTripNameChange} style={stylus.button} />
-
                                 <Button text={<AntDesign name={"star"} size={16} />} onPress={handleStarTrip} style={stylus.button} />
                                 <Button text={<FontAwesome5 name={"trash"} size={16} />} status="danger" style={stylus.button} onPress={handleDeleteTrip} />
                                 <Button text={<FontAwesome name={"close"} size={16} />} onPress={closePopup} style={stylus.button} />

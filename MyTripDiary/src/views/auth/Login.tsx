@@ -1,3 +1,12 @@
+/**
+ * A screen component for login.
+ * This component is a screen that provides a login form for the user. It uses Firebase authentication
+ * to authenticate the user's email and password, and provides functionality for the user to switch
+ * between light and dark themes.
+ * @param {object} navigation - The navigation object for the screen, which provides functions for
+ * navigating to other screens.
+ * @returns {JSX.Element} A React component that renders the login screen.
+ */
 import React, { useState } from "react";
 import {
   ScrollView,
@@ -6,7 +15,7 @@ import {
   KeyboardAvoidingView,
   Image,
 } from "react-native";
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import {
   Layout,
   Text,
@@ -16,29 +25,34 @@ import {
   themeColor,
 } from "react-native-rapi-ui";
 
-/**
- * Displays ForgetPassword screen
- * @param {Object} navigation 
- */
+
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
-  const auth = getAuth();
-  const [email, setEmail] = useState("");
+  const auth = getAuth(); // Initialize Firebase authentication
+  const [email, setEmail] = useState(""); // Initialize state for email, password, and loading status
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function forget() {
+  /**
+   * Logs the user in with their email and password.
+   * This function sets the loading status to true, and then uses Firebase authentication to
+   * sign in the user with their email and password. If there is an error, it sets the loading
+   * status to false and shows an error message to the user.
+   */
+  async function login() {
     setLoading(true);
-    await sendPasswordResetEmail(auth, email)
-      .then(function () {
-        setLoading(false);
-        navigation.navigate("Login");
-        alert("Your password reset has been sent to your email");
-      })
-      .catch(function (error) {
-        setLoading(false);
-        alert(error);
-      });
+    await signInWithEmailAndPassword(auth, email, password).catch(function (
+      error
+    ) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // ...
+      setLoading(false);
+      alert(errorMessage);
+    });
   }
+
   return (
     <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
       <Layout>
@@ -61,7 +75,7 @@ export default function ({ navigation }) {
                 height: 220,
                 width: 220,
               }}
-              source={require("../../../assets/forget.png")}
+              source={require("../../../assets/login.png")}
             />
           </View>
           <View
@@ -73,14 +87,14 @@ export default function ({ navigation }) {
             }}
           >
             <Text
-              size="h3"
               fontWeight="bold"
               style={{
                 alignSelf: "center",
                 padding: 30,
               }}
+              size="h3"
             >
-              Forget Password
+              Login
             </Text>
             <Text>Email</Text>
             <TextInput
@@ -88,15 +102,27 @@ export default function ({ navigation }) {
               placeholder="Enter your email"
               value={email}
               autoCapitalize="none"
-              autoCompleteType="off"
+              autoComplete="off"
               autoCorrect={false}
               keyboardType="email-address"
               onChangeText={(text) => setEmail(text)}
             />
+
+            <Text style={{ marginTop: 15 }}>Password</Text>
+            <TextInput
+              containerStyle={{ marginTop: 15 }}
+              placeholder="Enter your password"
+              value={password}
+              autoCapitalize="none"
+              autoComplete="off"
+              autoCorrect={false}
+              secureTextEntry={true}
+              onChangeText={(text) => setPassword(text)}
+            />
             <Button
-              text={loading ? "Loading" : "Send email"}
+              text={loading ? "Loading" : "Continue"}
               onPress={() => {
-                forget();
+                login();
               }}
               style={{
                 marginTop: 20,
@@ -112,10 +138,10 @@ export default function ({ navigation }) {
                 justifyContent: "center",
               }}
             >
-              <Text size="md">Already have an account?</Text>
+              <Text size="md">Don't have an account?</Text>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate("Login");
+                  navigation.navigate("Register");
                 }}
               >
                 <Text
@@ -125,7 +151,25 @@ export default function ({ navigation }) {
                     marginLeft: 5,
                   }}
                 >
-                  Login here
+                  Register here
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: 10,
+                justifyContent: "center",
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("ForgetPassword");
+                }}
+              >
+                <Text size="md" fontWeight="bold">
+                  Forgot password?
                 </Text>
               </TouchableOpacity>
             </View>
@@ -149,7 +193,7 @@ export default function ({ navigation }) {
                     marginLeft: 5,
                   }}
                 >
-                  {isDarkmode ? "☀️ light theme" : "🌑 dark theme"}
+                  {/* {isDarkmode ? "☀️ light theme" : "🌑 Dark theme"} */}
                 </Text>
               </TouchableOpacity>
             </View>

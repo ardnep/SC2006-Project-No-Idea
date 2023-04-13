@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Settings from "../views/Settings";
-import AccountSettings from "../views/AccountSettings";
+import Settings from "../views/settings/Settings";
+import AccountSettings from "../views/settings/AccountSettings";
 
 const SettingsStack = createNativeStackNavigator();
 

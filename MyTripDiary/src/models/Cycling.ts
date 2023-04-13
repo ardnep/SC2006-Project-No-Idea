@@ -1,10 +1,11 @@
-import { Transport } from "./Transport";
-import { getCyclingPrice } from "../controllers/PricingController";
+import { Transport } from "./Transport"
 export class Cycling extends Transport {
-    constructor(name : string, type : string, displayIcon : string) {
-        super(name,type,displayIcon);
+    constructor(name: string, type: string, displayIcon: string) {
+        super(name, type, displayIcon);
     }
-    getPrice(gMapsResponse:object): Promise<number> {
-        return getCyclingPrice(gMapsResponse);
+    getPrice(gMapsResponse: object): Promise<number> {
+        return new Promise<number>((resolve, reject) => {
+            resolve(0);
+        });
     };
 };

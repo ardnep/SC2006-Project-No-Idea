@@ -9,10 +9,11 @@ export abstract class Transport {
     name: string;
     type: string;
     displayIcon: string;
-    constructor(name : string, type : string, displayIcon : string) {
+    readonly rejectionValue: number = -1;
+    constructor(name: string, type: string, displayIcon: string) {
         this.name = name;
         this.type = type;
         this.displayIcon = displayIcon;
     }
-    abstract getPrice(gMapsResponse:object): Promise<number>;
+    abstract getPrice(gMapsResponse: object): Promise<number>;
 };

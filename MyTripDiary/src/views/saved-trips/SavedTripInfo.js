@@ -4,11 +4,11 @@ import { Alert, Modal, StyleSheet, ScrollView, View, FlatList, useWindowDimensio
 import { Button, Layout, Section, SectionContent, Text, TextInput, TopNav, themeColor, useTheme } from "react-native-rapi-ui";
 import MapViewDirections from 'react-native-maps-directions';
 import MapView, { Marker } from 'react-native-maps';
-import darkMapStyle from '../styles/darkMap.json'
+import darkMapStyle from '../../styles/darkMap.json'
 import { FontAwesome5 } from "@expo/vector-icons";
-import { getAllTransports, getDefaultTransport } from "../controllers/RouteManager";
-import { executeTrip } from "../controllers/TripExecutor";
-import eventBus from "./eventBus";
+import { getAllTransports, getDefaultTransport } from "../../controllers/RouteManager";
+import { executeTrip } from "../../controllers/TripExecutor";
+import eventBus from "../../models/eventBus";
 /**
  * Displays information about a saved trip and allows the user to interact with it.
  * @param {object} props
@@ -39,7 +39,7 @@ function SavedTripInfo({ route, navigation }) {
                     });
                 }
                 setTransportType(transportItem);
-            }}/>
+            }} />
         )
     }
     const renderInstruction = ({ item }) => {

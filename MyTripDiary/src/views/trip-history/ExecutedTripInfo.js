@@ -1,10 +1,10 @@
 import { Modal, StyleSheet } from "react-native";
 import { Button, Layout, Section, SectionContent, Text, TextInput, TopNav, useTheme } from "react-native-rapi-ui";
-import { getIntitialRegion } from "./SavedTripInfo";
+import { getIntitialRegion } from "../saved-trips/SavedTripInfo";
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import { getTime, getDate, getDisplayPrice } from "./TripHistory";
-import darkMapStyle from '../styles/darkMap.json'
+import darkMapStyle from '../../styles/darkMap.json'
 
 function ExecutedTripInfo({ route, navigation }) {
     const { isDarkmode } = useTheme();
@@ -21,21 +21,21 @@ function ExecutedTripInfo({ route, navigation }) {
             />
             <Section>
                 <SectionContent>
-                    <Text>{getTime(item.timeStamp.seconds)} - {getTime(item.timeStamp.seconds+item.duration*60)} on {getDate(item.timeStamp.seconds)}</Text>
+                    <Text>{getTime(item.timeStamp.seconds)} - {getTime(item.timeStamp.seconds + item.duration * 60)} on {getDate(item.timeStamp.seconds)}</Text>
                     <Text>{trip.srcName} to {trip.destName}</Text>
                     <Text>Travelled {item.distance.toFixed(1)}km by {item.modeOfTransport}</Text>
                     <Text>Cost: {getDisplayPrice(item)}</Text>
                 </SectionContent>
                 <MapView
                     initialRegion={getIntitialRegion(origin, destination)}
-                    style={{height:"60%"}}
+                    style={{ height: "60%" }}
                     customMapStyle={isDarkmode ? darkMapStyle : []}
                     userInterfaceStyle={isDarkmode ? 'dark' : 'light'}
                 >
-                    <Marker coordinate={origin} pinColor="#89CFF0"/>
-                    <Marker coordinate={destination}/>
+                    <Marker coordinate={origin} pinColor="#89CFF0" />
+                    <Marker coordinate={destination} />
                 </MapView>
-            </Section>       
+            </Section>
         </Layout >
     )
 }
@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 4
     },
     editTripNameContainer: {
-        flex: 1, 
-        justifyContent: 'center', 
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
     },
     text: {

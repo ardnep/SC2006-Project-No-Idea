@@ -1,11 +1,7 @@
 /**
- * A screen component for login.
- * This component is a screen that provides a login form for the user. It uses Firebase authentication
- * to authenticate the user's email and password, and provides functionality for the user to switch
- * between light and dark themes.
- * @param {object} navigation - The navigation object for the screen, which provides functions for
- * navigating to other screens.
- * @returns {JSX.Element} A React component that renders the login screen.
+ * A screen for user registration, using Firebase Authentication.
+ * @param {object} navigation - The navigation object provided by React Navigation.
+ * @returns {JSX.Element} A React component that displays the user registration screen.
  */
 import React, { useState } from "react";
 import {
@@ -15,7 +11,7 @@ import {
   KeyboardAvoidingView,
   Image,
 } from "react-native";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import {
   Layout,
   Text,
@@ -25,23 +21,20 @@ import {
   themeColor,
 } from "react-native-rapi-ui";
 
-
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
-  const auth = getAuth(); // Initialize Firebase authentication
-  const [email, setEmail] = useState(""); // Initialize state for email, password, and loading status
+  const auth = getAuth();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   /**
-   * Logs the user in with their email and password.
-   * This function sets the loading status to true, and then uses Firebase authentication to
-   * sign in the user with their email and password. If there is an error, it sets the loading
-   * status to false and shows an error message to the user.
+   * Registers a new user with the email and password entered by the user.
+   * If an error occurs, an alert will be shown to the user with the error message.
    */
-  async function login() {
+  async function register() {
     setLoading(true);
-    await signInWithEmailAndPassword(auth, email, password).catch(function (
+    await createUserWithEmailAndPassword(auth, email, password).catch(function (
       error
     ) {
       // Handle Errors here.
@@ -75,7 +68,7 @@ export default function ({ navigation }) {
                 height: 220,
                 width: 220,
               }}
-              source={require("../../../assets/login.png")}
+              source={require("../../../assets/register.png")}
             />
           </View>
           <View
@@ -88,13 +81,13 @@ export default function ({ navigation }) {
           >
             <Text
               fontWeight="bold"
+              size="h3"
               style={{
                 alignSelf: "center",
                 padding: 30,
               }}
-              size="h3"
             >
-              Login
+              Register
             </Text>
             <Text>Email</Text>
             <TextInput
@@ -102,7 +95,7 @@ export default function ({ navigation }) {
               placeholder="Enter your email"
               value={email}
               autoCapitalize="none"
-              autoCompleteType="off"
+              autoComplete="off"
               autoCorrect={false}
               keyboardType="email-address"
               onChangeText={(text) => setEmail(text)}
@@ -114,15 +107,15 @@ export default function ({ navigation }) {
               placeholder="Enter your password"
               value={password}
               autoCapitalize="none"
-              autoCompleteType="off"
+              autoComplete="off"
               autoCorrect={false}
               secureTextEntry={true}
               onChangeText={(text) => setPassword(text)}
             />
             <Button
-              text={loading ? "Loading" : "Continue"}
+              text={loading ? "Loading" : "Create an account"}
               onPress={() => {
-                login();
+                register();
               }}
               style={{
                 marginTop: 20,
@@ -138,10 +131,10 @@ export default function ({ navigation }) {
                 justifyContent: "center",
               }}
             >
-              <Text size="md">Don't have an account?</Text>
+              <Text size="md">Already have an account?</Text>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate("Register");
+                  navigation.navigate("Login");
                 }}
               >
                 <Text
@@ -151,25 +144,7 @@ export default function ({ navigation }) {
                     marginLeft: 5,
                   }}
                 >
-                  Register here
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: 10,
-                justifyContent: "center",
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("ForgetPassword");
-                }}
-              >
-                <Text size="md" fontWeight="bold">
-                  Forgot password?
+                  Login here
                 </Text>
               </TouchableOpacity>
             </View>
@@ -193,7 +168,7 @@ export default function ({ navigation }) {
                     marginLeft: 5,
                   }}
                 >
-                  {/* {isDarkmode ? "☀️ light theme" : "🌑 Dark theme"} */}
+                  {isDarkmode ? "☀️ light theme" : "🌑 dark theme"}
                 </Text>
               </TouchableOpacity>
             </View>

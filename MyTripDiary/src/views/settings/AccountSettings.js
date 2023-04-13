@@ -3,7 +3,7 @@ import { StyleSheet, Modal, TouchableOpacity } from 'react-native';
 import { TopNav, Layout, Text, TextInput, Button, Section, SectionContent } from 'react-native-rapi-ui';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from 'react-native-rapi-ui';
-import { getUserDisplayName, getUserEmail, getUserPhoneNumber, updateUserDisplayName, updateUserEmail } from '../controllers/FirebaseController';
+import { getUserDisplayName, getUserEmail, getUserPhoneNumber, updateUserDisplayName, updateUserEmail } from '../../controllers/FirebaseController';
 
 export default function AccountSettings({ route, navigation }) {
     const { isDarkmode } = useTheme();

@@ -4,16 +4,16 @@
  * @param {object} navigation - The navigation object provided by React Navigation.
  * @returns {JSX.Element} - The JSX element that represents the Analytics tab screen.
  */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     ScrollView,
-    Text,
     View,
     Button,
     Modal,
     Dimensions,
+    RefreshControl,
 } from "react-native";
-import { Layout } from "react-native-rapi-ui";
+import { Layout, themeColor, Text, useTheme } from "react-native-rapi-ui";
 import {
     VictoryPie,
     VictoryBar,
@@ -25,9 +25,9 @@ import {
 import { DataTable } from "react-native-paper";
 import { Line, Path, G, Text as SVGText } from "react-native-svg";
 import { LineChart, BarChart } from "react-native-chart-kit";
-import { getAllExecutedTrips, getSavedTripByID } from "../controllers/SavedTripsController";
-import eventBus from './eventBus';
-import { getExecutedTripsSortedByDate } from "../controllers/HistoryController";
+import { getAllExecutedTrips, getSavedTripByID } from "../../controllers/SavedTripsController";
+import eventBus from '../../models/eventBus';
+import { getExecutedTripsSortedByDate } from "../../controllers/HistoryController";
 
 const transportModes = ["Car", "Taxi", "Transit", "Cycling", "Walking"];
 const transportColors = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#D8A0A0"];
@@ -49,13 +49,22 @@ function getLast10Trips(executedTrips) {
 }
 
 export default function ({ navigation }) {
+    const { isDarkmode } = useTheme();
+    const textColor = isDarkmode ? themeColor.white : themeColor.black;
     const [selectedTransport, setSelectedTransport] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [trips, setTrips] = useState(formatData(getAllExecutedTrips()));
     const [tripsSortedByDate, setTripsSortedByDate] = useState(getLast10Trips(formatData(getExecutedTripsSortedByDate())));
+    const [refreshing, setRefreshing] = useState(false);
 
-    /*const [eventOccurred, setEventOccurred] = useState(false);
-    const [key, setKey] = useState(0); // Add a key state*/
+    const handleRefresh = useCallback(() => {
+        setRefreshing(true);
+        setTripsSortedByDate(getLast10Trips(formatData(getExecutedTripsSortedByDate())));
+        setTrips(formatData(getAllExecutedTrips()));
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 2000);
+    }, []);
 
     useEffect(() => {
         // Subscribe to the event and update component state when it occurs
@@ -130,85 +139,6 @@ export default function ({ navigation }) {
             .reduce((total, trip) => total + trip.cost, 0)
     );
 
-    const CombinedBarChart = ({ data, width, height }) => {
-        const chartData = {
-            labels: data.map((_, index) => `Trip ${index + 1}`),
-            datasets: [
-                {
-                    data: data.map((d) => d.y1),
-                    color: (opacity = 1) => `rgba(0, 136, 254, ${opacity})`,
-                    strokeWidth: 2,
-                },
-                {
-                    data: data.map((d) => d.y2),
-                    color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
-                    strokeWidth: 2,
-                },
-            ],
-        };
-
-        const chartConfig = {
-            backgroundGradientFrom: "#FFF",
-            backgroundGradientTo: "#FFF",
-            decimalPlaces: 0,
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            strokeWidth: 2,
-            propsForDots: {
-                r: "4",
-            },
-        };
-
-        return (
-            <BarChart
-                data={chartData}
-                width={width}
-                height={height}
-                yAxisLabel=""
-                chartConfig={chartConfig}
-                fromZero
-            />
-        );
-    };
-
-    const TotalBarChart = ({ data, labels, width, height }) => {
-        const chartData = {
-            labels: labels,
-            datasets: [
-                {
-                    data: data,
-                    colors: [
-                        (opacity = 1) => `rgba(54, 162, 235, ${opacity})`,
-                        (opacity = 1) => `rgba(75, 192, 192, ${opacity})`,
-                        (opacity = 1) => `rgba(255, 206, 86, ${opacity})`,
-                    ],
-                    strokeWidth: 2,
-                },
-            ],
-        };
-
-        const chartConfig = {
-            backgroundGradientFrom: "#FFF",
-            backgroundGradientTo: "#FFF",
-            decimalPlaces: 0,
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            strokeWidth: 2,
-            propsForDots: {
-                r: "4",
-            },
-        };
-
-        return (
-            <BarChart
-                data={chartData}
-                width={width}
-                height={height}
-                yAxisLabel=""
-                chartConfig={chartConfig}
-                fromZero
-            />
-        );
-    };
-
     const ComparisonBarChart = ({ data, labels, width, height }) => {
         const chartData = {
             labels: labels,
@@ -270,16 +200,20 @@ export default function ({ navigation }) {
         .filter((trip) => !selectedTransport || trip.mode === selectedTransport)
         .map((trip, index) => (
             <DataTable.Row key={index}>
-                <DataTable.Cell>{trip.name}</DataTable.Cell>
-                <DataTable.Cell>{trip.distance.toFixed(2)} km</DataTable.Cell>
-                <DataTable.Cell>{trip.time.toFixed(1)} min</DataTable.Cell>
-                <DataTable.Cell>${trip.cost.toFixed(2)}</DataTable.Cell>
+                <DataTable.Cell textStyle={{ color: textColor }}>{trip.name}</DataTable.Cell>
+                <DataTable.Cell textStyle={{ color: textColor }}>{trip.distance.toFixed(2)} km</DataTable.Cell>
+                <DataTable.Cell textStyle={{ color: textColor }}>{trip.time.toFixed(1)} min</DataTable.Cell>
+                <DataTable.Cell textStyle={{ color: textColor }}>${trip.cost.toFixed(2)}</DataTable.Cell>
             </DataTable.Row>
         ));
 
     return (
         <Layout>
-            <ScrollView>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+                }
+            >
                 <View
                     style={{ alignItems: "flex-end", marginRight: 10, marginTop: 15 }}
                 >
@@ -290,7 +224,7 @@ export default function ({ navigation }) {
                     />
                 </View>
 
-                <Modal animationType="fade" transparent={true} visible={modalVisible}>
+                <Modal animationType="fade" visible={modalVisible}>
                     <View
                         style={{
                             flex: 1,
@@ -303,7 +237,6 @@ export default function ({ navigation }) {
                             style={{
                                 width: "90%",
                                 height: "80%",
-                                backgroundColor: "white",
                                 borderRadius: 10,
                                 padding: 20,
                             }}
@@ -437,7 +370,7 @@ export default function ({ navigation }) {
                     innerRadius={30}
                     labelRadius={({ innerRadius }) => innerRadius + 50}
                     padAngle={2}
-                    style={{ labels: { fontSize: 12, fontWeight: "bold" } }}
+                    style={{ labels: { fontSize: 12, fontWeight: "bold", fill: textColor } }}
                     events={[
                         {
                             target: "data",
@@ -471,7 +404,7 @@ export default function ({ navigation }) {
                         </Text>
                         <DataTable style={{ marginTop: 10 }}>
                             <DataTable.Header>
-                                <DataTable.Title>Trip Name</DataTable.Title>
+                                <DataTable.Title>Trip ID</DataTable.Title>
                                 <DataTable.Title>Distance</DataTable.Title>
                                 <DataTable.Title>Time</DataTable.Title>
                                 <DataTable.Title>Cost</DataTable.Title>
@@ -507,11 +440,11 @@ export default function ({ navigation }) {
                     <VictoryAxis
                         dependentAxis
                         tickFormat={(x) => `$${x}`}
-                        style={{ tickLabels: { fontSize: 10, padding: 5 } }}
+                        style={{ tickLabels: { fontSize: 10, padding: 5, fill: textColor } }}
                     />
                     <VictoryAxis
                         tickFormat={(x) => `${x}`}
-                        style={{ tickLabels: { fontSize: 10, padding: 5 } }}
+                        style={{ tickLabels: { fontSize: 10, padding: 5, fill: textColor } }}
                     />
                 </VictoryChart>
 

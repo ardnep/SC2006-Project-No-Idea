@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { StyleSheet, TouchableOpacity, Image, View } from 'react-native';
-import { firebaseAuth, getUserDisplayName, userSignOut } from '../controllers/FirebaseController';
+import { firebaseAuth, getUserDisplayName, userSignOut } from '../../controllers/FirebaseController';
 import { Layout, TopNav, Avatar, Text } from 'react-native-rapi-ui';
 
 import { useTheme } from 'react-native-rapi-ui';
@@ -26,7 +26,7 @@ export default function Settings({ navigation }) {
       />
       <Image
         style={styles.icon}
-        source={require('../../assets/profile-user.png')} />
+        source={require('../../../assets/profile-user.png')} />
       <View style={{ height: "10%", justifyContent: 'space-between', alignItems: 'center', marginTop: 20 }}>
         <Text style={styles.text}>{displayName || 'N/A'}</Text>
       </View>
@@ -37,8 +37,8 @@ export default function Settings({ navigation }) {
         <Text style={styles.optionText}>{isDarkmode ? "Switch to Light Mode" : "Switch to Dark Mode"}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => { userSignOut() }}>
-                <Text style={styles.optionText}>Logout</Text>
-            </TouchableOpacity>
+        <Text style={styles.optionText}>Logout</Text>
+      </TouchableOpacity>
       <Text style={styles.ver}>Ver 1.0</Text>
     </Layout>
   );
