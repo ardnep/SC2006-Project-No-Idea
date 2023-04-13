@@ -185,6 +185,7 @@ export function getCorrectPrice(execTripObj) {
 }
 
 export function getDisplayPrice(execTripObj) {
+    console.log(execTripObj)
     let priceToShow = getCorrectPrice(execTripObj);
     if (priceToShow == -1) {
         return "N/A";
