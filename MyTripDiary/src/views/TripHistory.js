@@ -1,10 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState, useEffect } from 'react';
 import { AntDesign, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
-import { SectionList, StyleSheet, Modal, View, Pressable, TouchableOpacity, Alert } from 'react-native';
+import { SectionList, StyleSheet, Modal, View, Pressable, TouchableOpacity, Alert, TouchableNativeFeedback } from 'react-native';
 import { Button, Layout, Section, SectionContent, TopNav, Text, TextInput, useTheme } from 'react-native-rapi-ui';
 import { getExecutedTripsSortedByDate } from '../controllers/HistoryController';
-import { getSavedTripByID } from '../controllers/SavedTripsController';
+import { getAllExecutedTrips, getSavedTripByID } from '../controllers/SavedTripsController';
 import { themeColor } from "react-native-rapi-ui";
 import moment from 'moment-timezone';
 import { editExecutedTripPrice } from "../controllers/SavedTripsController";
@@ -61,6 +61,7 @@ export default function ({ navigation }) {
             `The new price for ${savedTrip.name} is ${popupState.selectedExecutedTrip.tripPrice.userInputPrice}!`
         );
         setPrice(null);
+        eventBus.emit('updateExecutedTrips', null);
         closePopup();
     };
 
@@ -204,7 +205,6 @@ export function getCorrectPrice(execTripObj) {
 }
 
 export function getDisplayPrice(execTripObj) {
-    console.log(execTripObj)
     let priceToShow = getCorrectPrice(execTripObj);
     if (priceToShow == -1) {
         return "N/A";
