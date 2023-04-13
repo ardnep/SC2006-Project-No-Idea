@@ -30,23 +30,18 @@ export function getAllExecutedTrips() {
 }
 
 export async function fetchAllTrips() {
-    try {
-        savedTrips = [];
-        savedTripsSnapshot = await getDataByCollection("SavedTrips");
-        for (const doc of savedTripsSnapshot.docs) {
-            let executedTripsSnapshot = await getDataWithinSubCollection("SavedTrips", doc.id, "ExecutedInstances");
-            let executedTrips = parseExecutedTripsSnapshot(doc.id, executedTripsSnapshot);
-            let trip = convertToTripClass(doc.data(), executedTrips);
-            if(trip.ID.split('_')[0] === getCurrentUserId()){
-                savedTrips.push(trip);
-                executedTrips.forEach((executedTrip) => { 
-                    executedTripsArray.push(executedTrip) 
-                });
-            }
+    savedTrips = [];
+    savedTripsSnapshot = await getDataByCollection("SavedTrips");
+    for (const doc of savedTripsSnapshot.docs) {
+        let executedTripsSnapshot = await getDataWithinSubCollection("SavedTrips", doc.id, "ExecutedInstances");
+        let executedTrips = parseExecutedTripsSnapshot(doc.id, executedTripsSnapshot);
+        let trip = convertToTripClass(doc.data(), executedTrips);
+        if(trip.ID.split('_')[0] === getCurrentUserId()){
+            savedTrips.push(trip);
+            executedTrips.forEach((executedTrip) => {
+                executedTripsArray.push(executedTrip)
+            });
         }
-    }
-    catch(err){
-        console.log(err);
     }
 }
 

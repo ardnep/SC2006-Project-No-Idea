@@ -1,5 +1,5 @@
 import React from "react";
-import { AuthProvider } from "./src/provider/AuthProvider";
+import { AuthProvider } from "./src/controllers/AuthController";
 import { ThemeProvider } from "react-native-rapi-ui";
 import { LogBox } from "react-native";
 import System from "./src/System";

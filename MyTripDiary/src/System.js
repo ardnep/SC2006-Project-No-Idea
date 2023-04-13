@@ -7,7 +7,7 @@ import Main from "./navigators/MainTabsNavigator";
 // import initializeFirebaseApp from "./controllers/FirebaseController";
 // initializeFirebaseApp();
 
-import { AuthContext } from "./provider/AuthProvider";
+import { AuthContext } from "./controllers/AuthController";
 
 import React, { useContext, useEffect, useState } from "react";
 import { fetchAllTrips } from "./controllers/SavedTripsController";
