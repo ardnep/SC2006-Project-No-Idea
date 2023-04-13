@@ -61,6 +61,7 @@ export default function ({ navigation }) {
             `The new price for ${savedTrip.name} is ${popupState.selectedExecutedTrip.tripPrice.userInputPrice}!`
         );
         setPrice(null);
+        eventBus.emit('updateExecutedTrips', null);
         closePopup();
     };
 
