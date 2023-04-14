@@ -247,7 +247,7 @@ export function getDisplayPrice(execTripObj) {
   if (priceToShow == -1) {
     return "N/A";
   }
-  return "$" + priceToShow.toFixed(2);
+  return "$" + Number.parseFloat(priceToShow).toFixed(2);
 }
 
 export function getDate(timestamp) {

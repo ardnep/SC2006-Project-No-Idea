@@ -299,16 +299,8 @@ export default function ({ navigation }) {
                       fontWeight: "bold",
                     }}
                   >
-                    Before Optimization
-                  </Text>
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      fontSize: 18,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    After Optimization
+                    Before: Jurong Point to NTU (Taxi){"\n"}After: Jurong Point
+                    to NTU (Transit)
                   </Text>
                 </View>
 
