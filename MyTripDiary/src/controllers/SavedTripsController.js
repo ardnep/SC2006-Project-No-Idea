@@ -189,7 +189,7 @@ export function addExecutedTrip(executedTripToAdd) {
   delete tripInDB.tripID;
   delete tripInDB.executionNumber;
   delete tripInDB.tripPrice;
-  console.log(executedTripToAdd);
+
   addDataWithinSubCollection(
     "SavedTrips",
     executedTripToAdd.tripID,

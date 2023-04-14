@@ -104,8 +104,6 @@ export default function ({ navigation }) {
     const startTime = getTime(timestamp);
     const endTime = getTime(timestamp + item.duration * 60);
     const trip = getSavedTripByID(item.tripID);
-    console.log(trip);
-    console.log(trip.name);
     return (
       <TouchableComponent
         onLongPress={() => {
