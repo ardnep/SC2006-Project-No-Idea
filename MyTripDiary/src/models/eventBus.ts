@@ -1,19 +1,19 @@
 const eventBus = {
   events: {},
-  subscribe(event, callback) {
+  subscribe(event : string, callback : Function) {
     if (!this.events[event]) {
       this.events[event] = [];
     }
     this.events[event].push(callback);
   },
-  unsubscribe(event, callback) {
+  unsubscribe(event : string, callback : Function) {
     if (this.events[event]) {
-      this.events[event] = this.events[event].filter(cb => cb !== callback);
+      this.events[event] = this.events[event].filter(function(cb : Function) { cb !== callback});
     }
   },
-  emit(event, data) {
+  notify(event : string, data : Function) {
     if (this.events[event]) {
-      this.events[event].forEach(callback => callback(data));
+      this.events[event].forEach(function(callback : Function) { callback(data) });
     }
   },
 };

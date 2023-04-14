@@ -1,12 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Layout, Text, TextInput, TopNav, useTheme } from "react-native-rapi-ui";
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { addSavedTrip } from "../../controllers/SavedTripsController";
 import { Trip } from "../../models/Trip";
 import { generateTripID } from "../../controllers/FirebaseController";
-import eventBus from "../../models/eventBus";
+import eventBus from "../../models/EventBus";
 
 function AddSavedTrip({ route, navigation }) {
     const [name, setName] = React.useState('');
@@ -21,7 +21,7 @@ function AddSavedTrip({ route, navigation }) {
         }
 
         addSavedTrip(new Trip(false, false, generateTripID(), name, origin[0], origin[1], origin[2], destination[0], destination[1], destination[2], []));
-        eventBus.emit('updateSavedTrips', null);
+        eventBus.notify('updateSavedTrips', null);
 
         navigation.goBack();
     }
