@@ -50,7 +50,6 @@ export default function AccountSettings({ navigation }) {
             onChangeText={(val) => {
               setDisplayName(val);
             }}
-            keyboardType="numeric"
             style={{ borderWidth: 1, borderColor: "gray", padding: 10 }}
           />
           <SectionContent style={styles.buttonSection}>

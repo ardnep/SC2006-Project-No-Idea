@@ -12,7 +12,7 @@ import {
 } from "./DataController";
 
 let savedTrips = [];
-const executedTripsArray = [];
+let executedTripsArray = [];
 
 /**
  * Get all the saved trips for this user
@@ -38,6 +38,7 @@ export function getAllExecutedTrips() {
 
 export async function fetchAllTrips() {
   savedTrips = [];
+  executedTripsArray = [];
   savedTripsSnapshot = await getDataByCollection("SavedTrips");
   for (const doc of savedTripsSnapshot.docs) {
     let executedTripsSnapshot = await getDataWithinSubCollection(
@@ -188,11 +189,12 @@ export function addExecutedTrip(executedTripToAdd) {
   delete tripInDB.tripID;
   delete tripInDB.executionNumber;
   delete tripInDB.tripPrice;
+  console.log(executedTripToAdd);
   addDataWithinSubCollection(
     "SavedTrips",
     executedTripToAdd.tripID,
     "ExecutedInstances",
-    executedTripToAdd.executionNumber,
+    executedTripToAdd.executionNumber.toString(),
     Object.fromEntries(
       Object.entries(Object.assign(tripInDB, executedTripToAdd.tripPrice))
     )

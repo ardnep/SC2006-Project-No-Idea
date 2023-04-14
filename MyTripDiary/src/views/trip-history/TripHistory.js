@@ -104,6 +104,8 @@ export default function ({ navigation }) {
     const startTime = getTime(timestamp);
     const endTime = getTime(timestamp + item.duration * 60);
     const trip = getSavedTripByID(item.tripID);
+    console.log(trip);
+    console.log(trip.name);
     return (
       <TouchableComponent
         onLongPress={() => {
@@ -247,7 +249,7 @@ export function getDisplayPrice(execTripObj) {
   if (priceToShow == -1) {
     return "N/A";
   }
-  return "$" + priceToShow.toFixed(2);
+  return "$" + Number.parseFloat(priceToShow).toFixed(2);
 }
 
 export function getDate(timestamp) {
