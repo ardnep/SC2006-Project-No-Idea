@@ -1,12 +1,10 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import TabBarIcon from "../components/utils/TabBarIcon";
-import TabBarText from "../components/utils/TabBarText";
+import { useTheme, themeColor, Text } from "react-native-rapi-ui";
 
-import { useTheme, themeColor } from "react-native-rapi-ui";
+import { Ionicons } from "@expo/vector-icons";
 
-// import AddTripNavigator from "./AddTripNavigator";
 import SettingsNavigator from "./SettingsNavigator";
 import AnalyticsNavigator from "./AnalyticsNavigator";
 import HomeNavigator from "./HomeNavigator";
@@ -35,8 +33,48 @@ const Main = () => {
 };
 
 const Tabs = createBottomTabNavigator();
+
 const MainTabs = () => {
     const { isDarkmode } = useTheme();
+
+    const TabBarText = (props) => {
+        const { isDarkmode } = useTheme();
+        return (
+            <Text
+                fontWeight="bold"
+                style={{
+                    marginBottom: 5,
+                    color: props.focused
+                        ? isDarkmode
+                            ? themeColor.white100
+                            : themeColor.primary
+                        : "rgb(143, 155, 179)",
+                    fontSize: 10,
+                }}
+            >
+                {props.title}
+            </Text>
+        );
+    };
+
+    const TabBarIcon = (props) => {
+        const { isDarkmode } = useTheme();
+        return (
+            <Ionicons
+                name={props.icon}
+                style={{ marginBottom: -7 }}
+                size={24}
+                color={
+                    props.focused
+                        ? isDarkmode
+                            ? themeColor.white100
+                            : themeColor.primary
+                        : "rgb(143, 155, 179)"
+                }
+            />
+        );
+    };
+
     return (
         <Tabs.Navigator
             screenOptions={{
@@ -60,18 +98,6 @@ const MainTabs = () => {
                     ),
                 }}
             />
-            {/* <Tabs.Screen
-                name="AddTripNavigator"
-                component={AddTripNavigator}
-                options={{
-                    tabBarLabel: ({ focused }) => (
-                        <TabBarText focused={focused} title="Add Trip" />
-                    ),
-                    tabBarIcon: ({ focused }) => (
-                        <TabBarIcon focused={focused} icon={"add"} />
-                    ),
-                }}
-            /> */}
             <Tabs.Screen
                 name="AnalyticsNavigator"
                 component={AnalyticsNavigator}

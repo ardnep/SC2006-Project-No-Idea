@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Analytics from "../views/Analytics";
+import Analytics from "../views/analytics/Analytics";
 
 const AddTripStack = createNativeStackNavigator();
 

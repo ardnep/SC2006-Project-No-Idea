@@ -1,8 +1,3 @@
-/**
- * A screen for user registration, using Firebase Authentication.
- * @param {object} navigation - The navigation object provided by React Navigation.
- * @returns {JSX.Element} A React component that displays the user registration screen.
- */
 import React, { useState } from "react";
 import {
   ScrollView,
@@ -11,7 +6,7 @@ import {
   KeyboardAvoidingView,
   Image,
 } from "react-native";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import {
   Layout,
   Text,
@@ -21,31 +16,29 @@ import {
   themeColor,
 } from "react-native-rapi-ui";
 
+/**
+ * Displays ForgetPassword screen
+ * @param {Object} navigation 
+ */
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
   const auth = getAuth();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  /**
-   * Registers a new user with the email and password entered by the user.
-   * If an error occurs, an alert will be shown to the user with the error message.
-   */
-  async function register() {
+  async function forget() {
     setLoading(true);
-    await createUserWithEmailAndPassword(auth, email, password).catch(function (
-      error
-    ) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // ...
-      setLoading(false);
-      alert(errorMessage);
-    });
+    await sendPasswordResetEmail(auth, email)
+      .then(function () {
+        setLoading(false);
+        navigation.navigate("Login");
+        alert("Your password reset has been sent to your email");
+      })
+      .catch(function (error) {
+        setLoading(false);
+        alert(error);
+      });
   }
-
   return (
     <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
       <Layout>
@@ -68,7 +61,7 @@ export default function ({ navigation }) {
                 height: 220,
                 width: 220,
               }}
-              source={require("../../../assets/register.png")}
+              source={require("../../../assets/forget.png")}
             />
           </View>
           <View
@@ -80,14 +73,14 @@ export default function ({ navigation }) {
             }}
           >
             <Text
-              fontWeight="bold"
               size="h3"
+              fontWeight="bold"
               style={{
                 alignSelf: "center",
                 padding: 30,
               }}
             >
-              Register
+              Forget Password
             </Text>
             <Text>Email</Text>
             <TextInput
@@ -95,27 +88,15 @@ export default function ({ navigation }) {
               placeholder="Enter your email"
               value={email}
               autoCapitalize="none"
-              autoCompleteType="off"
+              autoComplete="off"
               autoCorrect={false}
               keyboardType="email-address"
               onChangeText={(text) => setEmail(text)}
             />
-
-            <Text style={{ marginTop: 15 }}>Password</Text>
-            <TextInput
-              containerStyle={{ marginTop: 15 }}
-              placeholder="Enter your password"
-              value={password}
-              autoCapitalize="none"
-              autoCompleteType="off"
-              autoCorrect={false}
-              secureTextEntry={true}
-              onChangeText={(text) => setPassword(text)}
-            />
             <Button
-              text={loading ? "Loading" : "Create an account"}
+              text={loading ? "Loading" : "Send email"}
               onPress={() => {
-                register();
+                forget();
               }}
               style={{
                 marginTop: 20,
