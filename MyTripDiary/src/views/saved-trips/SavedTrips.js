@@ -113,6 +113,10 @@ function SavedTrips({ navigation }) {
     const previousName = popupState.selectedTrip.name;
     const newName = tripName.trim();
     if (previousName !== newName) {
+      if (newName == '') {
+         Alert.alert('Error', 'Name cannot be blank');
+         return;
+      }
       renameSavedTrip(popupState.selectedTrip, tripName);
       updateSavedTrips();
       Alert.alert(
