@@ -16,8 +16,6 @@ const HomeNavigator = () => {
             <HomeStack.Screen name="SavedTrips" component={SavedTrips} />
             <HomeStack.Screen name="AddSavedTrip" component={AddSavedTrip} />
             <HomeStack.Screen name="SavedTripInfo" component={SavedTripInfo} />
-            <HomeStack.Screen name="TripHistory" component={TripHistory} />
-            <HomeStack.Screen name="ExecutedTripInfo" component={ExecutedTripInfo} />
         </HomeStack.Navigator>
     )
 };
