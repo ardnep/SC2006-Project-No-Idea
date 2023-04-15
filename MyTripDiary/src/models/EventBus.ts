@@ -11,7 +11,7 @@ const eventBus = {
       this.events[event] = this.events[event].filter(function(cb : Function) { cb !== callback});
     }
   },
-  notify(event : string, data : Function) {
+  notify(event : string, data : any) {
     if (this.events[event]) {
       this.events[event].forEach(function(callback : Function) { callback(data) });
     }
