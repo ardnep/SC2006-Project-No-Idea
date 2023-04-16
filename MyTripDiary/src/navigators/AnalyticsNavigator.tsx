@@ -1,19 +1,31 @@
+/**
+ * @fileoverview A Navigator component for navigating to the Analytics view.
+ * @module navigators/AnalyticsNavigator
+ * @returns {JSX.Element} The rendered AnalyticsNavigator component.
+ */
+
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Analytics from "../views/analytics/Analytics";
 
-const AddTripStack = createNativeStackNavigator();
+/**
+ * The stack navigator for the Analytics view.
+ * @type {Object}
+ */
+const AnalyticsStack = createNativeStackNavigator();
 
 /**
- * Creates a navigation stack for the Add Trip feature.
+ * The AnalyticsNavigator component.
+ * @function
+ * @returns {JSX.Element} The rendered AnalyticsNavigator component.
  */
 const AnalyticsNavigator = () => {
     return (
-        <AddTripStack.Navigator
+        <AnalyticsStack.Navigator
             screenOptions={{
                 headerShown: false,
             }}>
-            <AddTripStack.Screen name="Analytics" component={Analytics} />
-        </AddTripStack.Navigator>
+            <AnalyticsStack.Screen name="Analytics" component={Analytics} />
+        </AnalyticsStack.Navigator>
     )
 };
 

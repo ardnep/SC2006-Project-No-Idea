@@ -45,7 +45,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
-    "react-native-dotenv": "^3.4.8"
+    "@types/node": "^18.15.11",
+    "react-native-dotenv": "^3.4.8",
+    "typedoc": "^0.24.2"
   },
   "private": true
 }

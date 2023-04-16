@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Renders a list of saved trips, allowing the user to select and view them.
+ * @module views/saved-trips/SavedTrips
+ * @param {object} props.navigation - The navigation object
+ * @returns {JSX.Element} - Screen
+ */
+
 import React, { useState, useEffect } from "react";
 import { AntDesign, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import {
@@ -33,13 +40,6 @@ import {
 } from "../../controllers/SavedTripsController";
 import styles from "../../styles/main";
 import eventBus from "../../models/EventBus";
-
-/**
- * Renders a list of saved trips, allowing the user to select and view them.
- * @param {object} props
- * @param {object} props.navigation - The navigation object
- * @returns {JSX.Element} - Screen
- */
 
 function SavedTrips({ navigation }) {
   const [savedTripsArray, setSavedTripsArray] = useState(
@@ -113,9 +113,9 @@ function SavedTrips({ navigation }) {
     const previousName = popupState.selectedTrip.name;
     const newName = tripName.trim();
     if (previousName !== newName) {
-      if (newName == '') {
-         Alert.alert('Error', 'Name cannot be blank');
-         return;
+      if (newName == "") {
+        Alert.alert("Error", "Name cannot be blank");
+        return;
       }
       renameSavedTrip(popupState.selectedTrip, tripName);
       updateSavedTrips();

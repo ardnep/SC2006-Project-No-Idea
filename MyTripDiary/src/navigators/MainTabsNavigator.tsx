@@ -1,3 +1,9 @@
+/**
+ * @fileoverview The main component for the app's navigation, including bottom tab navigation with tabs for Home, Analytics, Trip History, and Settings.
+ * @module navigators/MainTabsNavigator
+ * @returns {JSX.Element} The rendered Main component.
+ */
+
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -11,14 +17,15 @@ import HomeNavigator from "./HomeNavigator";
 import TripHistoryNavigator from "./TripHistoryNavigator";
 
 /**
- * Creates a navigation stack for the main app.
- * @return {JSX.Element} The main app navigation stack.
+ * The stack navigator for the main app navigation.
+ * @type {Object}
  */
 const MainStack = createNativeStackNavigator();
 
 /**
- * Renders the main app navigation stack with views for the main tabs, 
- * trip info, trip history, and edit price.
+ * The Main component.
+ * @function
+ * @returns {JSX.Element} The rendered Main component.
  */
 const Main = () => {
     return (
@@ -32,11 +39,26 @@ const Main = () => {
     );
 };
 
+/**
+ * The bottom tab navigator for the main app navigation.
+ * @type {Object}
+ */
 const Tabs = createBottomTabNavigator();
 
+/**
+ * The MainTabs component, which represents the tabs for Home, Analytics, Trip History, and Settings.
+ * @function
+ * @returns {JSX.Element} The rendered MainTabs component.
+ */
 const MainTabs = () => {
     const { isDarkmode } = useTheme();
 
+    /**
+     * The TabBarText component, which represents the text label for each tab.
+     * @function
+     * @param {Object} props - The props for the TabBarText component.
+     * @returns {JSX.Element} The rendered TabBarText component.
+     */
     const TabBarText = (props) => {
         const { isDarkmode } = useTheme();
         return (
@@ -57,6 +79,12 @@ const MainTabs = () => {
         );
     };
 
+    /**
+     * The TabBarIcon component, which represents the icon for each tab.
+     * @function
+     * @param {Object} props - The props for the TabBarIcon component.
+     * @returns {JSX.Element} The rendered TabBarIcon component.
+     */
     const TabBarIcon = (props) => {
         const { isDarkmode } = useTheme();
         return (
@@ -85,7 +113,6 @@ const MainTabs = () => {
                 },
             }}
         >
-            {/* these icons using Ionicons */}
             <Tabs.Screen
                 name="HomeNavigator"
                 component={HomeNavigator}

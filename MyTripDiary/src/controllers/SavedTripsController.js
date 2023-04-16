@@ -1,3 +1,8 @@
+/**
+ * @fileOverview This module provides functions for managing trips and executed trips in a travel application.
+ * @module controllers/SavedTripsController
+ */
+
 import { ExecutedTrip } from "../models/ExecutedTrip";
 import { Trip } from "../models/Trip";
 import { TripPrice } from "../models/TripPrice";
@@ -15,8 +20,9 @@ let savedTrips = [];
 let executedTripsArray = [];
 
 /**
- * Get all the saved trips for this user
- * @returns {Array} array of all saved trips for this user
+ * Retrieves all active saved trips.
+ *
+ * @returns {Array} An array containing all active saved trips.
  */
 export function getAllActiveSavedTrips() {
   const activeSavedTrips = [];
@@ -28,14 +34,29 @@ export function getAllActiveSavedTrips() {
   return activeSavedTrips;
 }
 
+/**
+ * Retrieves all saved trips.
+ *
+ * @returns {Array} An array containing all saved trips.
+ */
 export function getAllSavedTrips() {
   return savedTrips;
 }
 
+/**
+ * Retrieves all executed trips.
+ *
+ * @returns {Array} An array containing all executed trips.
+ */
 export function getAllExecutedTrips() {
   return executedTripsArray;
 }
 
+/**
+ * Fetches all trips from the database and updates the local savedTrips and executedTripsArray arrays.
+ *
+ * @returns {Promise} A promise that resolves once all trips are fetched and processed.
+ */
 export async function fetchAllTrips() {
   savedTrips = [];
   executedTripsArray = [];
@@ -60,6 +81,13 @@ export async function fetchAllTrips() {
   }
 }
 
+/**
+ * Parses the executed trips snapshot and returns an array of ExecutedTrip objects.
+ *
+ * @param {string} savedTripID - The ID of the saved trip to which the executed trips belong.
+ * @param {Object} executedTripsSnapshot - The snapshot data of executed trips from the database.
+ * @returns {Array} An array containing ExecutedTrip objects.
+ */
 export function parseExecutedTripsSnapshot(savedTripID, executedTripsSnapshot) {
   const executedTrips = [];
   for (const doc of executedTripsSnapshot.docs) {
@@ -73,6 +101,14 @@ export function parseExecutedTripsSnapshot(savedTripID, executedTripsSnapshot) {
   return executedTrips;
 }
 
+/**
+ * Converts an object data of an executed trip to an ExecutedTrip object.
+ *
+ * @param {string} savedTripID - The ID of the saved trip to which the executed trip belongs.
+ * @param {string} executionNumber - The execution number of the executed trip.
+ * @param {Object} object - The data of the executed trip from the database.
+ * @returns {ExecutedTrip} An ExecutedTrip object.
+ */
 function convertToExecutedTripClass(savedTripID, executionNumber, object) {
   return new ExecutedTrip(
     savedTripID,
@@ -85,6 +121,14 @@ function convertToExecutedTripClass(savedTripID, executionNumber, object) {
   );
 }
 
+/**
+ * Converts a plain object to a Trip class instance.
+ *
+ * @function
+ * @param {Object} object - The plain object to convert.
+ * @param {Array} executedTrips - The array of executed trips associated with the trip.
+ * @returns {Trip} - The Trip class instance.
+ */
 function convertToTripClass(object, executedTrips) {
   return new Trip(
     object.deleted,
@@ -102,9 +146,11 @@ function convertToTripClass(object, executedTrips) {
 }
 
 /**
- * Star a trip
- * @param {import('../models/Trip').Trip} tripToStar
- * @returns {bool} true if successful else false
+ * Stars or un-stars a saved trip by updating its "pinned" status.
+ *
+ * @function
+ * @param {Trip} tripToStar - The saved trip to star or un-star.
+ * @returns {void}
  */
 export function starTrip(tripToStar) {
   const tripFound = savedTrips.find((trip) => {
@@ -115,9 +161,11 @@ export function starTrip(tripToStar) {
 }
 
 /**
- * Get a trip entity class from its ID
- * @param {string} tripToGet
- * @returns {import('../models/Trip').Trip} trip
+ * Retrieves a saved trip by its ID.
+ *
+ * @function
+ * @param {string} savedTripID - The ID of the saved trip.
+ * @returns {Trip} - The saved trip with the specified ID.
  */
 export function getSavedTripByID(savedTripID) {
   return savedTrips.find((trip) => {
@@ -126,9 +174,12 @@ export function getSavedTripByID(savedTripID) {
 }
 
 /**
- * Rename a trip
- * @param {import('../models/Trip').Trip} tripToRename
- * @returns {bool} true if successful else false
+ * Renames a saved trip with a new name.
+ *
+ * @function
+ * @param {Trip} tripToRename - The saved trip to rename.
+ * @param {string} newName - The new name for the saved trip.
+ * @returns {void}
  */
 export function renameSavedTrip(tripToRename, newName) {
   const index = savedTrips.indexOf(tripToRename);
@@ -138,6 +189,14 @@ export function renameSavedTrip(tripToRename, newName) {
   updateData("SavedTrips", tripToRename.ID, { name: newName });
 }
 
+/**
+ * Edits the price of an executed trip by updating its user input price.
+ *
+ * @function
+ * @param {ExecutedTrip} executedTrip - The executed trip to edit.
+ * @param {number} newPrice - The new user input price for the executed trip.
+ * @returns {void}
+ */
 export function editExecutedTripPrice(executedTrip, newPrice) {
   const tripFound = executedTripsArray.find((trip) => {
     return (
@@ -156,9 +215,11 @@ export function editExecutedTripPrice(executedTrip, newPrice) {
 }
 
 /**
- * Delete a trip
- * @param {import('../models/Trip').Trip} tripToDelete
- * @returns {bool} true if successful else false
+ * Deletes a saved trip by updating its "deleted" status.
+ *
+ * @function
+ * @param {Trip} tripToDelete - The saved trip to delete.
+ * @returns {void}
  */
 export function deleteSavedTrip(tripToDelete) {
   const tripFound = savedTrips.find((trip) => {
@@ -169,9 +230,11 @@ export function deleteSavedTrip(tripToDelete) {
 }
 
 /**
- * Add a trip
- * @param {import('../models/Trip').Trip} tripToAdd
- * @returns {bool} true if successful else false
+ * Adds a new saved trip to the savedTrips array and to the database.
+ *
+ * @function
+ * @param {Trip} tripToAdd - The saved trip to add.
+ * @returns {void}
  */
 export function addSavedTrip(tripToAdd) {
   savedTrips.push(tripToAdd);
@@ -184,6 +247,13 @@ export function addSavedTrip(tripToAdd) {
   );
 }
 
+/**
+ * Adds a new executed trip to the executedTripsArray and to the database.
+ *
+ * @function
+ * @param {ExecutedTrip} executedTripToAdd - The executed trip to add.
+ * @returns {void}
+ */
 export function addExecutedTrip(executedTripToAdd) {
   let tripInDB = { ...executedTripToAdd };
   delete tripInDB.tripID;

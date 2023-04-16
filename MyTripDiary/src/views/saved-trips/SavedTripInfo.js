@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Displays information about a saved trip and allows the user to interact with it.
+ * @module views/saved-trips/SavedTripInfo
+ * @param {object} props.route - The route object containing information about the current route.
+ * @param {object} props.navigation - The navigation object
+ * @returns {JSX.Element} - Screen
+ */
+
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
@@ -28,13 +36,6 @@ import {
 } from "../../controllers/RouteManager";
 import { executeTrip } from "../../controllers/TripExecutor";
 import eventBus from "../../models/EventBus";
-/**
- * Displays information about a saved trip and allows the user to interact with it.
- * @param {object} props
- * @param {object} props.route - The route object containing information about the current route.
- * @param {object} props.navigation - The navigation object
- * @returns {JSX.Element} - Screen
- */
 
 function SavedTripInfo({ route, navigation }) {
   const { isDarkmode } = useTheme();

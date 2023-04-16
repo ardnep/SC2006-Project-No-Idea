@@ -1,3 +1,9 @@
+/**
+ * @fileoverview A Navigator component for navigating to authentication views, including Login, Register, and ForgetPassword.
+ * @module navigators/AuthNavigator
+ * @returns {JSX.Element} The rendered Auth component.
+ */
+
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -5,11 +11,16 @@ import Login from "../views/auth/Login";
 import Register from "../views/auth/Register";
 import ForgetPassword from "../views/auth/ForgetPassword";
 
+/**
+ * The stack navigator for the authentication views.
+ * @type {Object}
+ */
 const AuthStack = createNativeStackNavigator();
 
 /**
- * Renders the authentication navigation stack with views for login, register, and forget password.
- * @return {JSX.Element} 
+ * The Auth component.
+ * @function
+ * @returns {JSX.Element} The rendered Auth component.
  */
 const Auth = () => {
   return (
