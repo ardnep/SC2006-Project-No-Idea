@@ -1,12 +1,11 @@
 /**
- * A screen component for login.
- * This component is a screen that provides a login form for the user. It uses Firebase authentication
- * to authenticate the user's email and password, and provides functionality for the user to switch
- * between light and dark themes.
- * @param {object} navigation - The navigation object for the screen, which provides functions for
- * navigating to other screens.
- * @returns {JSX.Element} A React component that renders the login screen.
+ * @fileoverview Represents the login screen component.
+ * @module views/auth/Login
+ * @param {object} navigation - The navigation object for navigating between screens.
+ *
+ * @returns {JSX.Element} - The login screen component JSX.Element.
  */
+
 import React, { useState } from "react";
 import {
   ScrollView,
@@ -25,7 +24,6 @@ import {
   themeColor,
 } from "react-native-rapi-ui";
 
-
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
   const auth = getAuth(); // Initialize Firebase authentication
@@ -34,20 +32,17 @@ export default function ({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   /**
-   * Logs the user in with their email and password.
-   * This function sets the loading status to true, and then uses Firebase authentication to
-   * sign in the user with their email and password. If there is an error, it sets the loading
-   * status to false and shows an error message to the user.
+   * Handles login button press.
+   *
+   * @async
+   * @function login
    */
   async function login() {
     setLoading(true);
     await signInWithEmailAndPassword(auth, email, password).catch(function (
       error
     ) {
-      // Handle Errors here.
-      var errorCode = error.code;
       var errorMessage = error.message;
-      // ...
       setLoading(false);
       alert(errorMessage);
     });
@@ -193,7 +188,6 @@ export default function ({ navigation }) {
                     marginLeft: 5,
                   }}
                 >
-                  {/* {isDarkmode ? "☀️ light theme" : "🌑 Dark theme"} */}
                 </Text>
               </TouchableOpacity>
             </View>

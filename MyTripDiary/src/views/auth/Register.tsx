@@ -1,8 +1,12 @@
+
 /**
- * A screen for user registration, using Firebase Authentication.
- * @param {object} navigation - The navigation object provided by React Navigation.
- * @returns {JSX.Element} A React component that displays the user registration screen.
+ * @fileoverview Register screen component.
+ * @module views/auth/Register
+ * @component
+ * @param {Object} navigation - Navigation object from React Navigation.
+ * @returns {JSX.Element} Register screen UI.
  */
+
 import React, { useState } from "react";
 import {
   ScrollView,
@@ -29,18 +33,18 @@ export default function ({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   /**
-   * Registers a new user with the email and password entered by the user.
-   * If an error occurs, an alert will be shown to the user with the error message.
+   * Function to register a new user.
+   *
+   * @async
+   * @function
+   * @returns {void}
    */
   async function register() {
     setLoading(true);
     await createUserWithEmailAndPassword(auth, email, password).catch(function (
       error
     ) {
-      // Handle Errors here.
-      var errorCode = error.code;
       var errorMessage = error.message;
-      // ...
       setLoading(false);
       alert(errorMessage);
     });

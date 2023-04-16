@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Forget password component.
+ * @module views/auth/ForgetPassword
+ * @component
+ * @param {Object} navigation - Navigation object from React Navigation.
+ * @returns {JSX.Element} Forget password screen UI.
+ */
+
 import React, { useState } from "react";
 import {
   ScrollView,
@@ -16,16 +24,18 @@ import {
   themeColor,
 } from "react-native-rapi-ui";
 
-/**
- * Displays ForgetPassword screen
- * @param {Object} navigation 
- */
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
   const auth = getAuth();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Handles the forget password button press.
+   * @async
+   * @function forget
+   * @returns {void}
+   */
   async function forget() {
     setLoading(true);
     await sendPasswordResetEmail(auth, email)

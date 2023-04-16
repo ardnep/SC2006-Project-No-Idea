@@ -1,3 +1,10 @@
+/**
+ * @module views/settings/AccountSettings
+ * @fileoverview A screen component for account settings
+ * @param {Object} navigation - The navigation object used for screen navigation
+ * @returns {JSX.Element} - JSX element representing the AccountSettings screen
+ */
+
 import React from "react";
 import { StyleSheet, Modal, TouchableOpacity } from "react-native";
 import {

@@ -1,3 +1,10 @@
+/**
+ * @module views/settings/Settings
+ * @fileoverview A screen component for displaying user settings.
+ * @param {object} navigation - The navigation object for navigating between screens.
+ * @returns {React.Element} The rendered component.
+ */
+
 import React, { useEffect } from "react";
 
 import { StyleSheet, TouchableOpacity, Image, View } from "react-native";
@@ -10,9 +17,6 @@ import { Layout, TopNav, Text } from "react-native-rapi-ui";
 import { useTheme } from "react-native-rapi-ui";
 import eventBus from "../../models/EventBus";
 
-/**
- * Displays the Settings app onto the screen
- */
 export default function Settings({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
 

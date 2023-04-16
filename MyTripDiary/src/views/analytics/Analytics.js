@@ -1,6 +1,6 @@
 /**
- * This is the Analytics tab screen component.
- * It displays all the analytics contents on the Analytics tab screen.
+ * @fileoverview This is the Analytics tab screen component. It displays all the analytics contents on the Analytics tab screen.
+ * @module views/analytics/Analytics
  * @param {object} navigation - The navigation object provided by React Navigation.
  * @returns {JSX.Element} - The JSX element that represents the Analytics tab screen.
  */
@@ -73,15 +73,11 @@ export default function ({ navigation }) {
   }, []);
 
   useEffect(() => {
-    // Subscribe to the event and update component state when it occurs
     const handleEvent = () => {
-      //setEventOccurred(true);
       setTrips(formatData(getAllExecutedTrips()));
-      //setKey(prevKey => prevKey + 1); // Update the key to trigger re-render
     };
     eventBus.subscribe("updateExecutedTrips", handleEvent);
 
-    // Cleanup the subscription on unmount
     return () => {
       eventBus.unsubscribe("updateExecutedTrips", handleEvent);
     };

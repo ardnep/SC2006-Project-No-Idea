@@ -1,21 +1,25 @@
+/**
+ * @fileOverview This file contains the AuthProvider component, which is a context provider for managing user authentication state.
+ * @module controllers/AuthController
+ */
+
 import React, { createContext, useState, useEffect } from "react";
 import { firebaseAuth } from "./FirebaseController";
 import { fetchAllTrips } from "./SavedTripsController";
 
 /**
- *
- * @typedef {Object} AuthContextValue - An object containing the current user state.
- * @property {boolean} user - The current user's authentication state.
- * @typedef {Object} AuthProviderProps - The props for the AuthProvider component.
- * @property {React.ReactNode} children - The children components to be wrapped by the AuthProvider.
- * @type {React.Context<AuthContextValue>} - The authentication context object.
+ * @external AuthContext
+ * @typedef {object} AuthContext
+ * @property {boolean|null} user - The current authenticated user, or null if not logged in.
+ * @property {number} loaded - The loading status of the authentication, represented as a number: 0 for not loaded, 1 for loading, and 2 for loaded.
  */
-const AuthContext = createContext(null);
 
 /**
- * The authentication provider component that provides authentication state and
- * functions to the children components.
- * @param {AuthProviderProps} props - The props for the AuthProvider component.
+ * @function
+ * @name AuthProvider
+ * @description The AuthProvider component is a context provider for managing user authentication state.
+ * @param {object} props - The properties to be passed to the AuthProvider component.
+ * @returns {JSX.Element} - The JSX element representing the AuthProvider component.
  */
 const AuthProvider = (props) => {
   const [user, setUser] = useState(null);
@@ -25,6 +29,12 @@ const AuthProvider = (props) => {
     checkLogin();
   }, []);
 
+  /**
+   * @function
+   * @name checkLogin
+   * @description A helper function to check the login status of the user.
+   * @returns {void}
+   */
   function checkLogin() {
     firebaseAuth.onAuthStateChanged(async (u) => {
       if (u) {
@@ -51,4 +61,10 @@ const AuthProvider = (props) => {
   );
 };
 
-export { AuthContext, AuthProvider };
+/**
+ * The Auth context that can be used by other components
+ * @type {Object}
+ */
+export const AuthContext = createContext(null);
+
+export { AuthProvider };

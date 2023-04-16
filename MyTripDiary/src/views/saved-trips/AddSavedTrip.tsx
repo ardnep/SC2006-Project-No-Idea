@@ -1,3 +1,9 @@
+/**
+ * @module views/saved-trips/AddSavedTrip
+ * @fileoverview Represents the screen for adding a trip to saved trips.
+ * @param {Object} navigation - The navigation object for navigating between screens.
+ * @return {JSX.Element} - The JSX element for the AddSavedTrip screen.
+ */
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Layout, Text, TextInput, TopNav, useTheme } from "react-native-rapi-ui";
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -8,7 +14,7 @@ import { Trip } from "../../models/Trip";
 import { generateTripID } from "../../controllers/FirebaseController";
 import eventBus from "../../models/EventBus";
 
-function AddSavedTrip({ route, navigation }) {
+function AddSavedTrip({ navigation }) {
     const [name, setName] = React.useState('');
     const [origin, setOrigin] = useState(null);
     const [destination, setDestination] = useState(null);

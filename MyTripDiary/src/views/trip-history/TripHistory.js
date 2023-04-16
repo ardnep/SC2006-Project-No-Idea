@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Renders a list of executed trips, allowing the user to select and view them.
+ * @module views/trip-history/TripHistory
+ * @param {object} props.navigation - The navigation object
+ * @returns {JSX.Element} - Screen
+ */
+
 import React, { useState, useEffect } from "react";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import {
@@ -27,7 +34,6 @@ import { editExecutedTripPrice } from "../../controllers/SavedTripsController";
 import styles from "../../styles/main";
 import eventBus from "../../models/EventBus";
 
-/** Displays TripHistory screen */
 export default function ({ navigation }) {
   const { isDarkmode } = useTheme();
   let executedTrips = getExecutedTripsSortedByDate();

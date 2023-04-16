@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Displays information about an executed trip.
+ * @module views/trip-history/ExecutedTripInfo
+ * @param {object} props.route - The route object containing information about the current route.
+ * @param {object} props.navigation - The navigation object
+ * @returns {JSX.Element} - Screen
+ */
+
 import { StyleSheet } from "react-native";
 import {
   Layout,
@@ -60,10 +68,6 @@ function ExecutedTripInfo({ route, navigation }) {
     </Layout>
   );
 }
-
-/**
- * The styles for the `ExecutedTripInfo` component.
- */
 
 const styles = StyleSheet.create({
   buttonSection: {
